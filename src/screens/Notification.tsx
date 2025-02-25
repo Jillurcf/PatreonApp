@@ -81,6 +81,7 @@ const Notification = ({navigation}) => {
           }}
         />
       </View>
+          <StatusBar backgroundColor="black" translucent />
     </View>
   );
 };

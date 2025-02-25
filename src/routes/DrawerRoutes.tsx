@@ -123,7 +123,7 @@ function DrawerContent({navigation}: any) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              navigation?.navigate('MyOrder', {
+              navigation?.navigate('Setting', {
                 // products: [...Array(10)],
                 // title: 'I miei ordini',
                 // from: 'myOrders',

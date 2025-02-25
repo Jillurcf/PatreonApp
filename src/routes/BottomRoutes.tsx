@@ -22,6 +22,7 @@ import {
 import Discover from '../screens/Discover';
 import IconArrow from '../components/IconArrow';
 import MessageScreen from '../screens/MessageScreen';
+import MessageList from '../screens/MessageList';
 
 const Tab = createBottomTabNavigator();
 
@@ -73,7 +74,7 @@ function BottomRoutes() {
         },
       })}>
       <Tab.Screen name="Discover" component={Discover} />
-      <Tab.Screen name="Message" component={MessageScreen} />
+      <Tab.Screen name="Message" component={MessageList} />
      
     </Tab.Navigator>
   );

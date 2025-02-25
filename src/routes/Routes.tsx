@@ -9,6 +9,12 @@ import PopupScreen from '../screens/auth/PopupScreen';
 import Notification from '../screens/Notification';
 import ProfileScreen from '../screens/ProfileScreen';
 import PaymentScreen from '../screens/PaymentScreen';
+import PaymentResult from '../screens/PaymentResult';
+import Settings from '../screens/Settings';
+import TermsAndCondition from '../screens/TermsAndCondition';
+import Language from '../screens/Language';
+import NotificationSettings from '../screens/NotificationSettings';
+import MessageScreen from '../screens/MessageScreen';
 
 
 
@@ -37,6 +43,12 @@ export default function Routes() {
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="PaymentResult" component={PaymentResult} />
+      <Stack.Screen name="Setting" component={Settings} />
+      <Stack.Screen name="TermsAndCondition" component={TermsAndCondition} />
+      <Stack.Screen name="Language" component={Language} />
+      <Stack.Screen name="NotificationSetting" component={NotificationSettings} />
+      <Stack.Screen name="MessageScreen" component={MessageScreen} />
       
    
       

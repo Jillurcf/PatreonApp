@@ -147,6 +147,7 @@ const VerifyScreen = ({navigation, route}: any) => {
 
   const handleSendOtp = async () => {
     console.log('click');
+    navigation.navigate("Drawer")
     // try {
     //   // Unwrap response from RTK Query mutation
     //   const response = await otpVerify(data).unwrap();
@@ -169,6 +170,7 @@ const VerifyScreen = ({navigation, route}: any) => {
     //   // Log error details for debugging
     //   console.error("Error verifying OTP:", err);
     // }
+    
   };
 
   // if (isLoading) {

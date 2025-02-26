@@ -93,7 +93,7 @@ function DrawerContent({navigation}: any) {
         <View style={tw`mt-4 gap-y-5`}>
           <TouchableOpacity
             onPress={() =>
-              navigation?.navigate('Profile', {
+              navigation?.navigate('SettingProfile', {
                 // products: [...Array(10)],
                 // title: 'I miei ordini',
                 // from: 'myOrders',

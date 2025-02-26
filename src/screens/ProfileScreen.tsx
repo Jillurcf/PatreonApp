@@ -10,7 +10,7 @@ type Props = {};
 const ProfileScreen = ({navigation}) => {
   return (
     <View style={tw`bg-black flex-1`}>
-      <View style={tw`flex-row w-full justify-between mt-4`}>
+      <View style={tw`flex-row w-full justify-between mt-4 px-[4%]`}>
         <TouchableOpacity
           onPress={() => {
             if (navigation.canGoBack()) {
@@ -24,15 +24,15 @@ const ProfileScreen = ({navigation}) => {
           style={tw`bg-PrimaryFocus rounded-full p-1`}>
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
-        <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
+        {/* <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
           Notification
-        </Text>
+        </Text> */}
         {/* Placeholder view for symmetry */}
         <View style={tw`w-8`} />
       </View>
       <View style={tw`flex items-center justify-center mt-8`}>
-        <View style={tw`bg-red-300 w-18 h-18 rounded-full`}>
-          <Text style={tw`text-black z-20`}>U</Text>
+        <View style={tw`bg-red-300 w-18 h-18 items-center justify-center rounded-full`}>
+          <Text style={tw`text-black font-AvenirLTProBlack`}>U</Text>
         </View>
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
           User Name

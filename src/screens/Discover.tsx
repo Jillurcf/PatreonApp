@@ -61,7 +61,8 @@ const Discover = () => {
       </Text>
       <View style={tw`my-4`}>
         <InputText
-          containerStyle={tw`bg-[#262329] border border-[#565358]`}
+        
+          containerStyle={tw`bg-[#262329] border relative border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
           placeholder={'Search & Learn'}
           placeholderColor={'#949494'}
@@ -74,6 +75,11 @@ const Discover = () => {
           //     setIsShowConfirmPassword(!isShowConfirmPassword)
           //   }
         />
+        <TouchableOpacity
+        onPress={() => navigation.navigate("DiscoverResult")}
+        style={tw`absolute right-4 top-4`}>
+          <Text style={tw`text-white`}>Search</Text>
+        </TouchableOpacity>
       </View>
       <View>
         <FlatList

@@ -183,20 +183,13 @@ const VerifyScreen = ({navigation, route}: any) => {
   // }
 
   return (
-    <View style={tw`bg-black flex-1 justify-between p-[4%] `}>
+    // <View style={tw``}>
       <ScrollView
-        contentContainerStyle={tw``}
+        contentContainerStyle={tw`bg-black flex-1 justify-between p-[4%] `}
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}>
-        {/* <View style={tw`flex-row items-center justify-center mb-2`}>
-            <Image
-              source={require('../../assets/images/logo.png')}
-              style={tw`w-20 h-20`}
-            />
-          </View>
-   */}
-        {/* form */}
-        <View style={tw`flex-col justify-between`}>
+       
+       
           <View>
             <View style={tw`flex-row w-full justify-between px-[4%] mt-4`}>
               <TouchableOpacity
@@ -250,7 +243,7 @@ const VerifyScreen = ({navigation, route}: any) => {
              
             </View>
           </View>
-          <View style={tw`flex-col h-[90%] justify-end `}>
+          <View style={tw`flex-col justify-end `}>
             <Button
               disabled={!allFilled}
               title={'Verify'}
@@ -261,16 +254,13 @@ const VerifyScreen = ({navigation, route}: any) => {
               onPress={handleSendOtp}
             />
           </View>
-        </View>
-        <CustomAlert
-          visible={alertVisible}
-          message="Success', 'An OTP has been sent to your email."
-          onClose={closeCustomAlert}
-        />
+       
+       
+         <StatusBar backgroundColor="black" translucent />
       </ScrollView>
-       <StatusBar backgroundColor="black" translucent />
-    </View>
-  );
+      
+   
+  );1
 };
 
 export default VerifyScreen;

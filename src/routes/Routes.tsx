@@ -15,6 +15,13 @@ import TermsAndCondition from '../screens/TermsAndCondition';
 import Language from '../screens/Language';
 import NotificationSettings from '../screens/NotificationSettings';
 import MessageScreen from '../screens/MessageScreen';
+import DiscoverResult from '../screens/DiscoverResult';
+import SettingProfile from '../screens/SettingProfile';
+import Subscriber from '../screens/Subscriber';
+import EditProfile from '../screens/EditProfile';
+import BecomeContributor from '../screens/BecomeContributor';
+import EnterInput from '../screens/EnterInputScreen';
+import ExplainMembership from '../screens/ExplainMembership';
 
 
 
@@ -40,8 +47,12 @@ export default function Routes() {
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="Popup" component={PopupScreen} />
       <Stack.Screen name="Drawer" component={DrawerRoute} />
+      <Stack.Screen name="DiscoverResult" component={DiscoverResult} />
+
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="SettingProfile" component={SettingProfile} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="PaymentResult" component={PaymentResult} />
       <Stack.Screen name="Setting" component={Settings} />
@@ -49,10 +60,10 @@ export default function Routes() {
       <Stack.Screen name="Language" component={Language} />
       <Stack.Screen name="NotificationSetting" component={NotificationSettings} />
       <Stack.Screen name="MessageScreen" component={MessageScreen} />
-      
-   
-      
-      
+      <Stack.Screen name="Subscriber" component={Subscriber} />
+      <Stack.Screen name="BecomeContributor" component={BecomeContributor} />
+      <Stack.Screen name="EnterInput" component={EnterInput} />
+      <Stack.Screen name="ExplainMembership" component={ExplainMembership} />
       
       
       {/* <Stack.Screen name="BottomRoutes" component={BottomRoutes} /> */}

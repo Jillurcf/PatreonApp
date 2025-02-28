@@ -99,14 +99,16 @@ const Settings = ({navigation}) => {
               <SvgXml width={20} xml={IconRightArrow} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={tw`flex-row gap-3 items-center mt-6`}>
+          <TouchableOpacity
+          onPress={()=> navigation.navigate("PaymentMethod")}
+          style={tw`flex-row gap-3 items-center mt-6`}>
             <View
               style={tw`bg-[#565358] w-8 h-8 rounded-full items-center justify-center`}>
               <SvgXml style={tw``} xml={IconPaymentMethod} />
             </View>
             <View style={tw`flex-row items-center justify-between w-[80%]`}>
               <Text style={tw`text-white font-AvenirLTProBlack`}>
-                Payment method
+                Payout
               </Text>
               <SvgXml width={20} xml={IconRightArrow} />
             </View>

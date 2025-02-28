@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Video from 'react-native-video';
@@ -93,8 +94,12 @@ const EnterInput = ({navigation}: NavigProps<null>) => {
   };
 
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    style={tw`flex-1 bg-black`}>
     <ScrollView
-      contentContainerStyle={tw`flex-1 bg-black h-[95%] items-center justify-between px-4`}>
+      contentContainerStyle={tw`flex-grow bg-black items-center justify-between px-4`}
+      keyboardShouldPersistTaps="handled">
       <View style={tw`my-10`}>
         <View style={tw`flex-row w-full justify-between mt-4`}>
           <TouchableOpacity
@@ -102,10 +107,13 @@ const EnterInput = ({navigation}: NavigProps<null>) => {
             style={tw`bg-PrimaryFocus rounded-full p-1`}>
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
-          <Text style={tw`text-white font-bold font-AvenirLTProBlack text-2xl`}>Enter Input</Text>
+          <Text style={tw`text-white font-bold font-AvenirLTProBlack text-2xl`}>
+            Enter Input
+          </Text>
           <View style={tw`w-8`} />
         </View>
-        {/* ==========================input area ========================= */}
+  
+        {/* Input Area */}
         <View style={tw`mt-8`}>
           <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Input</Text>
           <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
@@ -116,47 +124,31 @@ const EnterInput = ({navigation}: NavigProps<null>) => {
               underlineColorAndroid={'transparent'}
               multiline
               maxLength={120}
-              //   value={text}
-              //   onChangeText={setText}
-              textAlignVertical="top" // Ensures text starts from the top
+              textAlignVertical="top"
             />
           </View>
         </View>
+  
         {/* Media Upload */}
-        <View style={tw` my-6 `}>
+        <View style={tw`my-6`}>
           <Text style={tw`text-white font-AvenirLTProBlack`}>Upload file</Text>
-          <View
-            style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
+          <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
             <View style={tw`flex-row gap-6`}>
-              <IButton
-                containerStyle={tw`p-4 rounded-full`}
-                svg={Gallery}
-                onPress={openGallery}
-              />
-              <IButton
-                containerStyle={tw`p-4 rounded-full`}
-                svg={StillCamera}
-                onPress={openCamera}
-              />
-              <IButton
-                containerStyle={tw`p-4 rounded-full`}
-                svg={VideoCam}
-                onPress={captureVideo}
-              />
+              <IButton containerStyle={tw`p-4 rounded-full`} svg={Gallery} onPress={openGallery} />
+              <IButton containerStyle={tw`p-4 rounded-full`} svg={StillCamera} onPress={openCamera} />
+              <IButton containerStyle={tw`p-4 rounded-full`} svg={VideoCam} onPress={captureVideo} />
             </View>
             <Text style={tw`text-white my-4`}>Upload file (50 mb maximum)</Text>
-
+  
             {/* Display selected images */}
             {selectedImages.length > 0 && (
               <View style={tw`flex-row flex-wrap gap-2 my-4`}>
                 {selectedImages.map((image, index) => (
                   <View key={index} style={tw`relative`}>
-                    <TouchableOpacity
-                      onPress={() => navigation?.navigate('promptScreen')}>
-                      <Image
-                        source={{uri: image}}
-                        style={tw`w-24 h-24 rounded-lg`}
-                      />
+                    <TouchableOpacity 
+                    // onPress={() => navigation?.navigate('promptScreen')}
+                    >
+                      <Image source={{ uri: image }} style={tw`w-24 h-24 rounded-lg`} />
                     </TouchableOpacity>
                     <IButton
                       containerStyle={tw`absolute top-[-8px] right-[-8px] bg-red-500 rounded-full p-1`}
@@ -167,16 +159,11 @@ const EnterInput = ({navigation}: NavigProps<null>) => {
                 ))}
               </View>
             )}
-
+  
             {/* Display captured video */}
             {capturedVideo && (
               <View style={tw`relative`}>
-                <Video
-                  source={{uri: capturedVideo}}
-                  style={tw`w-72 h-48 mt-2`}
-                  controls
-                  resizeMode="contain"
-                />
+                <Video source={{ uri: capturedVideo }} style={tw`w-72 h-48 mt-2`} controls resizeMode="contain" />
                 <IButton
                   containerStyle={tw`absolute top-[-8px] right-[-8px] bg-red-500 rounded-full p-1`}
                   svg={CrossIcon}
@@ -187,25 +174,21 @@ const EnterInput = ({navigation}: NavigProps<null>) => {
           </View>
         </View>
       </View>
-
-      {/* Continue button */}
+  
+      {/* Continue Button */}
       <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
         <TButton
-          onPress={() => {
-            if (selectedImages.length >= 4) {
-              navigation?.navigate('promptScreen', {selectedImages});
-            } else {
-              Alert.alert('You must select at least 4 images!');
-            }
-          }}
+          onPress={()=> Alert.alert("Success")}
           titleStyle={tw`text-black font-bold text-center`}
           title="Save"
           containerStyle={tw`bg-primary w-[90%] rounded-full`}
         />
       </View>
-
+  
       <StatusBar backgroundColor={'gray'} translucent={false} />
     </ScrollView>
+  </KeyboardAvoidingView>
+  
   );
 };
 

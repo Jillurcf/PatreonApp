@@ -22,6 +22,7 @@ import EditProfile from '../screens/EditProfile';
 import BecomeContributor from '../screens/BecomeContributor';
 import EnterInput from '../screens/EnterInputScreen';
 import ExplainMembership from '../screens/ExplainMembership';
+import PaymentMethod from '../screens/PaymentMethod';
 
 
 
@@ -34,7 +35,7 @@ export default function Routes() {
     <Stack.Navigator
     
       screenOptions={{headerShown: false,
-        animation: 'slide_from_left'
+        animation: 'slide_from_right'
       }}
     //   initialRouteName="LoadingSplash"
       >
@@ -64,6 +65,7 @@ export default function Routes() {
       <Stack.Screen name="BecomeContributor" component={BecomeContributor} />
       <Stack.Screen name="EnterInput" component={EnterInput} />
       <Stack.Screen name="ExplainMembership" component={ExplainMembership} />
+      <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
       
       
       {/* <Stack.Screen name="BottomRoutes" component={BottomRoutes} /> */}

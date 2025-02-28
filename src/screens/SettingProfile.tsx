@@ -1,25 +1,48 @@
 import {
+  Image,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import tw from '../lib/tailwind';
 import {
   IconBack,
   IconDot,
   IconPencil,
+  IconPlus,
   IconUser,
   UserIcon,
 } from '../assets/icons/icons';
 import {SvgXml} from 'react-native-svg';
 import TButton from '../components/TButton';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 type Props = {};
 
 const SettingProfile = ({navigation}) => {
+  const [imageUri, setImageUri] = useState(null);
+
+  const selectImage = () => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const file = response.assets[0];
+        setImageUri(file.uri);
+        uploadImage(file);
+      }
+    });
+  };
+
+  const uploadImage = async file => {
+    const formData = new FormData();
+    formData.append('file', {
+      uri: file.uri,
+      type: file.type,
+      name: file.fileName,
+    });
+  };
   return (
     <View style={tw`bg-black flex-1`}>
       <View style={tw`flex-row w-full justify-between mt-4 px-[4%]`}>
@@ -43,10 +66,28 @@ const SettingProfile = ({navigation}) => {
         <View style={tw`w-8`} />
       </View>
       <View style={tw`flex items-center justify-center mt-8`}>
-        <View
-          style={tw` w-18 h-18 items-center rounded-full bg-gray-400 justify-center `}>
-          <SvgXml width={50} xml={UserIcon} />
-        </View>
+        <TouchableOpacity onPress={selectImage}>
+          <View
+            style={tw`w-18 h-18 bg-gray-400 rounded-full overflow-hidden mx-auto justify-center items-center relative`}>
+            <Image
+              source={
+                imageUri
+                  ? {uri: imageUri}
+                  : require('../assets/images/alteravater.png')
+              }
+              style={tw`w-full h-full`}
+              resizeMode="cover"
+            />
+          </View>
+
+          <View>
+            <View
+              style={tw`absolute bottom-0 right-0 bg-gray-200 rounded-full p-3`}>
+              <SvgXml style={tw`absolute bottom-1 right-1 `} xml={IconPlus} />
+            </View>
+          </View>
+        </TouchableOpacity>
+
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
           User Name
         </Text>

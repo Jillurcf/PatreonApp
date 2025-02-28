@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import tw from '../lib/tailwind';
 import {

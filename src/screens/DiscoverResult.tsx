@@ -20,7 +20,7 @@ import TButton from '../components/buttons/TButton';
 import {Avatar} from 'react-native-ui-lib';
 import Notification from './Notification';
 import InputText from '../components/InputText';
-import {IconGeneralSearch, IconRightArrow} from '../assets/icons/icons';
+import {IconBack, IconGeneralSearch, IconRightArrow} from '../assets/icons/icons';
 
 type ItemData = {
   id: string;
@@ -72,10 +72,28 @@ const DiscoverResult = ({navigation}: NavigProps<null>) => {
 
   return (
     <View style={tw`flex-1 bg-black px-[4%]`}>
-      {/* <Text style={tw`text-white text-2xl  font-AvenirLTProBlack my-6`}>
-        Messages
-      </Text> */}
-      <View style={tw`my-4`}>
+      <View style={tw`flex-row w-full justify-between mt-4`}>
+        <TouchableOpacity
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else {
+              console.log('No screen to go back to');
+              // Optionally, navigate to a default screen:
+              // navigation.navigate('HomeScreen');
+            }
+          }}
+          style={tw`bg-PrimaryFocus rounded-full p-1`}>
+          <SvgXml xml={IconBack} />
+        </TouchableOpacity>
+        <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
+         Search Result
+        </Text>
+        {/* Placeholder view for symmetry */}
+        <View style={tw`w-8`} />
+      </View>
+
+      <View style={tw`my-8`}>
         <InputText
           containerStyle={tw`bg-[#262329] border border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}

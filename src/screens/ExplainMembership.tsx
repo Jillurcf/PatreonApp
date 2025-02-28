@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 
 import NumericInput from 'react-native-numeric-input';
@@ -17,10 +18,12 @@ import {Dropdown} from 'react-native-element-dropdown';
 import Textarea from 'react-native-textarea';
 
 import {
+  AttachmentIcon,
   BulbIcon,
   CrossIcon,
   Gallery,
   IconBack,
+  IconDollar,
   IconRightArrow,
   StillCamera,
   VideoCam,
@@ -71,30 +74,29 @@ const ExplainMembership = ({navigation}: NavigProps<null>) => {
           </Text>
           <View style={tw`w-8`} />
         </View>
-        <View>
-          <Text style={tw`text-white font-AvenirLTProBlack mt-6 mb-2`}>
-            Price
-          </Text>
-          <View style={tw`items-center justify-center`}>
-            <NumericInput
-              // value={this.state.value}
-              type="plus-minus"
-              // onChange={value => this.setState({value})}
-              onLimitReached={(isMax, msg) => console.log(isMax, msg)}
-              totalWidth={370}
-              totalHeight={50}
-              iconSize={30}
-              step={1.9}
-              valueType="real"
-              rounded
-              textColor="white"
-              containerStyle={tw`bg-[#262329]`}
-              iconStyle={{color: 'white'}}
-              rightButtonBackgroundColor="#262329"
-              leftButtonBackgroundColor="#262329"
+        
+        <Text style={tw`text-white font-AvenirLTProBlack mt-6 mb-2`}>
+          Price
+        </Text>
+        <View style={tw`flex-row w-[100%] items-center p-3`}>
+          <TouchableOpacity
+            // onPress={() => selectMediaType()}
+            style={tw`mr-2 absolute right-6 z-30`}>
+            <SvgXml xml={IconDollar} width={20} height={20} />
+          </TouchableOpacity>
+          <View
+            style={tw`flex-row  gap-1 px-[2%] items-center relative`}>
+            <TextInput
+              style={tw`w-[100%] h-10 border text-white bg-[#262329] border-gray-400 rounded-2xl px-2`}
+              placeholder="Currency"
+              placeholderTextColor={'white'}
+              cursorColor={'white'}
+              // value={text}
+              // onChangeText={value => setText(value)}
             />
           </View>
         </View>
+
         {/* ==========================input textarea ========================= */}
         <View style={tw`mt-8`}>
           <Text style={tw`text-white font-AvenirLTProBlack py-2`}>Input</Text>
@@ -140,7 +142,6 @@ const ExplainMembership = ({navigation}: NavigProps<null>) => {
                   setValue(item.value);
                   setIsFocus(false);
                 }}
-                
               />
             </View>
           </View>

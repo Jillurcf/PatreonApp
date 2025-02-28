@@ -2,14 +2,11 @@ import React, {useState} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import BottomRoutes from './BottomRoutes';
 import {
-  ActivityIndicator,
-  Image,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import tw from '../lib/tailwind';
-import {Switch} from 'react-native-ui-lib';
 import {SvgXml} from 'react-native-svg';
 import {
   IconDarawerUser,
@@ -149,35 +146,36 @@ function DrawerContent({navigation}: any) {
       </TouchableOpacity>
       <NormalModal
         layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
-        containerStyle={tw`rounded-xl bg-gray-600 p-5`}
+        containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
         visible={logoutConfirmationModalVisible}
         setVisible={setLogoutConfirmationModalVisible}>
         <View>
-          <Text
-            style={tw`text-red-500 text-2xl text-center font-RoboBold mb-2`}>
+          <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
             Are you sure {'\n'} You want to logout?
           </Text>
 
-          <View style={tw`mt-2 flex-row justify-between px-[4%]`}>
-            <Button
-              title="Sure"
-              style={tw`text-white`}
-              containerStyle={tw`border bg-gray-700 border-black px-6`}
-              //   onPress={handleLogout}
-              onPress={() => {
-                navigation?.navigate('Login');
-                setLogoutConfirmationModalVisible(false);
-              }}
-            />
-            <Button
-              style={tw`text-white px-6`}
-              title="Cancel"
-              containerStyle={tw`bg-gray-900`}
-              
-              onPress={() => {
-                setLogoutConfirmationModalVisible(false);
-              }}
-            />
+          <View style={tw`mt-2`}>
+            <View style={tw`border-t-2 border-gray-800 w-full`}>
+              <Button
+                title="Yes"
+                style={tw`text-white`}
+                containerStyle={tw`bg-transparent px-6`}
+                onPress={() => {
+                  navigation?.navigate('Login');
+                  setLogoutConfirmationModalVisible(false);
+                }}
+              />
+            </View>
+            <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+              <Button
+                title="Cancel"
+                style={tw`text-white px-6`}
+                containerStyle={tw`bg-gray-900`}
+                onPress={() => {
+                  setLogoutConfirmationModalVisible(false);
+                }}
+              />
+            </View>
           </View>
         </View>
       </NormalModal>

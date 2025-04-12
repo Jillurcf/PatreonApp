@@ -23,6 +23,11 @@ import BecomeContributor from '../screens/BecomeContributor';
 import EnterInput from '../screens/EnterInputScreen';
 import ExplainMembership from '../screens/ExplainMembership';
 import PaymentMethod from '../screens/PaymentMethod';
+import PaymentMethodScreen from '../screens/PaymentMetodScreen';
+import WithdrawScreen from '../screens/Withdrawscreen';
+import WithdrawScreen1 from '../screens/WithdrawScreen1';
+import WithdrawScreen2 from '../screens/WithdrawSceen2';
+import PaymentDetails from '../screens/PaymentDetails';
 
 
 
@@ -66,6 +71,11 @@ export default function Routes() {
       <Stack.Screen name="EnterInput" component={EnterInput} />
       <Stack.Screen name="ExplainMembership" component={ExplainMembership} />
       <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
+      <Stack.Screen name="PaymentMethodScreen" component={PaymentMethodScreen} />
+      <Stack.Screen name="WithdrawScreen" component={WithdrawScreen} />
+      <Stack.Screen name="WithdrawScreen1" component={WithdrawScreen1} />
+      <Stack.Screen name="WithdrawScreen2" component={WithdrawScreen2} />
+      <Stack.Screen name="PaymentDetails" component={PaymentDetails} />
       
       
       {/* <Stack.Screen name="BottomRoutes" component={BottomRoutes} /> */}

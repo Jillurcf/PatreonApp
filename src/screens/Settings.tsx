@@ -100,7 +100,7 @@ const Settings = ({navigation}) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-          onPress={()=> navigation.navigate("PaymentMethod")}
+          onPress={()=> navigation.navigate("PaymentMethodScreen")}
           style={tw`flex-row gap-3 items-center mt-6`}>
             <View
               style={tw`bg-[#565358] w-8 h-8 rounded-full items-center justify-center`}>

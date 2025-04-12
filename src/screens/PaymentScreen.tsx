@@ -134,7 +134,7 @@ const PaymentScreen = ({navigation}) => {
           </View>
           <View style={tw`w-[50%] items-center my-6`}>
             <TButton
-              onPress={() => navigation.navigate('PaymentResult')}
+              onPress={() => navigation.navigate('PaymentDetails')}
               title="Pay"
               titleStyle={tw`text-black`}
               containerStyle={tw`w-[90%] bg-white`}

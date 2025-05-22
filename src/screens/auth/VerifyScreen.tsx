@@ -9,13 +9,14 @@ import {
   ActivityIndicator,
   StatusBar,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { SvgXml } from 'react-native-svg';
+import { OtpInput } from 'react-native-otp-entry';
+import { useOtipVerifyMutation } from '../../redux/apiSlice/authSlice';
 import tw from '../../lib/tailwind';
+import { IconBack } from '../../assets/icons/icons';
 import Button from '../../components/Button';
 
-import {CustomAlert} from '../../components/CustomAlert';
-import {SvgXml} from 'react-native-svg';
-import {IconBack} from '../../assets/icons/icons';
 
 interface ErrorResponse {
   data?: {
@@ -23,20 +24,21 @@ interface ErrorResponse {
   };
 }
 
-const VerifyScreen = ({navigation, route}: any) => {
+const VerifyScreen = ({navigation, route}: {navigation:any}) => {
   const [otp, setOtp] = useState<string>('');
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const inputs = useRef<Array<TextInput | null>>([]);
   const [email, setEmail] = useState('');
-  // const [otpVerify, {isLoading, isError}] = useOtpVerifyMutation();
+  const [otipVerify, { isLoading, isError }] = useOtipVerifyMutation();
   // const [forgetpass,] = useForgetpassMutation()
   // console.log("211", email, otp);
-  const {from} = route?.params || {};
+  // const { from } = route?.params || {};
   const [seconds, setSeconds] = useState(119);
   const [isActive, setIsActive] = useState(true);
-  //   const email = route?.params?.email
-  //   console.log("216", email);
+  const { screenName, phoneNumber } = route.params || {};
   const [alertVisible, setAlertVisible] = useState(false);
+
+  console.log(screenName, phoneNumber , "screenName + Phone number++++++")
 
   const showCustomAlert = () => {
     setAlertVisible(true);
@@ -59,7 +61,7 @@ const VerifyScreen = ({navigation, route}: any) => {
     }
   };
 
-  const handleKeyPress = ({nativeEvent}: any, index: number) => {
+  const handleKeyPress = ({ nativeEvent }: any, index: number) => {
     if (nativeEvent.key === 'Backspace' && otp[index] === '' && index > 0) {
       inputs.current[index - 1]?.focus();
     }
@@ -114,106 +116,82 @@ const VerifyScreen = ({navigation, route}: any) => {
 
   const allFilled =
     otp.length === 6 && otp.split('').every(item => item !== '');
-  const data = {email, otp};
-  console.log('89', data);
-
-  // const handleSendOtp = async () => {
-  //   console.log("click");
-  //   try {
-  //     // Unwrap response from RTK Query mutation
-  //     const response = await otpVerify(data).unwrap();
-
-  //     // Process the successful response
-  //     console.log("response", response);
-
-  //     // Example: If the response contains user information or a token
-  //     if (response) {
-  //       console.log("OTP Verified Successfully!");
-  //       // Navigate to login screen
-  //       if(from === 'signup'){
-  //         navigation.navigate("CreateNewPass", {email});
-  //       } else {
-  //         navigation.navigate("Login");
-  //       }
-
-  //     } else {
-  //       console.error("OTP verification failed:", response.message);
-  //     }
-  //   } catch (err) {
-  //     // Log error details for debugging
-  //     console.error("Error verifying OTP:", err);
-  //   }
-  // };
+  
 
   const handleSendOtp = async () => {
-    console.log('click');
-    navigation.navigate("Drawer")
-    // try {
-    //   // Unwrap response from RTK Query mutation
-    //   const response = await otpVerify(data).unwrap();
 
-    //   // Process the successful response
-    //   console.log("response", response);
+    try {
+      const formData = new FormData();
+      formData.append("phone", String(phoneNumber));
+      formData.append("code", String(otp));
+      console.log(formData, "formdata before sending+++++++")
+      const response = await otipVerify(formData).unwrap();
 
-    //   // Navigate based on 'from' condition
-    //   if (response) {
-    //     console.log("OTP Verified Successfully!");
-    //     if (from === 'signup') {
-    //       navigation.navigate("Login"); // Navigate to Login if from signup
-    //     } else {
-    //       navigation.navigate("CreateNewPass", { email }); // Otherwise, go to CreateNewPass
-    //     }
-    //   } else {
-    //     console.error("OTP verification failed:", response?.message);
-    //   }
-    // } catch (err) {
-    //   // Log error details for debugging
-    //   console.error("Error verifying OTP:", err);
-    // }
-    
+      // Process the successful response
+      console.log("response verify", response);
+
+      // Navigate based on 'from' condition
+      // if (response?.success === true) {
+      //   console.log("OTP Verified Successfully!");
+      //   if (screenName === "forgetPass") {
+      //    navigation.navigate(
+      //       'ForgetPasswordScreen',
+      //         { phoneNumber: phoneNumber },
+      //       );
+      //   } else {
+      //     navigation?.navigate("Signup")
+      //   }
+      // } else {
+      //   console.error("OTP verification failed:", response?.message);
+      // }
+    } catch (err) {
+      // Log error details for debugging
+      console.error("Error verifying OTP:", err);
+    }
+
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <View style={tw`flex-1 justify-center items-center`}>
-  //       <ActivityIndicator size="large" color="#064145" />
-  //       <Text style={tw`text-primary mt-2`}>Loading products...</Text>
-  //     </View>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <ActivityIndicator size="large" color="#064145" />
+        <Text style={tw`text-primary mt-2`}>Loading products...</Text>
+      </View>
+    );
+  }
 
   return (
     // <View style={tw``}>
-      <ScrollView
-        contentContainerStyle={tw`bg-black flex-1 justify-between p-[4%] `}
-        keyboardShouldPersistTaps="always"
-        showsVerticalScrollIndicator={false}>
-       
-       
-          <View>
-            <View style={tw`flex-row w-full justify-between px-[4%] mt-4`}>
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={tw`bg-PrimaryFocus rounded-full p-1`}>
-                <SvgXml xml={IconBack} />
-              </TouchableOpacity>
-              <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
-                Verify
-              </Text>
-              {/* Placeholder view for symmetry */}
-              <View style={tw`w-8`} />
-            </View>
-            <View style={tw`mt-4`}>
-              <Text style={tw`text-white text-2xl font-AvenirLTProBlack mt-6`}>
-                Verify Your Number
-              </Text>
-              <Text style={tw`text-white text-xs font-AvenirLTProBlack mb-8`}>
-                Enter code that we send you on your number.
-              </Text>
+    <ScrollView
+      contentContainerStyle={tw`bg-black flex-1 justify-between p-[4%] `}
+      keyboardShouldPersistTaps="always"
+      showsVerticalScrollIndicator={false}>
 
-              <View style={tw` gap-y-4`}>
-                <View style={tw`flex-row justify-between items-center gap-2`}>
-                  {Array.from({length: 6}).map((_, index) => (
+
+      <View>
+        <View style={tw`flex-row w-full justify-between px-[4%] mt-4`}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={tw`bg-PrimaryFocus rounded-full p-1`}>
+            <SvgXml xml={IconBack} />
+          </TouchableOpacity>
+          <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
+            Verify
+          </Text>
+          {/* Placeholder view for symmetry */}
+          <View style={tw`w-8`} />
+        </View>
+        <View style={tw`mt-4`}>
+          <Text style={tw`text-white text-2xl font-AvenirLTProBlack mt-6`}>
+            Verify Your Number
+          </Text>
+          <Text style={tw`text-white text-xs font-AvenirLTProBlack mb-8`}>
+            Enter code that we send you on your number.
+          </Text>
+
+          <View style={tw` gap-y-4`}>
+            <View style={tw`flex-row justify-between items-center gap-2`}>
+              {/* {Array.from({length: 6}).map((_, index) => (
                     <TextInput
                       key={index}
                       ref={ref => (inputs.current[index] = ref)}
@@ -234,33 +212,66 @@ const VerifyScreen = ({navigation, route}: any) => {
                       maxLength={1}
                       autoFocus={index === 0}
                     />
-                  ))}
-                </View>
-                <Text style={tw`text-white font-AvenirLTProBlack`}>
-                  Haven't received any code? Send again
-                </Text>
-              </View>
-             
+                  ))} */}
+              <OtpInput
+                numberOfDigits={6}
+                focusColor="red"
+                autoFocus={false}
+                hideStick={true}
+                placeholder="******"
+                blurOnFilled={true}
+                disabled={false}
+                type="numeric"
+                secureTextEntry={false}
+                focusStickBlinkingDuration={500}
+                onFocus={() => console.log("Focused")}
+                onBlur={() => console.log("Blurred")}
+                onTextChange={(text) => setOtp(text)}
+                onFilled={(text) => console.log(`OTP is ${text}`)}
+                textInputProps={{
+                  accessibilityLabel: "One-Time Password",
+                }}
+                textProps={{
+                  accessibilityRole: "text",
+                  accessibilityLabel: "OTP digit",
+                  allowFontScaling: false,
+                }}
+                theme={{
+                  containerStyle: tw``,
+                  // pinCodeContainerStyle: tw`bg-red-300`,
+                  pinCodeTextStyle: tw`text-white `,
+                  focusStickStyle: tw`bg-red-400 text-red-700`,
+                  focusedPinCodeContainerStyle: tw`border-gray-600`,
+                  placeholderTextStyle: tw`text-white`,
+                  filledPinCodeContainerStyle: tw``,
+                  disabledPinCodeContainerStyle: tw`border-red-500`,
+                }}
+              />
             </View>
+            <Text style={tw`text-white font-AvenirLTProBlack`}>
+              Haven't received any code? Send again
+            </Text>
           </View>
-          <View style={tw`flex-col justify-end `}>
-            <Button
-              disabled={!allFilled}
-              title={'Verify'}
-              style={tw`text-black font-AvenirLTProBlack items-center`}
-              containerStyle={tw`${
-                !allFilled ? 'bg-PrimaryFocus' : ''
-              } mt-4 h-14 rounded-2xl justify-center`}
-              onPress={handleSendOtp}
-            />
-          </View>
-       
-       
-         <StatusBar backgroundColor="black" translucent />
-      </ScrollView>
-      
-   
-  );1
+
+        </View>
+      </View>
+      <View style={tw`flex-col justify-end `}>
+        <Button
+          disabled={!allFilled}
+          title={'Verify'}
+          style={tw`text-black font-AvenirLTProBlack items-center`}
+          containerStyle={tw`${!allFilled ? 'bg-PrimaryFocus' : 'white'
+            } mt-4 h-14 rounded-2xl justify-center`}
+          onPress={handleSendOtp}
+        />
+      </View>
+
+
+      <StatusBar backgroundColor="black" translucent />
+    </ScrollView>
+
+
+  ); 1
 };
 
 export default VerifyScreen;

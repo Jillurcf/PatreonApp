@@ -7,91 +7,67 @@ import {
   Alert,
   StatusBar,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { SvgXml } from 'react-native-svg';
+import { useRegisterUserMutation } from '../../redux/apiSlice/authSlice';
 import tw from '../../lib/tailwind';
+import { IconBack, IconEnvelope, iconLock, IconUser } from '../../assets/icons/icons';
 import InputText from '../../components/InputText';
-
-import {Checkbox} from 'react-native-ui-lib';
 import Button from '../../components/Button';
-import {SvgXml} from 'react-native-svg';
-import {
-  IconBack,
-  IconEnvelope,
-  IconGoogle,
-  iconLock,
-  IconUser,
-} from '../../assets/icons/icons';
-import TButton from '../../components/TButton';
-// import {useSignupMutation} from '../../redux/api/apiSlice/apiSlice';
 
-const SignUp = ({navigation}: any) => {
+
+
+const SignUp = ({ navigation }: any) => {
   // console.log('navigation', navigation);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  // const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
-  // const [SignUp, {isLoading, isError}] = useSignupMutation();
-  console.log('27', email, password, username, location);
+  const [SignUp, {isLoading, isError}] = useRegisterUserMutation();
+  console.log('27',name, email, password, username);
   // const data = {email, password, name:username, address:location}
 
+  const allFilled =
+    email.trim() !== '' &&
+    password.trim() !== '' &&
+    username.trim() !== '';
+    name.trim() !== '';
+
+  console.log(allFilled, "allFilled")
+
   const handleSignup = async () => {
+    console.log("click")
     try {
       // Validate required fields before sending the request
-      if (!email || !password || !username || !location) {
+      if (!email || !password || !username || !name) {
         Alert.alert('Error', 'All fields are required.');
         return;
       }
-
-      // const data = {
-      //   email: email.trim(),
-      //   password: password.trim(),
-      //   name: username.trim(),
-      //   address: location.trim(),
-      // };
-
-      // Send data through the SignUp function and unwrap the response
-      // const response = await SignUp(data).unwrap();
-
-      // console.log("Response from SignUp:", response);
-
-      // if (response && response.status === true) {
-      //   navigation?.navigate('VerifyOtp', { email, from: "signup" });
-      // } else if (response && response.status === false) {
-      //   // Extract error messages
-      //   const errorMessages = [];
-      //   if (response?.message) {
-      //     Object.values(response.message).forEach((errors) => {
-      //       if (Array.isArray(errors)) {
-      //         errorMessages.push(...errors);
-      //       } else {
-      //         errorMessages.push(errors);
-      //       }
-      //     });
-      //   }
-
-      //   // Show Alert with error messages
-      //   Alert.alert("Signup Failed", errorMessages.join("\n"));
+      // if (allFilled) {
+      //   router.push("/screens/auth/PopupScreen");
+      // } else {
+      //   Alert.alert('Please fill all fields');
       // }
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+      console.log(formData, "formdata before sending---------------")
+      const response = await SignUp(formData).unwrap();
+      console.log(response?.success, "response singup=========")
+      if(response?.success === true){
+       navigation?.navigate("Popup");
+      }
+     
     } catch (err) {
       console.error('Error during SignUp:', err);
 
-      // Extract error messages
-      // const errorMessages = [];
-      // if (err?.message) {
-      //   Object.values(err.message).forEach((errors) => {
-      //     if (Array.isArray(errors)) {
-      //       errorMessages.push(...errors);
-      //     } else {
-      //       errorMessages.push(errors);
-      //     }
-      //   });
-      // }
-
-      // // Show Alert with error messages or a default message
-      // Alert.alert("Signup Error", errorMessages.length ? errorMessages.join("\n") : "An unexpected error occurred. Please try again.");
+     
     }
   };
 
@@ -103,15 +79,7 @@ const SignUp = ({navigation}: any) => {
       <View>
         <View style={tw`flex-row w-full justify-between mt-4`}>
           <TouchableOpacity
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else {
-                console.log('No screen to go back to');
-                // Optionally, navigate to a default screen:
-                // navigation.navigate('HomeScreen');
-              }
-            }}
+            onPress={() => navigation?.goBack()}
             style={tw`bg-PrimaryFocus rounded-full p-1`}>
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
@@ -131,20 +99,26 @@ const SignUp = ({navigation}: any) => {
 
           <View>
             <View style={tw`flex-row gap-2 w-[98%]`}>
+              {/* ===============for name ================= */}
               <View style={tw`w-[50%]`}>
                 <InputText
-                  containerStyle={tw`bg-[#262329] border border-[#565358]`}
+                  style={tw`text-white`}
+                  cursorColor="white"
+                  containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
                   labelStyle={tw`text-white font-AvenirLTProBlack`}
                   placeholder={'Write here'}
                   placeholderColor={'#949494'}
                   label={'Name'}
                   iconRight={IconUser}
-                  onChangeText={(text: any) => setUsername(text)}
+                  onChangeText={(text: any) => setName(text)}
                 />
               </View>
+              {/*  =============== for user name */}
               <View style={tw`w-[50%]`}>
                 <InputText
-                  containerStyle={tw`bg-[#262329] border border-[#565358]`}
+                  cursorColor="white"
+                  style={tw`text-white`}
+                  containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
                   labelStyle={tw`text-white font-AvenirLTProBlack`}
                   placeholder={'Write here'}
                   placeholderColor={'#949494'}
@@ -155,26 +129,30 @@ const SignUp = ({navigation}: any) => {
               </View>
             </View>
             <InputText
-              containerStyle={tw`bg-[#262329] border border-[#565358]`}
+              cursorColor="white"
+              style={tw`text-white`}
+              containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
               labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
               placeholder={'Write it here'}
               placeholderColor={'#949494'}
               label={'Email'}
               iconLeft={IconEnvelope}
               // iconRight={isShowPassword ? iconLock : iconLock}
-              onChangeText={(text: any) => setPassword(text)}
-              isShowPassword={!isShowPassword}
-              rightIconPress={() => setIsShowPassword(!isShowPassword)}
+              onChangeText={(text: any) => setEmail(text)}
+              // isShowPassword={!isShowPassword}
+              // rightIconPress={() => setIsShowPassword(!isShowPassword)}
             />
             <InputText
-              containerStyle={tw`bg-[#262329] border border-[#565358]`}
+              cursorColor="white"
+              style={tw`text-white`}
+              containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
               labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
               placeholder={'Write it here'}
               placeholderColor={'#949494'}
               label={'Password'}
               iconLeft={iconLock}
               // iconRight={isShowConfirmPassword ? iconLock : iconLock}
-              onChangeText={(text: any) => setConfirmPassword(text)}
+              onChangeText={(text: any) => setPassword(text)}
               isShowPassword={!isShowConfirmPassword}
               rightIconPress={() =>
                 setIsShowConfirmPassword(!isShowConfirmPassword)
@@ -184,14 +162,15 @@ const SignUp = ({navigation}: any) => {
         </View>
       </View>
       <View style={tw`flex-col justify-end `}>
-        <TButton
-          onPress={() => navigation.navigate('Popup', {from: 'Verify'})}
-          titleStyle={tw`text-black text-lg items-center justify-center font-bold font-AvenirLTProHeavy text-center mx-auto`}
-          title="Register"
-          containerStyle={tw`bg-white w-[100%] h-16 my-2 items-center rounded-3xl`}
+        <Button
+          disabled={!allFilled}
+          title={'Register'}
+          style={tw`${allFilled ? 'text-black' : 'text-gray-500'} font-AvenirLTProBlack items-center`}
+          containerStyle={tw`${allFilled ? 'bg-white' : 'bg-PrimaryFocus'} mt-4 h-14 rounded-2xl justify-center`}
+          onPress={ handleSignup}
         />
       </View>
-      <StatusBar backgroundColor="black" translucent />
+      <StatusBar backgroundColor="black" translucent={false} />
     </ScrollView>
   );
 };

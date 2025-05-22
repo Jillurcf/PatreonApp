@@ -6,25 +6,23 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {
-  IconAple,
-  IconBack,
-  IconGoogle,
-  IconPaypal,
-  IconVisa,
-} from '../assets/icons/icons';
+
 import {SvgXml} from 'react-native-svg';
-import tw from '../lib/tailwind';
 import {RadioButton} from 'react-native-ui-lib';
+import tw from '../lib/tailwind';
+import { IconAple, IconBack, IconGoogle, IconPaypal, IconVisa } from '../assets/icons/icons';
 import TButton from '../components/TButton';
+
+
 // import RadioButtonRN from 'radio-buttons-react-native';
 
 type Props = {};
 
 const data = [{label: 'Option 1'}];
-const PaymentScreen = ({navigation}) => {
+const PaymentScreen = ({navigation, route}: {navigation:any}) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-
+   const { userId, serviceId, title } = route?.params || {};
+console.log(userId, serviceId, "id+++++++++++++++++++29")
   const handleRadioButtonPress = (option: string) => {
     setSelectedOption(option);
   };
@@ -33,13 +31,7 @@ const PaymentScreen = ({navigation}) => {
       <View style={tw`flex-row w-full justify-between mt-4`}>
         <TouchableOpacity
           onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else {
-              console.log('No screen to go back to');
-              // Optionally, navigate to a default screen:
-              // navigation.navigate('HomeScreen');
-            }
+           navigation.goBack()
           }}
           style={tw`bg-PrimaryFocus rounded-full p-1`}>
           <SvgXml xml={IconBack} />
@@ -134,7 +126,14 @@ const PaymentScreen = ({navigation}) => {
           </View>
           <View style={tw`w-[50%] items-center my-6`}>
             <TButton
-              onPress={() => navigation.navigate('PaymentDetails')}
+              onPress={() => navigation.navigate(
+                'PaymentResult',
+                 {
+                  id: userId,
+                  serviceId: serviceId,
+                  title: title
+                }
+              )}
               title="Pay"
               titleStyle={tw`text-black`}
               containerStyle={tw`w-[90%] bg-white`}
@@ -142,7 +141,7 @@ const PaymentScreen = ({navigation}) => {
           </View>
         </View>
       </View>
-      <StatusBar backgroundColor="black" translucent />
+      <StatusBar backgroundColor="black" translucent={false} />
     </View>
   );
 };

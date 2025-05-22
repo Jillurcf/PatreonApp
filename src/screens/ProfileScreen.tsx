@@ -1,25 +1,42 @@
-import {StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { IconBack, IconDot } from '../assets/icons/icons';
+import { SvgXml } from 'react-native-svg';
+
+
+
+
+import { FlatList } from 'react-native-gesture-handler';
+
 import tw from '../lib/tailwind';
-import {IconBack, IconDot} from '../assets/icons/icons';
-import {SvgXml} from 'react-native-svg';
 import TButton from '../components/TButton';
+import { useGetSingleUserQuery } from '../redux/apiSlice/userSlice';
+import { imageUrl } from '../redux/baseApi';
+import { getServiceData } from '../utils';
 
 type Props = {};
 
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = ({navigation, route}: {navigation:any}) => {
+  const { userId, serviceId, title } = route.params || {};
+
+  console.log(userId, serviceId, title, "id++++++18");
+  const { data, isLoading, isError } = useGetSingleUserQuery(userId);
+  console.log(data, '=======================data')
+  const [serviceData, setServiceData] = React.useState<any>(null);
+  console.log(serviceData, "serviceData++++++");
+  const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
+  useEffect(() => {
+    const service = getServiceData();
+    setServiceData(service);
+  }, []);
+  // console.log(id, "id++++++");
+
   return (
     <View style={tw`bg-black flex-1`}>
       <View style={tw`flex-row w-full justify-between mt-4 px-[4%]`}>
         <TouchableOpacity
           onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else {
-              console.log('No screen to go back to');
-              // Optionally, navigate to a default screen:
-              // navigation.navigate('HomeScreen');
-            }
+            navigation?.goBack()
           }}
           style={tw`bg-PrimaryFocus rounded-full p-1`}>
           <SvgXml xml={IconBack} />
@@ -31,14 +48,12 @@ const ProfileScreen = ({navigation}) => {
         <View style={tw`w-8`} />
       </View>
       <View style={tw`flex items-center justify-center mt-8`}>
-        <View style={tw`bg-red-300 w-18 h-18 items-center justify-center rounded-full`}>
-          <Text style={tw`text-black font-AvenirLTProBlack`}>U</Text>
-        </View>
+        <Image style={tw`rounded-full`} width={80} height={80} source={{ uri: fullImageUrl }} />
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
-          User Name
+          {data?.data?.username || 'Username'}
         </Text>
         <Text style={tw`text-white font-AvenirLTProBlack   `}>
-          Bio of the user
+          {data?.data?.bio || 'Bio'}
         </Text>
       </View>
       <View style={tw`flex items-center justify-center my-8`}>
@@ -48,7 +63,7 @@ const ProfileScreen = ({navigation}) => {
             style={tw`border-r-2 w-[50%] h-12 border-[#091218] items-center justify-center`}>
             <Text
               style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
-              405
+              {data?.data?.subscriberCount || '0'}
             </Text>
             <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
               Subscribers
@@ -57,18 +72,17 @@ const ProfileScreen = ({navigation}) => {
           <View style={tw`w-[50%]`}>
             <Text
               style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
-              405
+              {data?.data?.services.length || '0'}
             </Text>
             <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
-              Subscribers
+              Services
             </Text>
           </View>
         </View>
       </View>
       <View style={tw`px-[6%]`}>
         <Text style={tw`text-white font-AvenirLTProBlack`}>
-          About: Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Architecto debitis tempora eaque at quaerat totam harum deserunt.
+          {serviceData?.about || 'Bio'}
         </Text>
       </View>
       <View style={tw`items-center justify-center`}>
@@ -79,26 +93,40 @@ const ProfileScreen = ({navigation}) => {
           <Text style={tw`text-white font-AvenirLTProBlack`}>
             $150 Transaction/3 months
           </Text>
-          <View style={tw`flex-row gap-4 items-center my-1`}>
-            <SvgXml xml={IconDot}/>
-            <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>Data 1</Text>
-          </View>
-          <View style={tw`flex-row gap-4 items-center my-1`}>
-            <SvgXml xml={IconDot}/>
-            <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>Data 1</Text>
-          </View>
-          <View style={tw`flex-row gap-4 items-center my-1`}>
-            <SvgXml xml={IconDot}/>
-            <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>Data 1</Text>
-          </View>
+          <FlatList
+            data={serviceData?.explainMembership}
+            renderItem={({ item }) => (
+              <View style={tw`flex-row gap-4 items-center my-1`}>
+                <SvgXml xml={IconDot} />
+                <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>
+                  {item}
+                </Text>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={tw`bg-[#262329]`}
+            style={tw`h-40`}
+          />
         </View>
       </View>
       <View style={tw`w-full items-center my-6`}>
         <TButton
-        onPress={()=> navigation.navigate('Payment')}
-        title='Subscribe' titleStyle={tw`text-black`} containerStyle={tw`w-[90%] bg-white`} />
+          onPress={() => navigation?.navigate(
+         'Payment',
+          {
+              userId: userId, // ✅ Pass the userId you already have
+              serviceId: serviceId,
+              title: title,
+            }
+          )}
+          title="Subscribe"
+          titleStyle={tw`text-black`}
+          containerStyle={tw`w-[90%] bg-white`}
+        />
+
       </View>
-       <StatusBar backgroundColor="black" translucent />
+      <StatusBar backgroundColor="black" translucent />
     </View>
   );
 };

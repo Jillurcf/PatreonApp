@@ -18,6 +18,8 @@ import {
 } from '../assets/icons/icons';
 import NormalModal from '../components/NormalModal';
 import Button from '../components/Button';
+import { lStorage } from '../utils';
+import CookieManager from '@react-native-cookies/cookies';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import { apiSlice, usePostLogOutMutation } from '../redux/api/apiSlice/apiSlice';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,58 +29,15 @@ function DrawerContent({navigation}: any) {
   const [vacationMode, setVacationMode] = useState(true);
   const [logoutConfirmationModalVisible, setLogoutConfirmationModalVisible] =
     useState(false);
-  // const [postLogOut, {isLoading, isError}] = usePostLogOutMutation();
-  // const handleVacationMode = () => {
-  //   setVacationMode(!vacationMode);
-  // };
-
-  //   const handleLogout = async () => {
-  //     try {
-  //       const token = getStorageToken();
-  //           console.log("token", token)
-  //       // Trigger your logout API call
-  //       const response = await postLogOut(token);
-  //       console.log('Logout API Response:', response);
-  //       removeStorageToken()
-  //       // Sign out the user using GoogleSignin
-  //       // await GoogleSignin.signOut();
-  //       console.log('Google Signout Successful');
-
-  //       // Log success message
-  //       console.log('User signed out successfully');
-
-  //       // Navigate to the Login screen
-  //       navigation?.replace('LoadingSplash');
-
-  //       // Close the logout confirmation modal
-  //       setLogoutConfirmationModalVisible(false);
-  //     } catch (error) {
-  //       // Handle errors
-  //       console.error('Error signing out:', error);
-  //     }
-  //   };
-  //   if (isLoading) {
-  //     return (
-  //       <View style={tw`flex-1 justify-center items-center`}>
-  //         <ActivityIndicator size="large" color="#064145" />
-  //         <Text style={tw`text-primary mt-2`}>Loading products...</Text>
-  //       </View>
-  //     );
-  //   }
-
-  //   if (isError) {
-  //     return (
-  //       <View style={tw`flex-1 justify-center items-center`}>
-  //         <Text style={tw`text-red-500 text-lg`}>Failed to load products.</Text>
-  //         <TouchableOpacity
-  //           style={tw`mt-4 p-2 bg-[#064145] rounded-lg`}
-  //           onPress={() => navigation?.goBack()}>
-  //           <Text style={tw`text-white`}>Go Back</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //     );
-  //   }
-
+ 
+  const handleLogout = () => {
+    // Perform your logout logic here
+    console.log('Logout pressed');
+    setLogoutConfirmationModalVisible(false)
+   navigation.replace('LoadingSplash')
+    lStorage.removeItem('token')
+    CookieManager.clearAll()
+  };
   return (
     <View style={tw`px-4 py-8 h-full justify-between bg-[#000000]`}>
       <View>
@@ -160,10 +119,7 @@ function DrawerContent({navigation}: any) {
                 title="Yes"
                 style={tw`text-white`}
                 containerStyle={tw`bg-transparent px-6`}
-                onPress={() => {
-                  navigation?.navigate('Login');
-                  setLogoutConfirmationModalVisible(false);
-                }}
+                onPress={ handleLogout}
               />
             </View>
             <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,12 +8,13 @@ import {
   ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  TextInput,
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Video from 'react-native-video';
 
-import {SvgXml} from 'react-native-svg';
-import {NavigProps} from '../interface/NaviProps';
+import { SvgXml } from 'react-native-svg';
+import { NavigProps } from '../interface/NaviProps';
 import Textarea from 'react-native-textarea';
 
 import {
@@ -21,16 +22,23 @@ import {
   CrossIcon,
   Gallery,
   IconBack,
+  IconUpload,
   StillCamera,
   VideoCam,
 } from '../assets/icons/icons';
 import IButton from '../components/IButton';
 import TButton from '../components/TButton';
 import tw from '../lib/tailwind';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
+import Pdf from 'react-native-pdf';
 
-const EnterInput = ({navigation}: NavigProps<null>) => {
+
+const EnterInput = ({ navigation }: NavigProps<null>) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [capturedVideo, setCapturedVideo] = useState<string | null>(null);
+  const [input, setInput] = useState("")
+  console.log(input, "input========================")
 
   console.log('Selected Images:', selectedImages);
 
@@ -52,143 +60,118 @@ const EnterInput = ({navigation}: NavigProps<null>) => {
     }
   };
 
-  // Open camera to capture images
-  const openCamera = async () => {
+
+  const [selectedPdf, setSelectedPdf] = useState(null);
+
+  const handleUploadPdf = async () => {
     try {
-      const image = await ImageCropPicker.openCamera({
-        width: 300,
-        height: 300,
-        cropping: true,
+      const res = await DocumentPicker.pickSingle({
+        type: [DocumentPicker.types.pdf],
       });
 
-      setSelectedImages(prev => [...prev, image.path]);
-      Alert.alert('Success', 'Image saved locally!');
-    } catch (error) {
-      console.error('Camera Error:', error);
-      Alert.alert('Error', 'Camera not available. Please check permissions.');
-    }
-  };
+      // Create a local path in app cache
+      const destPath = `${RNFS.CachesDirectoryPath}/${res.name}`;
 
-  // Capture video
-  const captureVideo = async () => {
-    try {
-      const video = await ImageCropPicker.openCamera({
-        mediaType: 'video',
-      });
-      setCapturedVideo(video.path);
-    } catch (error) {
-      if (error.message !== 'User cancelled image selection') {
-        Alert.alert('Error', error.message || 'Something went wrong');
+      // Copy the file to the cache directory
+      await RNFS.copyFile(res.uri, destPath);
+
+      const fileData = {
+        uri: `file://${destPath}`,
+        name: res.name,
+        type: res.type,
+        size: res.size,
+      };
+
+      console.log('PDF selected:', fileData.uri);
+      setSelectedPdf(fileData);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User cancelled picker');
+      } else {
+        console.error('Error selecting PDF:', err);
+        Alert.alert('Error', 'Failed to upload PDF file');
       }
     }
   };
 
-  // Remove a specific image
-  const handleRemoveImage = (index: number) => {
-    setSelectedImages(prev => prev.filter((_, i) => i !== index));
-  };
-
-  // Clear the captured video
-  const clearCapturedVideo = () => {
-    setCapturedVideo(null);
-  };
-
   return (
     <KeyboardAvoidingView
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    style={tw`flex-1 bg-black`}>
-    <ScrollView
-      contentContainerStyle={tw`flex-grow bg-black items-center justify-between px-4`}
-      keyboardShouldPersistTaps="handled">
-      <View style={tw`my-10`}>
-        <View style={tw`flex-row w-full justify-between mt-4`}>
-          <TouchableOpacity
-            onPress={() => navigation?.goBack()}
-            style={tw`bg-PrimaryFocus rounded-full p-1`}>
-            <SvgXml xml={IconBack} />
-          </TouchableOpacity>
-          <Text style={tw`text-white font-bold font-AvenirLTProBlack text-2xl`}>
-            Enter Input
-          </Text>
-          <View style={tw`w-8`} />
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={tw`flex-1 bg-black`}>
+      <ScrollView
+        contentContainerStyle={tw`flex-grow bg-black items-center justify-between px-4`}
+        keyboardShouldPersistTaps="handled">
+        <View style={tw`my-10`}>
+          <View style={tw`flex-row w-full justify-between mt-4`}>
+            <TouchableOpacity
+              onPress={() => navigation?.goBack()}
+              style={tw`bg-PrimaryFocus rounded-full p-1`}>
+              <SvgXml xml={IconBack} />
+            </TouchableOpacity>
+            <Text style={tw`text-white font-bold font-AvenirLTProBlack text-2xl`}>
+              Enter Input
+            </Text>
+            <View style={tw`w-8`} />
+          </View>
+
+          {/* Input Area */}
+          <View style={tw`mt-8`}>
+            <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Input</Text>
+            <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
+              <TextInput
+                onChangeText={(text) => setInput(text)}
+                style={tw`text-left h-40 text-white`}
+                placeholder="Write it here"
+                placeholderTextColor="#c7c7c7"
+                underlineColorAndroid="transparent"
+                multiline
+                maxLength={120}
+                textAlignVertical="top"
+              />
+            </View>
+          </View>
+
+          {/* Media Upload */}
+          <View style={tw`my-6`}>
+            <Text style={tw`text-white font-AvenirLTProBlack`}>Upload file</Text>
+            <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
+              <View style={tw`flex-row gap-6`}>
+                {/* <IButton containerStyle={tw`p-4 rounded-full`} svg={Gallery} onPress={openGallery} /> */}
+                <TouchableOpacity onPress={handleUploadPdf}>
+
+                  <SvgXml xml={IconUpload} />
+                </TouchableOpacity>
+              </View>
+              <Text style={tw`text-white my-4`}>Upload file (50 mb maximum)</Text>
+
+
+            </View>
+          </View>
         </View>
-  
-        {/* Input Area */}
-        <View style={tw`mt-8`}>
-          <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Input</Text>
-          <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
-            <Textarea
-              style={tw`text-left h-40 text-white`}
-              placeholder={'Write it here'}
-              placeholderTextColor={'#c7c7c7'}
-              underlineColorAndroid={'transparent'}
-              multiline
-              maxLength={120}
-              textAlignVertical="top"
+        {selectedPdf && (
+          <View style={tw`w-full h-[500px] mt-4`}>
+            <Pdf
+              source={{ uri: selectedPdf.uri }}
+              style={{ flex: 1 }}
+              onError={(error) => console.error('PDF error:', error)}
             />
           </View>
+        )}
+
+        {/* Continue Button */}
+        <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
+          <TButton
+            onPress={() => Alert.alert("Success")}
+            titleStyle={tw`text-black font-bold text-center`}
+            title="Save"
+            containerStyle={tw`bg-primary w-[90%] rounded-full`}
+          />
         </View>
-  
-        {/* Media Upload */}
-        <View style={tw`my-6`}>
-          <Text style={tw`text-white font-AvenirLTProBlack`}>Upload file</Text>
-          <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
-            <View style={tw`flex-row gap-6`}>
-              <IButton containerStyle={tw`p-4 rounded-full`} svg={Gallery} onPress={openGallery} />
-              <IButton containerStyle={tw`p-4 rounded-full`} svg={StillCamera} onPress={openCamera} />
-              <IButton containerStyle={tw`p-4 rounded-full`} svg={VideoCam} onPress={captureVideo} />
-            </View>
-            <Text style={tw`text-white my-4`}>Upload file (50 mb maximum)</Text>
-  
-            {/* Display selected images */}
-            {selectedImages.length > 0 && (
-              <View style={tw`flex-row flex-wrap gap-2 my-4`}>
-                {selectedImages.map((image, index) => (
-                  <View key={index} style={tw`relative`}>
-                    <TouchableOpacity 
-                    // onPress={() => navigation?.navigate('promptScreen')}
-                    >
-                      <Image source={{ uri: image }} style={tw`w-24 h-24 rounded-lg`} />
-                    </TouchableOpacity>
-                    <IButton
-                      containerStyle={tw`absolute top-[-8px] right-[-8px] bg-red-500 rounded-full p-1`}
-                      svg={CrossIcon}
-                      onPress={() => handleRemoveImage(index)}
-                    />
-                  </View>
-                ))}
-              </View>
-            )}
-  
-            {/* Display captured video */}
-            {capturedVideo && (
-              <View style={tw`relative`}>
-                <Video source={{ uri: capturedVideo }} style={tw`w-72 h-48 mt-2`} controls resizeMode="contain" />
-                <IButton
-                  containerStyle={tw`absolute top-[-8px] right-[-8px] bg-red-500 rounded-full p-1`}
-                  svg={CrossIcon}
-                  onPress={clearCapturedVideo}
-                />
-              </View>
-            )}
-          </View>
-        </View>
-      </View>
-  
-      {/* Continue Button */}
-      <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
-        <TButton
-          onPress={()=> Alert.alert("Success")}
-          titleStyle={tw`text-black font-bold text-center`}
-          title="Save"
-          containerStyle={tw`bg-primary w-[90%] rounded-full`}
-        />
-      </View>
-  
-      <StatusBar backgroundColor={'gray'} translucent={false} />
-    </ScrollView>
-  </KeyboardAvoidingView>
-  
+
+        <StatusBar backgroundColor={'gray'} translucent={false} />
+      </ScrollView>
+    </KeyboardAvoidingView>
+
   );
 };
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   TextInput,
@@ -12,133 +12,101 @@ import {
   ScrollView,
   StatusBar,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Video from 'react-native-video'; // Ensure this is installed: npm install react-native-video
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
-import DocumentPicker from 'react-native-document-picker'; // For document selection
-import tw from 'twrnc'; // Tailwind for React Native
 
-import {SvgXml} from 'react-native-svg';
+// import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+// import DocumentPicker from 'react-native-document-picker'; // For document selection
 
+
+import { SvgXml } from 'react-native-svg';
+import moment from 'moment';
+import { usePostSendMessageMutation } from '../redux/apiSlice/serviceSlice';
+import { useGetUserQuery } from '../redux/apiSlice/userSlice';
+import tw from '../lib/tailwind';
+import { AttachmentIcon, CrossIcon, IconBack, Uparrow, VideoCam } from '../assets/icons/icons';
 import NormalModal from '../components/NormalModal';
-import {
-  AttachmentIcon,
-  CrossIcon,
-  IconBack,
-  KibubIcon,
-  LeftArrow,
-  SendIcon,
-  StillCamera,
-  Uparrow,
-  VideoCam,
-} from '../assets/icons/icons';
 
-const MessageScreen = ({navigation, route}) => {
+const MessageScreen = ({navigation, route}: {navigation:any}) => {
+  const { id, serviceId, title } = route?.params || {};
+  console.log(id, serviceId, title, "id+++++++++++++++++++++++41")
   const [openModal, setOpenModal] = useState(false);
   const [conversation_id, setConversation_id] = useState();
-  // console.log('cid', conversation_id);
-  // const {data} = useGetUserQuery({});
-  // const {data: messageData, refetch} = useGetMessageQuery({
-  //   per_page: 10,
-  //   id: conversation_id,
-  // });
-  // const [postSendMessage] = usePostSendMessageMutation();
-  // console.log('data++++++++', messageData?.messages?.data);
-  // const receiverInfo = route?.params;
-  // const id = route?.params.id;
-  // useEffect(() => {
-  //   setConversation_id(id);
-  // }, [id]);
-  // console.log('receiver info++++++++++++++++++++++++', receiverInfo);
-
-  // console.log('receiverInfo', receiverInfo);
+  const [postSendMessage, { isLoading, isError }] = usePostSendMessageMutation()
+ 
 
   const [mediaUri, setMediaUri] = useState(null); // For holding the selected media URI
   const [mediaType, setMediaType] = useState(null); // 'image', 'video', or 'document'
   const [text, setText] = useState(''); // Message input field
   const [messages, setMessages] = useState([]); // Message state
-  console.log('messages', messages?.text);
-  // console.log('message==================', messages);
-  // const socket = getSocket();
+  const [answer, setAnswer] = useState("");
+  console.log(answer, "answer=====================")
+  const { data: user } = useGetUserQuery({})
+  console.log(user?.data?.name, "user+++++++++++++++++++++++++++")
+ 
 
-  // Join the chat room and listen for real-time messages
-  // useEffect(() => {
-  //   if (receiverInfo && data?.data?.id) {
-  //     socket.emit('joinRoom', {
-  //       userId: data?.data?.id,
-  //       receiverId: receiverInfo?.receiverId,
-  //     });
-
-  //     const receiveMessageListener = () => {
-  //       refetch();
-  //     };
-
-  //     socket.on(`receive_message`, receiveMessageListener);
-  //     // console.log("reciveImge ++++++++++++++++++++++++++++++++++++", receiveImage)
-
-  //     return () => {
-  //       socket.off('receive_message', receiveMessageListener);
-  //     };
-  //   }
-  // }, [receiverInfo, data?.data]);
-
-  // Fetch initial chat messages
-  // useEffect(() => {
-  //   if (messageData) {
-  //     setMessages(messageData?.messages?.data);
-  //   }
-  // }, [messageData, conversation_id]);
-
-  // const sendMessage = async () => {
-  //   if (text.trim() || mediaUri) {
-  //     const messageText = text.trim() || 'Sent an image/video/document';
-  //     const message = {
-  //       message: messageText,
-  //       user: 'User1', // Use dynamic data for the user
-  //       createdAt: new Date(),
-  //       media: mediaUri || null, // Add media URI if exists
-  //       is_sender: true, // Mark this message as sent by the user
-  //     };
-
-  //     // Update local state for instant message visibility
-  //     setMessages(prev => [...prev, message]);
-
-  //     // Emit message via socket
-  //     // socket.emit('send_message', {
-  //     //   conversation_id: conversation_id, // Ensure you have conversation_id
-  //     //   userId: "User1", // Replace with the dynamic user ID
-  //     //   receiverId: receiverInfo?.receiverId,
-  //     //   message: messageText,
-  //     //   media: mediaUri || null,
-  //     // });
-
-  //     // Clear the input fields after sending the message
-  //     setText('');
-  //     setMediaUri(null);
-  //     setMediaType(null);
-  //   }
-  // };
-
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (text.trim() || mediaUri) {
-      console.log('message sent: ', text);
-      const message = {
-        text: text.trim() || 'Sent a document',
-        user: 'User1', // Replace with dynamic user data
+      const questionText = text.trim() || 'Sent a document';
+
+      const userMessage = {
+        text: questionText,
+        user: user?.data?.name,
         createdAt: new Date(),
         media: mediaUri,
-        mediaType, // 'image', 'video', or 'document'
+        mediaType,
+        is_sender: true,
       };
-      // console.log('message', message);
-      // Add the message to local state
-      setMessages(prev => [...prev, message]);
 
-      // Clear input fields after sending the message
+      // Add the user's question to the chat immediately
+      setMessages(prev => [...prev, userMessage]);
+
+      // Clear input fields
       setText('');
       setMediaUri(null);
       setMediaType(null);
+
+      const formData = new FormData();
+      formData.append("message", questionText);
+
+      if (mediaUri) {
+        const fileName = mediaUri.split('/').pop();
+        const fileType = mediaType || 'image/jpeg';
+
+        formData.append('media', {
+          uri: mediaUri,
+          name: fileName,
+          type: fileType,
+        });
+      }
+
+      try {
+        const res = await postSendMessage({ id: serviceId, data: formData });
+        const aiMessage = {
+          text: res?.data?.data || "No response from AI.",
+          user: title,
+          createdAt: new Date(),
+          is_sender: false,
+        };
+
+        // Add the AI's answer to the chat
+        setMessages(prev => [...prev, aiMessage]);
+      } catch (err) {
+        console.log(err, "error sending message");
+
+        const errorMessage = {
+          text: "Failed to get response from AI.",
+          user: "System",
+          createdAt: new Date(),
+          is_sender: false,
+        };
+
+        setMessages(prev => [...prev, errorMessage]);
+      }
     }
   };
+
 
   async function requestCameraPermission() {
     if (Platform.OS === 'android') {
@@ -163,25 +131,25 @@ const MessageScreen = ({navigation, route}) => {
     }
   }
 
-  const pickMedia = type => {
-    launchImageLibrary(
-      {
-        mediaType: type,
-        quality: 1,
-        selectionLimit: 1, // Allow only one selection
-      },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled media selection');
-        } else if (response.errorMessage) {
-          console.error('MediaPicker Error: ', response.errorMessage);
-        } else if (response.assets && response.assets.length > 0) {
-          setMediaUri(response.assets[0].uri); // Set the URI of the selected media
-          setMediaType(type); // Set the media type (image or video)
-        }
-      },
-    );
-  };
+  // const pickMedia = type => {
+  //   launchImageLibraryAsync(
+  //     {
+  //       mediaType: type,
+  //       quality: 1,
+  //       selectionLimit: 1, // Allow only one selection
+  //     },
+  //     response => {
+  //       if (response.didCancel) {
+  //         console.log('User cancelled media selection');
+  //       } else if (response.errorMessage) {
+  //         console.error('MediaPicker Error: ', response.errorMessage);
+  //       } else if (response.assets && response.assets.length > 0) {
+  //         setMediaUri(response.assets[0].uri); // Set the URI of the selected media
+  //         setMediaType(type); // Set the media type (image or video)
+  //       }
+  //     },
+  //   );
+  // };
 
   // Function to pick document (PDF, Word, etc.)
   const pickDocument = async () => {
@@ -200,72 +168,10 @@ const MessageScreen = ({navigation, route}) => {
     }
   };
 
-  const capturePhoto = async () => {
-    // Request camera permission before launching camera
-    await requestCameraPermission();
+  
 
-    launchCamera(
-      {
-        mediaType: 'photo',
-        quality: 1,
-        saveToPhotos: true,
-      },
-      response => {
-        console.log('photos', response);
-        if (response.didCancel) {
-          console.log('User cancelled photo capture');
-        } else if (response.errorMessage) {
-          console.error('Camera Error: ', response.errorMessage);
-        } else if (response.assets && response.assets.length > 0) {
-          setMediaUri(response.assets[0].uri); // Set the captured photo URI
-          setMediaType('image'); // Set the media type as 'image'
-        }
-      },
-    );
-  };
+  
 
-  const pickPhotoFromGallery = () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        quality: 1,
-        selectionLimit: 1, // Allow only one image
-      },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled media selection');
-        } else if (response.errorMessage) {
-          console.error('MediaPicker Error: ', response.errorMessage);
-        } else if (response.assets && response.assets.length > 0) {
-          console.log('Selected Image:', response.assets[0]); // Debugging log
-          setMediaUri(response.assets[0].uri);
-          setMediaType('image');
-        }
-      },
-    );
-  };
-
-  const recordVideo = async () => {
-    // Request camera permission before recording video
-    await requestCameraPermission();
-
-    launchCamera(
-      {
-        mediaType: 'video',
-        quality: 1,
-      },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled video recording');
-        } else if (response.errorMessage) {
-          console.error('Camera Error: ', response.errorMessage);
-        } else if (response.assets && response.assets.length > 0) {
-          setMediaUri(response.assets[0].uri); // Set the recorded video URI
-          setMediaType('video'); // Set the media type as 'video'
-        }
-      },
-    );
-  };
   const toggleModal = () => setOpenModal(prev => !prev);
 
   // React.useEffect(() => {
@@ -291,20 +197,19 @@ const MessageScreen = ({navigation, route}) => {
       },
     ]);
   };
+  {
+    isLoading && (
+      <View style={tw`absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-black bg-opacity-30`}>
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    )
+  }
 
   return (
     <View style={tw`flex-1 px-2 bg-black`}>
       <View style={tw`flex-row w-full justify-between mt-4`}>
         <TouchableOpacity
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else {
-              console.log('No screen to go back to');
-              // Optionally, navigate to a default screen:
-              // navigation.navigate('HomeScreen');
-            }
-          }}
+          onPress={() => navigation?.goBack()}
           style={tw`bg-PrimaryFocus rounded-full p-1`}>
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
@@ -316,60 +221,25 @@ const MessageScreen = ({navigation, route}) => {
       </View>
       {/* Message List */}
       <FlatList
-        keyboardShouldPersistTaps="always"
-        inverted
         data={messages}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
-          // console.log('messageItem', item);
-          return (
+        renderItem={({ item }) => (
+          <View style={tw`mb-2 px-4`}>
+            <Text style={tw`text-xs mt-4 text-gray-500 mb-1`}>
+              {item.user} • {moment(item.createdAt).format('hh:mm A')}
+            </Text>
             <View
               style={[
-                tw`mb-3 p-3 rounded-lg  w-[85%] text-black`,
-                item?.is_sender === true
-                  ? tw`bg-gray-200 self-end text-black`
-                  : tw`bg-gray-200 self-start text-black`,
-              ]}>
-              <View>
-                <Text style={tw`font-MontserratRegular text-black`}>
-                  {item.user|| 'Jillur'}
-                </Text>
-                {item.media && (
-                  <>
-                    {item.media.includes('.mp4') ||
-                    item.media.includes('.mov') ? (
-                      <Video
-                        source={{uri: item.media}}
-                        style={tw`h-30 w-full rounded-lg my-2`}
-                        resizeMode="cover"
-                        controls
-                      />
-                    ) : (
-                      <Image
-                        source={{uri: item.media}}
-                        style={tw`h-30 w-full rounded-lg my-2`}
-                        resizeMode="cover"
-                      />
-                    )}
-                  </>
-                )}
-                <Text style={tw`text-black font-MontserratRegular`}>
-                 {item?.text}
-                </Text>
-                <View style={tw`flex-row justify-between`}>
-                  <Text style={tw`text-xs flex-row text-end text-black mt-2`}>
-                    {item.created_at_formatted}
-                  </Text>
-                  <Text style={tw`text-xs flex-row text-end text-black mt-2`}>
-                    {item.created_at_date}
-                  </Text>
-                </View>
-              </View>
+                tw`p-3 rounded-lg`,
+                item.is_sender ? tw`bg-blue-200 self-end` : tw`bg-gray-200 self-start`,
+              ]}
+            >
+              <Text style={tw`text-sm text-black`}>{item.text}</Text>
             </View>
-          );
-        }}
-        contentContainerStyle={tw`p-4`}
+          </View>
+        )}
       />
+
 
       {/* Input and Send Button */}
       <View style={tw``}>
@@ -377,7 +247,13 @@ const MessageScreen = ({navigation, route}) => {
           <TouchableOpacity
             onPress={() => selectMediaType()}
             style={tw`mr-2 absolute right-14 z-30`}>
-            <SvgXml xml={AttachmentIcon} width={20} height={20} />
+
+            <Text style={tw`text-white`}>
+              {isLoading ? 'Sending...' : ""
+
+                }
+            </Text>
+
           </TouchableOpacity>
           <View
             style={tw`flex-row w-[90%] gap-1 px-[2%] items-center relative`}>
@@ -407,7 +283,7 @@ const MessageScreen = ({navigation, route}) => {
       {mediaUri && mediaType === 'image' && (
         <View style={tw`flex-row items-center p-3`}>
           <Image
-            source={{uri: mediaUri}}
+            source={{ uri: mediaUri }}
             style={tw`h-20 w-20 rounded-lg`}
             resizeMode="cover"
           />
@@ -417,7 +293,7 @@ const MessageScreen = ({navigation, route}) => {
       {mediaUri && mediaType === 'video' && (
         <View style={tw`flex-row items-center p-3`}>
           <Video
-            source={{uri: mediaUri}}
+            source={{ uri: mediaUri }}
             style={tw`h-40 w-full rounded-lg`}
             resizeMode="cover"
             controls
@@ -426,7 +302,7 @@ const MessageScreen = ({navigation, route}) => {
           <Button title="Remove" onPress={() => setMediaUri(null)} />
         </View>
       )}
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         {/* Button to open the modal */}
         {/* <Button title="Open Modal"  /> */}
 
@@ -436,8 +312,8 @@ const MessageScreen = ({navigation, route}) => {
           setVisible={setOpenModal}
           animationType="fade" // Optional, choose 'none', 'slide', or 'fade'
           scrollable={true} // Optional, to make the modal content scrollable
-          layerContainerStyle={{padding: 20}} // Optional, styling for the background layer
-          containerStyle={{borderRadius: 10}} // Optional, styling for the modal container
+          layerContainerStyle={{ padding: 20 }} // Optional, styling for the background layer
+          containerStyle={{ borderRadius: 10 }} // Optional, styling for the modal container
         >
           {/* Content inside the modal */}
           <View>

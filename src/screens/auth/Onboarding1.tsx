@@ -9,22 +9,26 @@ import {
 import React from 'react';
 //   import LinearGradient from 'react-native-linear-gradient';
 
-import {NavigProps} from '../../interface/NaviProps';
-import TButton from '../../components/TButton';
-import tw from '../../lib/tailwind';
 import { ScrollView } from 'react-native-gesture-handler';
+import tw from '../../lib/tailwind';
+import TButton from '../../components/TButton';
+
 
 type Props = {};
 
-const Onboarding1 = ({navigation}: NavigProps<null>) => {
+const Onboarding1 = ({navigation}: {navigation: any}) => {
   const handleCreateUser = async () => {
     console.log('click');
+    
     try {
       // await createUser()
     } catch (error) {
       console.log(error);
     }
-    navigation?.push('Signup', {from: 'createUser'})
+    navigation.navigate(
+     "PhoneVerifation",
+      { screenName: "signup" }
+    )
   };
   return (
     <ScrollView contentContainerStyle={tw`bg-black flex-1 `}>
@@ -53,7 +57,7 @@ const Onboarding1 = ({navigation}: NavigProps<null>) => {
               containerStyle={tw`bg-white w-[90%] my-2 rounded-full`}
             />
             <TButton
-              onPress={() => navigation?.navigate('Login', {from: 'Login'})}
+              onPress={() => navigation.navigate('Login', {from: 'Login'})}
               titleStyle={tw`text-white font-bold font-AvenirLTProHeavy text-center mx-auto`}
               title="Log in"
               containerStyle={tw`bg-PrimaryFocus w-[90%] my-2 rounded-full`}

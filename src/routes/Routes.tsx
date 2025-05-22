@@ -28,6 +28,8 @@ import WithdrawScreen from '../screens/Withdrawscreen';
 import WithdrawScreen1 from '../screens/WithdrawScreen1';
 import WithdrawScreen2 from '../screens/WithdrawSceen2';
 import PaymentDetails from '../screens/PaymentDetails';
+import LoadingSplash from '../screens/LoadingSplash';
+import PhoneVerification from '../screens/auth/PhoneVerificationScreen';
 
 
 
@@ -42,14 +44,15 @@ export default function Routes() {
       screenOptions={{headerShown: false,
         animation: 'slide_from_right'
       }}
-    //   initialRouteName="LoadingSplash"
+      initialRouteName="LoadingSplash"
       >
-        {/* <Stack.Screen name="LoadingSplash" component={LoadingSplash}
-         /> */}
+        <Stack.Screen name="LoadingSplash" component={LoadingSplash}
+         />
     
       <Stack.Screen name="Onboarding1" component={Onboarding1} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Verify" component={VerifyScreen} />
+      <Stack.Screen name="PhoneVerifation" component={PhoneVerification} />
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="Popup" component={PopupScreen} />
       <Stack.Screen name="Drawer" component={DrawerRoute} />

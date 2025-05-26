@@ -12,14 +12,14 @@ import { SvgXml } from 'react-native-svg';
 import { useChangePasswordMutation } from '../../redux/apiSlice/authSlice';
 import tw from '../../lib/tailwind';
 import InputText from '../../components/InputText';
-import { IconCloseEye, iconLock, IconOpenEye } from '../../assets/icons/icons';
+import { IconBack, IconCloseEye, iconLock, IconOpenEye } from '../../assets/icons/icons';
 import Button from '../../components/Button';
 
 
 
 // import {useSignupMutation} from '../../redux/api/apiSlice/apiSlice';
 
-const ForgetPass = ({ navigation }: any) => {
+const ForgetPass = ({ navigation,route }: any) => {
     // console.log('navigation', navigation);
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -51,18 +51,18 @@ const ForgetPass = ({ navigation }: any) => {
             formData.append('password', password);
             formData.append('confirmPassword', confirmPassword);
             console.log(formData, "formData+++++")
-            // const response = await changePassword(formData)
-            // console.log('Response:', response);
+            const response = await changePassword(formData)
+            console.log('Response:++++++++++++++', response);
            
-            const response = await fetch("http://10.0.80.85:3004/api/auth/reset-password", {
-                method: "POST",
-                body: formData,
-                // ❌ Don't set Content-Type manually
-              });
-              console.log(response, "response+++++")
+            // const response = await fetch("http://10.0.80.85:3004/api/auth/reset-password", {
+            //     method: "POST",
+            //     body: formData,
+            //     // ❌ Don't set Content-Type manually
+            //   });
+            //   console.log(response, "response+++++")
             // Validate required fields before sending the request
             if (response.status === 200) {
-                router.push("/screens/auth/login");
+                navigation?.navigate("Login");
             } else {
                 console.log('Please fill all fields');
             }
@@ -81,7 +81,7 @@ const ForgetPass = ({ navigation }: any) => {
             <View>
                 <View style={tw`flex-row w-full justify-between mt-4`}>
                     <TouchableOpacity
-                        onPress={() => router.back()}
+                        onPress={() => navigation?.goBack()}
                         style={tw`bg-PrimaryFocus rounded-full p-1`}>
                         <SvgXml xml={IconBack} />
                     </TouchableOpacity>
@@ -99,7 +99,7 @@ const ForgetPass = ({ navigation }: any) => {
                         <InputText
                             cursorColor="white"
                             style={tw`text-white`}
-                            containerStyle={tw`bg-none h-14 border-b border-[#565358]`}
+                            containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
                             labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
                             placeholder={'Write it here'}
                             placeholderColor={'#949494'}
@@ -115,7 +115,7 @@ const ForgetPass = ({ navigation }: any) => {
                         <InputText
                             cursorColor="white"
                             style={tw`text-white`}
-                            containerStyle={tw`bg-none h-14 border-b border-[#565358]`}
+                            containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
                             labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
                             placeholder={'Write it here'}
                             placeholderColor={'#949494'}

@@ -17,8 +17,9 @@ import Button from '../../components/Button';
 
 
 
-const SignUp = ({ navigation }: any) => {
+const SignUp = ({ navigation, route }: any) => {
   // console.log('navigation', navigation);
+  const { screenName, phoneNumber } = route.params || {};
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   // const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -57,6 +58,7 @@ const SignUp = ({ navigation }: any) => {
       formData.append("username", username);
       formData.append("email", email);
       formData.append("password", password);
+      formData.append("phone", phoneNumber);
       console.log(formData, "formdata before sending---------------")
       const response = await SignUp(formData).unwrap();
       console.log(response?.success, "response singup=========")

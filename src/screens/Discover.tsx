@@ -9,11 +9,12 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
-import { SvgXml } from 'react-native-svg';
+import { SvgUri, SvgXml } from 'react-native-svg';
 import { IconBusiness, IconDrawer, IconEconomy, IconFinance, IconGeneralSearch, IconGoogle, IconLaw, iconLock, IconMarketing, IconWriting } from '../assets/icons/icons';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { useGetAllCategoryQuery } from '../redux/apiSlice/categorySlice';
 import tw from '../lib/tailwind';
+import { imageUrl } from '../redux/baseApi';
 
 
 type Props = {};
@@ -22,7 +23,9 @@ const Discover = () => {
   const navigation = useNavigation();
   const [successModal, setSuccessModal] = useState(false);
   const { data, isLoading, isError } = useGetAllCategoryQuery({});
-  // console.log(data, "data++++++")
+  console.log(data?.data, "data++++++")
+
+  const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
   const DiscoverData = [
     { id: '1', title: 'marketing', route: '', icon: IconMarketing, iconType: 'image' },
     { id: '2', title: 'finnance', route: '', icon: IconFinance, iconType: 'image' },
@@ -48,7 +51,16 @@ const Discover = () => {
   // const handleTransfer = () => {
   //   navigation.navigate('cashTransfer');
   // };
+  const renderImage = (imagePath: string) => {
+    const uri = `${imageUrl}/${imagePath}`;
+    const isSvg = imagePath?.toLowerCase().endsWith('.svg');
 
+    if (isSvg) {
+      return <SvgUri uri={uri} width={24} height={24} />;
+    } else {
+      return <Image source={{ uri }} style={tw`w-6 h-6`} resizeMode="contain" />;
+    }
+  };
 
   return (
     <View style={tw`bg-black flex-1 px-[4%] `}>
@@ -94,14 +106,14 @@ const Discover = () => {
       </View> */}
       <View>
         <FlatList
-          key={`flatlist-2`}
-          data={DiscoverData}
-          keyExtractor={item => item.id}
+          // key={`flatlist-2`}
+          data={data?.data || DiscoverData}
+          keyExtractor={(item, index) => item._id || index.toString()}
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'center' }}
           scrollEnabled={false} // Disable FlatList scrolling
           renderItem={({ item }) => {
-            console.log(item, "")
+            // console.log(item, "")
             // const categoryImg = !item?.image
             //             ? { uri: `${imageUrl}/${item?.image}` }
             //             : require('../../../assets/images/logo.png'); // fallback image
@@ -120,26 +132,14 @@ const Discover = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onPress={() => handlePress(item.route, item.id, item.title, item.icon)}>
-                  {/* {item.iconType === 'Image' ? ( */}
-                  {/* <Image source={categoryImg} style={tw`w-6 h-6`}  width={10} height={10} /> */}
-                  <SvgXml width={24} height={24} xml={item?.icon} />
-                  {/* ) : item.iconType === 'MaterialCommunityIcons' ? (
-          <MaterialCommunityIcons
-            name={item.icon}
-            size={20}
-            color="#0C84C5"
-          />
-        ) : (
-          <MaterialCommunityIcons
-            name={item.icon}
-            size={20}
-            color="#0C84C5"
-          />
-        )}  */}
+                  onPress={() => handlePress(item.route, item._id, item.name, item.icon)}>
+                
+                  {renderImage(item.image)}
+                  {/* <Image source={{uri: `${imageUrl}/${item.image}`}} style={tw`w-6 h-6`}  width={10} height={10} /> */}
+                 
                   <Text
                     style={tw`text-start py-2 text-white font-AvenirLTProBlack`}>
-                    {item?.title}
+                    {item?.name}
                   </Text>
                 </TouchableOpacity>
               )

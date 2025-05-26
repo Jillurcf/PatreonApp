@@ -5,6 +5,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import {MMKVLoader} from 'react-native-mmkv-storage';
 import { imageUrl } from './redux/baseApi';
+import { ReactNode } from 'react';
 
 
 export const lStorage = new MMKVLoader().initialize();
@@ -79,6 +80,7 @@ export const setExplainMemberValue = (value: {
   price: string;
   description: string;
   category: string;
+  icon: ReactNode;
 }) => {
   try {
     lStorage.setString('explainMemberValue', JSON.stringify(value));
@@ -88,38 +90,84 @@ export const setExplainMemberValue = (value: {
 };
 
 // Load form value object
-export const getExplainMemberValue = (): {
+// export const getExplainMemberValue = (): {
+//   title: string;
+//   subtitle: string;
+//   currency: string;
+//   price: string;
+//   description: string;
+//   category: string;
+// } => {
+//   try {
+//     const storedValue = lStorage.getString('explainMemberValue');
+//     return storedValue
+//       ? JSON.parse(storedValue)
+//       : {
+//           title: '',
+//           subtitle: '',
+//           currency: '',
+//           price: '',
+//           description: '',
+//           category: '',
+//         };
+//   } catch (error) {
+//     console.error('Failed to load form value:', error);
+//     return {
+//       title: '',
+//       subtitle: '',
+//       currency: '',
+//       price: '',
+//       description: '',
+//       category: '',
+//     };
+//   }
+// };
+
+type ExplainMemberValue = {
   title: string;
   subtitle: string;
   currency: string;
   price: string;
   description: string;
   category: string;
-} => {
+  icon: ReactNode;
+};
+
+export const getExplainMemberValue = (): ExplainMemberValue => {
   try {
     const storedValue = lStorage.getString('explainMemberValue');
-    return storedValue
-      ? JSON.parse(storedValue)
-      : {
-          title: '',
-          subtitle: '',
-          currency: '',
-          price: '',
-          description: '',
-          category: '',
-        };
+
+    if (storedValue) {
+      const parsed = JSON.parse(storedValue);
+
+      
+
+      return {
+        title: parsed.title || '',
+        subtitle: parsed.subtitle || '',
+        currency: parsed.currency || '',
+        price: parsed.price || '',
+        description: parsed.description || '',
+        category: parsed.category || '',
+        icon: parsed.icon || null, // Ensure icon is handled correctly
+      };
+    }
   } catch (error) {
     console.error('Failed to load form value:', error);
-    return {
-      title: '',
-      subtitle: '',
-      currency: '',
-      price: '',
-      description: '',
-      category: '',
-    };
   }
+
+  // default values
+  return {
+    title: '',
+    subtitle: '',
+    currency: '',
+    price: '',
+    description: '',
+    category: '',
+    icon: null,
+  };
 };
+
 
 // Optional: clear it
 export const clearFormValue = () => {
@@ -130,6 +178,9 @@ export const clearFormValue = () => {
   }
 };
 
+
+
+// selected pdf data loader
 
 
 export const saveMediaPromptData = (
@@ -172,6 +223,12 @@ export const clearMediaPromptData = () => {
     console.error('Storage Clear Error:', e);
   }
 };
+
+
+
+
+
+
 
 
 

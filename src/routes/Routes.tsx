@@ -30,6 +30,10 @@ import WithdrawScreen2 from '../screens/WithdrawSceen2';
 import PaymentDetails from '../screens/PaymentDetails';
 import LoadingSplash from '../screens/LoadingSplash';
 import PhoneVerification from '../screens/auth/PhoneVerificationScreen';
+import ForgetPass from '../screens/auth/ForgetPasswordScreen';
+import ExplainMembershipScreen from '../screens/ExplainMembership1';
+import MyServices from '../screens/MyService';
+import EditService from '../screens/EditService';
 
 
 
@@ -54,6 +58,7 @@ export default function Routes() {
       <Stack.Screen name="Verify" component={VerifyScreen} />
       <Stack.Screen name="PhoneVerifation" component={PhoneVerification} />
       <Stack.Screen name="Signup" component={Signup} />
+      <Stack.Screen name="ForgetPass" component={ForgetPass} />
       <Stack.Screen name="Popup" component={PopupScreen} />
       <Stack.Screen name="Drawer" component={DrawerRoute} />
       <Stack.Screen name="DiscoverResult" component={DiscoverResult} />
@@ -61,6 +66,8 @@ export default function Routes() {
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="SettingProfile" component={SettingProfile} />
+      <Stack.Screen name="MyService" component={MyServices} />
+      <Stack.Screen name="EditService" component={EditService} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="PaymentResult" component={PaymentResult} />
@@ -73,6 +80,7 @@ export default function Routes() {
       <Stack.Screen name="BecomeContributor" component={BecomeContributor} />
       <Stack.Screen name="EnterInput" component={EnterInput} />
       <Stack.Screen name="ExplainMembership" component={ExplainMembership} />
+      <Stack.Screen name="ExplainMembership1" component={ExplainMembershipScreen} />
       <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
       <Stack.Screen name="PaymentMethodScreen" component={PaymentMethodScreen} />
       <Stack.Screen name="WithdrawScreen" component={WithdrawScreen} />

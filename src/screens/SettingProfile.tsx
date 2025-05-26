@@ -154,7 +154,7 @@ const SettingProfile = ({navigation}: {navigation:any}) => {
         <View style={tw`flex-row items-center bg-[#262329]  w-[90%] rounded-2xl p-[6%] justify-between px-[4%]`}>
           <View style={tw`w-[60%] items-center`}>
             <TButton
-              onPress={() => navigation.navigate('MyServices')}
+              onPress={() => navigation.navigate('MyService')}
               title="My services"
               titleStyle={tw`text-black`}
               containerStyle={tw`w-full bg-white`}
@@ -177,7 +177,7 @@ const SettingProfile = ({navigation}: {navigation:any}) => {
           </Text>
           <View style={tw`w-full items-center mt-8`}>
             <TButton
-              onPress={() => navigation.navigate('EnterInputScreen')}
+              onPress={() => navigation.navigate('EnterInput')}
               title="Become a contributor"
               titleStyle={tw`text-black`}
               containerStyle={tw`w-full bg-white`}

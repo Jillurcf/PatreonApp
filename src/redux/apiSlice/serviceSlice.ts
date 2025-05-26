@@ -33,7 +33,7 @@ const serviceSlice = api.injectEndpoints({
         url: `/services/become-contributor`,
         method: "POST",
         body: data,
-       
+
       }),
       invalidatesTags: ["service"]
     }),
@@ -43,26 +43,34 @@ const serviceSlice = api.injectEndpoints({
         method: "POST",
         body: data,
         // 👇 DO NOT set headers manually here
-        
+
       }),
-      
-      
+
+
     }),
     gettMyServices: builder.query({
       query: () => ({
         url: `/services/get-service-by-contributor`,
-        method: "GET",       
+        method: "GET",
       }),
       providesTags: ['service']
     }),
     getServicesById: builder.query({
       query: (id) => ({
         url: `/services/get-service-by-id/${id}`,
-        method: "GET",       
+        method: "GET",
       }),
       providesTags: ['service'],
     }),
-    
+    updateServicesById: builder.mutation({
+      query: ({id, data}) => ({
+        url: `/services/update-service-by-id/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ['service'],
+    }),
+
     deleteServices: builder.mutation({
       query: (id) => ({
         url: `/services/delete-service-by-id/${id}`,
@@ -78,6 +86,7 @@ export const { useGetAllServiceQuery,
   usePostBecmeAContibutorMutation,
   usePostSendMessageMutation,
   useGettMyServicesQuery,
-useDeleteServicesMutation,
-useGetServicesByIdQuery,
+  useDeleteServicesMutation,
+  useGetServicesByIdQuery,
+ useUpdateServicesByIdMutation
 } = serviceSlice;

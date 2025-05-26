@@ -131,19 +131,19 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
       console.log("response verify", response);
 
       // Navigate based on 'from' condition
-      // if (response?.success === true) {
-      //   console.log("OTP Verified Successfully!");
-      //   if (screenName === "forgetPass") {
-      //    navigation.navigate(
-      //       'ForgetPasswordScreen',
-      //         { phoneNumber: phoneNumber },
-      //       );
-      //   } else {
-      //     navigation?.navigate("Signup")
-      //   }
-      // } else {
-      //   console.error("OTP verification failed:", response?.message);
-      // }
+      if (response?.success === true) {
+        console.log("OTP Verified Successfully!");
+        if (screenName === "forgetPass") {
+         navigation.navigate(
+            'ForgetPass',
+              { phoneNumber: phoneNumber },
+            );
+        } else {
+          navigation?.navigate("Signup", { phoneNumber: phoneNumber })
+        }
+      } else {
+        console.error("OTP verification failed:", response?.message);
+      }
     } catch (err) {
       // Log error details for debugging
       console.error("Error verifying OTP:", err);

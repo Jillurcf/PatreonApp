@@ -10,9 +10,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
 } from 'react-native';
-import ImageCropPicker from 'react-native-image-crop-picker';
-import Video from 'react-native-video';
-
+import { loadMediaPromptData, saveMediaPromptData } from '../utils';
 import { SvgXml } from 'react-native-svg';
 import { NavigProps } from '../interface/NaviProps';
 import Textarea from 'react-native-textarea';
@@ -35,33 +33,13 @@ import Pdf from 'react-native-pdf';
 
 
 const EnterInput = ({ navigation }: NavigProps<null>) => {
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [capturedVideo, setCapturedVideo] = useState<string | null>(null);
-  const [input, setInput] = useState("")
-  console.log(input, "input========================")
-
-  console.log('Selected Images:', selectedImages);
-
-  // Open gallery to select images
-  const openGallery = async () => {
-    try {
-      const images = await ImageCropPicker.openPicker({
-        multiple: true,
-        mediaType: 'photo',
-        cropping: true,
-      });
-
-      const imagePaths = images.map((image: any) => image.path);
-      setSelectedImages(prev => [...prev, ...imagePaths]);
-    } catch (error) {
-      if (error.message !== 'User cancelled image selection') {
-        Alert.alert('Error', error.message || 'Something went wrong');
-      }
-    }
-  };
-
-
   const [selectedPdf, setSelectedPdf] = useState(null);
+  const [promptInput, setPromptInput] = useState("")
+  console.log(promptInput, "input========================")
+
+
+
+  
 
   const handleUploadPdf = async () => {
     try {
@@ -93,7 +71,14 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
       }
     }
   };
-
+  const handleSave = () => {
+    console.log(selectedPdf, promptInput, 'data before sending ==========');
+    saveMediaPromptData(selectedPdf, null, promptInput);
+    const { selectedImages: savedImages, promptInput: savedPrompt } = loadMediaPromptData();
+    console.log(savedImages, savedPrompt, 'Retrieved data from storage ++++++++');
+    Alert.alert('Saved', 'Your data has been saved successfully!');
+    navigation?.navigate('ExplainMembership');
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -119,7 +104,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
             <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Input</Text>
             <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
               <TextInput
-                onChangeText={(text) => setInput(text)}
+                onChangeText={(text) => setPromptInput(text)}
                 style={tw`text-left h-40 text-white`}
                 placeholder="Write it here"
                 placeholderTextColor="#c7c7c7"
@@ -161,7 +146,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
         {/* Continue Button */}
         <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
           <TButton
-            onPress={() => Alert.alert("Success")}
+            onPress={handleSave}
             titleStyle={tw`text-black font-bold text-center`}
             title="Save"
             containerStyle={tw`bg-primary w-[90%] rounded-full`}

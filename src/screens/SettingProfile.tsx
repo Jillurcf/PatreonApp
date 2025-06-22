@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Image,
   StatusBar,
   StyleSheet,
@@ -6,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { SvgXml } from 'react-native-svg';
 import { useGetUserQuery, usePatchUpdateUserProfileMutation } from '../redux/apiSlice/userSlice';
@@ -15,17 +16,27 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import tw from '../lib/tailwind';
 import { IconBack, IconPencil, IconPlus } from '../assets/icons/icons';
 import TButton from '../components/TButton';
+import { usePostCreateConnectMutation } from '../redux/apiSlice/paymentSlice';
+import WebView from 'react-native-webview';
+import { useFocusEffect } from '@react-navigation/native';
 // import { useGetUserQuery, usePatchUpdateUserProfileMutation } from '@/src/redux/apiSlice/userSlice';
 
-
-const SettingProfile = ({navigation}: {navigation:any}) => {
+  const { height, width } = Dimensions.get('screen');
+const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const { data, isLoading, isError } = useGetUserQuery({});
+  const [loading, setLoading] = React.useState(false);
+  const [connected, setConnected] = useState()
+  const [postCreateConnect] = usePostCreateConnectMutation();
+  const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
+  const { data, isLoading, isError, refetch } = useGetUserQuery({});
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
-  console.log(data, "data======================")
+  console.log(data?.data, "data======================")
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
 
 
+useEffect(() => {
+ data?.data?.stripeAccountId
+}, [data?.data]);
 
   const selectImage = async () => {
     console.log("click");
@@ -37,22 +48,22 @@ const SettingProfile = ({navigation}: {navigation:any}) => {
         compressImageQuality: 1,
         mediaType: 'photo',
       });
-  
+
       if (image && image.path) {
         const uri = image.path;
         const fileName = uri.split("/").pop() || "photo.jpg";
         const match = /\.(\w+)$/.exec(fileName);
         const fileType = match ? `image/${match[1]}` : `image`;
-  
+
         setImageUri(uri);
-  
+
         const formData = new FormData();
         formData.append("image", {
           uri,
           name: fileName,
           type: fileType,
         } as any);
-  
+
         const res = await patchUpdateUserProfile(formData);
         console.log("Image updated:", res);
       }
@@ -60,7 +71,110 @@ const SettingProfile = ({navigation}: {navigation:any}) => {
       console.error("Image selection error:", error);
     }
   };
-  
+
+  // const handleGetConnect = async () => {
+  //   console.log('Button clicked');
+  //   setLoading(true);
+  //   try {
+  //     // const formData = new FormData();
+  //     // formData.append('email', profileData?.data?.email);
+
+  //     // Call API to create Stripe Connect account
+  //     const response = await postCreateConnect();
+  //     console.log('Raw response:', response?.data?.data?.url);
+
+  //     const url = response?.data?.data?.url;
+  //     if (url) {
+  //       console.log('Onboarding URL:', url);
+  //       setOnboardingUrl(url); // Store URL in state
+        
+  //     } else {
+  //       console.warn('Onboarding URL is undefined:', response);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching connect URL:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+// When user clicks "Create Connect Account" button
+const handleGetConnect = async () => {
+  console.log('🔘 Button clicked');
+  setLoading(true);
+  try {
+    const response = await postCreateConnect();
+    const url = response?.data?.data?.url;
+
+    if (url) {
+      console.log('🌐 Onboarding URL:', url);
+      setOnboardingUrl(url); // open in WebView
+    } else {
+      console.warn('⚠️ Onboarding URL is undefined:', response);
+    }
+  } catch (error) {
+    console.error('❌ Error fetching connect URL:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+// const handleWebViewNavigation = async (event: any) => {
+//   console.log('WebView Navigation State:', event.url);
+
+//   if (event.url.includes('success')) {
+//     console.log('✅ Onboarding Successful!');
+
+//     // Optional state update
+//     setConnected(true);
+
+//     // Hide WebView
+//     setOnboardingUrl(null);
+
+//     // Navigate to Drawer
+//     setTimeout(() => {
+//       navigation?.navigate("Drawer",)
+      
+//     }, 300);
+
+//   } else if (event.url.includes('your-app-failure-url')) {
+//     console.warn('❌ Onboarding Failed');
+//     setOnboardingUrl(null);
+//   }
+// };
+
+const handleWebViewNavigation = async (event: any) => {
+  console.log('🌍 WebView Navigation:', event.url);
+
+  // Match actual completion URL
+  if (event.url.includes('/onboarding/complete')) {
+    console.log('✅ Onboarding Successful!');
+    setConnected(true);
+    setOnboardingUrl(null);
+    await refetch();
+
+    setTimeout(() => {
+      navigation?.navigate('Drawer'); // ensure this matches your navigator name
+    }, 300);
+  } else if (event.url.includes('your-app-failure-url')) {
+    console.warn('❌ Onboarding Failed');
+    setOnboardingUrl(null);
+  }
+};
+
+
+
+  if (onboardingUrl) {
+    return (
+      <WebView
+        source={{ uri: onboardingUrl }}
+        style={{ flex: 1, width: "100%", height: height * 0.7 }}
+        onNavigationStateChange={handleWebViewNavigation}
+      />
+    );
+  }
 
 
 
@@ -176,12 +290,21 @@ const SettingProfile = ({navigation}: {navigation:any}) => {
             Consult People anytime anywhere
           </Text>
           <View style={tw`w-full items-center mt-8`}>
-            <TButton
+            {data?.data?.stripeAccountId == null ?  (
+              <TButton
+                onPress={handleGetConnect}
+                title="Get connet"
+                titleStyle={tw`text-white`}
+                containerStyle={tw`w-full bg-red-600`}
+              />
+            ) :
+            
+            (<TButton
               onPress={() => navigation.navigate('EnterInput')}
               title="Become a contributor"
               titleStyle={tw`text-black`}
               containerStyle={tw`w-full bg-white`}
-            />
+            />)}
           </View>
         </View>
       </View>

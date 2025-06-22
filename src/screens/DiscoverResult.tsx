@@ -18,24 +18,24 @@ import { imageUrl } from '../redux/baseApi';
 
 const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
   const { title, taskId } = route.params || {};
-const lowerCaseTaskId = taskId?.toLowerCase() || '';
-console.log( 'loserCaseTaskId++++++', lowerCaseTaskId);
+  const lowerCaseTaskId = taskId?.toLowerCase() || '';
+  // console.log( 'loserCaseTaskId++++++', lowerCaseTaskId);
   const [searchText, setSearchText] = useState('');
   const [titles, setTitles] = useState(title || '');
   const [page, setPage] = useState(1);
   const [services, setServices] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;
-
+  console.log(services, 'services+++++++');
   // Debounce title input
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
+      if (searchText.trim() === '') return;
       setTitles(searchText);
       setPage(1);
       setServices([]);
       setHasMore(true);
-    }, 500); // 500ms delay
-
+    }, 500);
     return () => clearTimeout(delayDebounce);
   }, [searchText]);
 
@@ -46,8 +46,11 @@ console.log( 'loserCaseTaskId++++++', lowerCaseTaskId);
     limit,
   });
 
+  // console.log(data?.data?.result, 'data+++++++');
+
   useEffect(() => {
-    if (data?.data?.result) {
+    if (Array.isArray(data?.data?.result)) {
+      console.log('Fetched services:', data.data.result);
       if (page === 1) {
         setServices(data.data.result);
       } else {
@@ -57,11 +60,14 @@ console.log( 'loserCaseTaskId++++++', lowerCaseTaskId);
     }
   }, [data]);
 
+
   const handleService = (index, item) => {
+    console.log(item, 'item+++++++');
     navigation.navigate('Profile', {
       userId: item?.contributor?._id,
       serviceId: item?._id,
       title: item?.title,
+      price: item?.price,
       index: index,
     });
   };

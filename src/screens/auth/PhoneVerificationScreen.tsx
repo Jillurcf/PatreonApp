@@ -36,11 +36,15 @@ const PhoneVerification = ({navigation, route}: {navigation:any}) => {
   console.log(screenName, "ForgetPass")
 
   const [phoneNoVerification, isLoading, isError] = usePhoneNoVerificationMutation()
-  const fullPhoneNumber = phoneInput.current?.getNumberAfterPossiblyEliminatingZero()?.formattedNumber;
-  console.log(fullPhoneNumber);
-  console.log("phone", value, fullPhoneNumber);
+  // const fullPhoneNumber = phoneInput.current?.getNumberAfterPossiblyEliminatingZero()?.formattedNumber;
+  // console.log(fullPhoneNumber);
+  // console.log("phone", value, fullPhoneNumber);
 
   const handlePhoneVerification = async () => {
+    const fullPhoneNumber = phoneInput.current?.getNumberAfterPossiblyEliminatingZero()?.formattedNumber;
+
+  console.log("Full Phone Number:", fullPhoneNumber);
+  console.log("Raw value:", value);
     if (!fullPhoneNumber) {
       console.warn("Phone number is invalid or undefined");
       return;
@@ -53,18 +57,19 @@ const PhoneVerification = ({navigation, route}: {navigation:any}) => {
       try {
         const formData = new FormData();
         formData.append("phone", fullPhoneNumber);
+        console.log(formData, "formData");
   
-        const res = await phoneNoVerification(formData).unwrap();
+        const res = await phoneNoVerification(formData)
         console.log(`Phone verification response (attempt ${attempts + 1}):`, res);
   
-        if (res?.success) {
-          success = true;
+        // if (res?.success) {
+        //   success = true;
   
          navigation.navigate('Verify',
              { screenName, phoneNumber: fullPhoneNumber },
           );
           return; // Stop execution after successful navigation
-        }
+        // }
       } catch (err) {
         console.error(`Verification error (attempt ${attempts + 1}):`, err);
       }
@@ -135,7 +140,7 @@ const PhoneVerification = ({navigation, route}: {navigation:any}) => {
                 filterProps={tw`text-white`}
                 flagButtonStyle={tw`text-white bg-slate-50`}
                 countryPickerProps={tw`text-white`}
-                codeTextStyle={tw`bg-red-200 hidden`}
+                codeTextStyle={tw`bg-red-200 -ml-4`}
                 textContainerStyle={tw`bg-[#262329] h-16 rounded-r-3xl`}
                 containerStyle={tw`bg-black rounded-3xl border w-full border-[#565358]`}
                 countryPickerButtonStyle={tw`rounded-l-3xl bg-[#262329]`}
@@ -179,14 +184,14 @@ const PhoneVerification = ({navigation, route}: {navigation:any}) => {
           </Text>
         </View> */}
         </View>
-        <View style={tw`w-full items-center`}>
+        {/* <View style={tw`w-full items-center`}>
           <IwtButton
             svg={IconGoogle}
             containerStyle={tw`bg-PrimaryFocus items-center justify-center w-[90%] my-2 rounded-full`}
             titleStyle={tw`text-white font-bold font-AvenirLTProHeavy text-center mx-auto`}
           />
           <Text style={tw`text-white font-AvenirLTProBlack mb-6`}>Don't have a account? Sign up</Text>
-        </View>
+        </View> */}
         <StatusBar backgroundColor="black" translucent />
       </View>
     );

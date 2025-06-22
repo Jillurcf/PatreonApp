@@ -21,6 +21,7 @@ import {Avatar} from 'react-native-ui-lib';
 import Notification from './Notification';
 import InputText from '../components/InputText';
 import {IconGeneralSearch} from '../assets/icons/icons';
+import { useGetMessageUserQuery } from '../redux/apiSlice/serviceSlice';
 
 type ItemData = {
   id: string;
@@ -28,6 +29,8 @@ type ItemData = {
 };
 
 const MessageList = ({navigation}: NavigProps<null>) => {
+  const {data,isLoading,isError,refetch} = useGetMessageUserQuery({});
+  console.log(data?.data, 'data from get message user query');
   const [notifications, setNotifications] = useState([
     {
       id: 1,

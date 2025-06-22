@@ -15,6 +15,8 @@ import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { useGetAllCategoryQuery } from '../redux/apiSlice/categorySlice';
 import tw from '../lib/tailwind';
 import { imageUrl } from '../redux/baseApi';
+import InputText from '../components/InputText';
+import { useGetAllUserQuery } from '../redux/apiSlice/userSlice';
 
 
 type Props = {};
@@ -22,10 +24,21 @@ type Props = {};
 const Discover = () => {
   const navigation = useNavigation();
   const [successModal, setSuccessModal] = useState(false);
-  const { data, isLoading, isError } = useGetAllCategoryQuery({});
-  console.log(data?.data, "data++++++")
+  const [search, setSearch] = useState('');
 
-  const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
+  console.log("Search input:", search);
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  // const { data, isLoading, isError } = useGetAllCategoryQuery({});
+  const { data, isLoading, isError } = useGetAllUserQuery(search, {
+    skip: !search // Skip query if no search text
+  });
+
+
+  console.log("User search result:", data?.data?.result);
+
+
+  // const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
   const DiscoverData = [
     { id: '1', title: 'marketing', route: '', icon: IconMarketing, iconType: 'image' },
     { id: '2', title: 'finnance', route: '', icon: IconFinance, iconType: 'image' },
@@ -42,25 +55,27 @@ const Discover = () => {
     if (taskId === '3') {
       setSuccessModal(true);
     } else {
-      navigation.navigate( "DiscoverResult", { ttile: title,
-          taskId: taskId,
-          route: route}
+      navigation.navigate("DiscoverResult", {
+        ttile: title,
+        taskId: taskId,
+        route: route
+      }
       );
     }
   };
   // const handleTransfer = () => {
   //   navigation.navigate('cashTransfer');
   // };
-  const renderImage = (imagePath: string) => {
-    const uri = `${imageUrl}/${imagePath}`;
-    const isSvg = imagePath?.toLowerCase().endsWith('.svg');
+  // const renderImage = (imagePath: string) => {
+  //   const uri = `${imageUrl}/${imagePath}`;
+  //   const isSvg = imagePath?.toLowerCase().endsWith('.svg');
 
-    if (isSvg) {
-      return <SvgUri uri={uri} width={24} height={24} />;
-    } else {
-      return <Image source={{ uri }} style={tw`w-6 h-6`} resizeMode="contain" />;
-    }
-  };
+  //   if (isSvg) {
+  //     return <SvgUri uri={uri} width={24} height={24} />;
+  //   } else {
+  //     return <Image source={{ uri }} style={tw`w-6 h-6`} resizeMode="contain" />;
+  //   }
+  // };
 
   return (
     <View style={tw`bg-black flex-1 px-[4%] `}>
@@ -82,33 +97,53 @@ const Discover = () => {
         style={tw`text-white font-AvenirLTProBlack text-center text-2xl my-6`}>
         Discover Contributers to {'\n'} Learn and Consult
       </Text>
-      {/* <View style={tw`my-4`}>
+      <View style={tw`my-4`}>
         <InputText
-
+          style={tw`text-white`}
           containerStyle={tw`bg-[#262329] border h-14 relative border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
-          placeholder={'Search & Learn'}
+          placeholder={'Search by user name'}
           placeholderColor={'#949494'}
-          //   label={'Password'}
           iconLeft={IconGeneralSearch}
-        // iconRight={isShowConfirmPassword ? iconLock : iconLock}
-        //   onChangeText={(text: any) => setConfirmPassword(text)}
-        //   isShowPassword={!isShowConfirmPassword}
-        //   rightIconPress={() =>
-        //     setIsShowConfirmPassword(!isShowConfirmPassword)
-        //   }
+          onChangeText={(text) => {
+            setSearch(text);
+            setShowDropdown(!!text); // Show dropdown if there's input
+          }}
         />
-        <TouchableOpacity
-          onPress={() => router.push("/screens/DiscoverResult")}
-          style={tw`absolute right-4 top-4`}>
-          <Text style={tw`text-white`}>Search</Text>
-        </TouchableOpacity>
-      </View> */}
+
+        {showDropdown && search.length > 0 && (
+        <View style={tw`absolute top-16 bg-[#1e1e1e] w-full rounded-md z-50 p-2`}>
+          {isLoading ? (
+            <Text style={tw`text-white`}>Loading...</Text>
+          ) : data?.data?.result.length === 0 ? (
+            <Text style={tw`text-white`}>No users found</Text>
+          ) : (
+            data?.data?.result?.map((user) => {
+              console.log(user, "user from discover+++++++++++++++")
+              return (
+              <TouchableOpacity
+                key={user.id}
+                onPress={() => {
+                  setShowDropdown(false);
+                  setSearch('');
+                  navigation.navigate('Profile', { userId:user?._id }); // 👈 Pass full user data
+                }}
+                style={tw`p-2 border-b border-[#444]`}
+              >
+                <Text style={tw`text-white`}>{user.username}</Text>
+              </TouchableOpacity>
+            )
+            })
+          )}
+        </View>
+         )} 
+      </View>
+
       <View>
         <FlatList
           // key={`flatlist-2`}
-          data={data?.data || DiscoverData}
-          keyExtractor={(item, index) => item._id || index.toString()}
+          data={DiscoverData}
+          keyExtractor={(item, index) => item.id || index.toString()}
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'center' }}
           scrollEnabled={false} // Disable FlatList scrolling
@@ -132,14 +167,13 @@ const Discover = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onPress={() => handlePress(item.route, item._id, item.name, item.icon)}>
-                
-                  {renderImage(item.image)}
-                  {/* <Image source={{uri: `${imageUrl}/${item.image}`}} style={tw`w-6 h-6`}  width={10} height={10} /> */}
-                 
+                  onPress={() => handlePress(item.route, item.id, item.title, item.icon)}>
+
+                  <SvgXml xml={item?.icon} />
+
                   <Text
                     style={tw`text-start py-2 text-white font-AvenirLTProBlack`}>
-                    {item?.name}
+                    {item?.title}
                   </Text>
                 </TouchableOpacity>
               )

@@ -1,5 +1,5 @@
-import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect } from 'react';
+import { Dimensions, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IconBack, IconDot } from '../assets/icons/icons';
 import { SvgXml } from 'react-native-svg';
 
@@ -13,14 +13,21 @@ import TButton from '../components/TButton';
 import { useGetSingleUserQuery } from '../redux/apiSlice/userSlice';
 import { imageUrl } from '../redux/baseApi';
 import { getServiceData } from '../utils';
-
+import { usePostCreateTransactionMutation, usePostPaymentMethodsMutation } from '../redux/apiSlice/paymentSlice';
+import { useFocusEffect } from '@react-navigation/native';
+import WebView from 'react-native-webview';
+const { width, height } = Dimensions.get("screen")
 type Props = {};
 
-const ProfileScreen = ({navigation, route}: {navigation:any}) => {
-  const { userId, serviceId, title } = route.params || {};
-
+const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
+  const { userId, serviceId, title, price } = route.params || {};
+  console.log(userId, serviceId, title, price, "id++++++");
+  const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
+  const [postPaymentMethods,] = usePostPaymentMethodsMutation();
+  const [postCreateTransaction] = usePostCreateTransactionMutation()
+  const [connected, setConnected] = useState()
   console.log(userId, serviceId, title, "id++++++18");
-  const { data, isLoading, isError } = useGetSingleUserQuery(userId);
+  const { data, isLoading, isError, refetch } = useGetSingleUserQuery(userId);
   console.log(data, '=======================data')
   const [serviceData, setServiceData] = React.useState<any>(null);
   console.log(serviceData, "serviceData++++++");
@@ -30,6 +37,142 @@ const ProfileScreen = ({navigation, route}: {navigation:any}) => {
     setServiceData(service);
   }, []);
   // console.log(id, "id++++++");
+  const handleSubscribe = async () => {
+    console.log("clicked");
+    console.log('Subscribe button pressed');
+    try {
+      // const formData = new FormData();
+
+      const res = await postPaymentMethods(serviceId).unwrap();
+      console.log("res", res, "res++++++");
+      console.log("res", res?.url)
+      const url = res?.url;
+      if (url) {
+        console.log('Onboarding URL:', url);
+        setOnboardingUrl(url); // Store URL in state
+      } else {
+        console.warn('Onboarding URL is undefined:', res);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
+  //  const handleWebViewNavigation = async (event: any) => {
+  //     console.log('WebView Navigation State:+++++++++++++++++++++', event);
+  //     console.log(event.url.includes('success'), "success");
+  //     // if (event.url.includes('your-app-success-url')) {
+  //     if (event.url.includes('success')) {
+  //       console.log('Onboarding Successful! Fetching account status...');
+  //       setConnected(event.url.includes('success'))
+  //       // const urlParams = new URLSearchParams(new URL(event.url).search);
+  //       // const email = urlParams.get('email') as string; // Type assertion
+
+  //       // console.log('Extracted Email:', email);
+  //       // Fetch Stripe Account Status
+  //       // try {
+  //       //   const accountStatus = await checkConnet();
+  //       //   console.log('Account Status:', accountStatus);
+
+  //       //   // Replace with actual screen
+  //       // } catch (error) {
+  //       //   console.error('Error checking account status:', error);
+  //       // }
+
+  //       // Close the WebView
+  //       setOnboardingUrl(null);
+  //     }
+  //     // useEffect(()=> {
+  //     //   setTimeout(()=> {
+  //     //     refetch()
+  //     //   })
+  //     // }, [1000])
+
+  //     useFocusEffect(() => {
+  //       console.log('refetch call');
+  //       refetch();
+  //     });
+
+  //     if (event.url.includes('your-app-failure-url')) {
+  //       console.warn('Onboarding Failed');
+  //       setOnboardingUrl(null);
+  //     }
+  //   };
+
+ const handleWebViewNavigation = useCallback(
+  async (event: any) => {
+    const url = event?.url || '';
+    console.log('WebView Navigation State:=============+', event);
+
+    if (event?.canGoBack === true) {
+      setTimeout(() => {
+        navigation.navigate('Drawer');
+      }, 300);
+    }
+
+    if (url.includes('session_id=')) {
+      console.log('Stripe Redirect Detected. Session ID present.');
+
+      const match = url.match(/[?&]session_id=([^&]+)/);
+      const sessionId = match ? decodeURIComponent(match[1]) : null;
+      console.log('Extracted Session ID:', sessionId);
+
+      setOnboardingUrl(null);
+
+      try {
+        const formData = new FormData();
+        formData.append('serviceId', serviceId);
+       formData.append('amount', price?.toString());  
+        formData.append('status', 'succeeded');
+        console.log(formData, 'Form Data for Transaction Creation');
+
+        const res = await postCreateTransaction(formData).unwrap();
+        console.log(res, 'Transaction Created Successfully');
+
+        setTimeout(() => {
+          navigation.navigate('PaymentResult');
+        }, 300);
+      } catch (error) {
+        console.error('Transaction creation failed:', error);
+        // navigation.navigate('PaymentFailed');
+      }
+    }
+
+    if (url.includes('cancel') || url.includes('failure')) {
+      console.warn('User cancelled or error occurred');
+      setOnboardingUrl(null);
+
+      setTimeout(() => {
+        navigation.navigate('PaymentFailed');
+      }, 300);
+    }
+  },
+  [navigation, setOnboardingUrl, serviceId, price, postCreateTransaction]
+);
+
+
+  if (onboardingUrl) {
+    return (
+      <WebView
+        source={{ uri: onboardingUrl }}
+        style={{ flex: 1, width: "100%", height: height * 0.7 }}
+        onNavigationStateChange={handleWebViewNavigation}
+      />
+    );
+  }
+
+  // {{onboardingUrl && (
+  //   <WebView
+  //     source={{ uri: onboardingUrl }}
+  //     onNavigationStateChange={handleWebViewNavigation}
+  //     startInLoadingState
+  //     javaScriptEnabled
+  //     domStorageEnabled
+  //   />
+  // )}}
+
+
 
   return (
     <View style={tw`bg-black flex-1`}>
@@ -112,14 +255,15 @@ const ProfileScreen = ({navigation, route}: {navigation:any}) => {
       </View>
       <View style={tw`w-full items-center my-6`}>
         <TButton
-          onPress={() => navigation?.navigate(
-         'Payment',
-          {
-              userId: userId, // ✅ Pass the userId you already have
-              serviceId: serviceId,
-              title: title,
-            }
-          )}
+          onPress={handleSubscribe}
+          //   onPress={() => navigation?.navigate(
+          //  'Payment',
+          //   {
+          //       userId: userId, // ✅ Pass the userId you already have
+          //       serviceId: serviceId,
+          //       title: title,
+          //     }
+          //   )}
           title="Subscribe"
           titleStyle={tw`text-black`}
           containerStyle={tw`w-[90%] bg-white`}

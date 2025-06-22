@@ -14,6 +14,7 @@ import tw from '../../lib/tailwind';
 import InputText from '../../components/InputText';
 import { IconBack, IconCloseEye, iconLock, IconOpenEye } from '../../assets/icons/icons';
 import Button from '../../components/Button';
+import NormalModal from '../../components/NormalModal';
 
 
 
@@ -21,6 +22,8 @@ import Button from '../../components/Button';
 
 const ForgetPass = ({ navigation,route }: any) => {
     // console.log('navigation', navigation);
+    const [resetPaswordModalVisible, setresetPaswordModalVisible] =
+        useState(false);
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -52,8 +55,14 @@ const ForgetPass = ({ navigation,route }: any) => {
             formData.append('confirmPassword', confirmPassword);
             console.log(formData, "formData+++++")
             const response = await changePassword(formData)
-            console.log('Response:++++++++++++++', response);
-           
+            console.log('Response:++++++++++++++', response?.data?.success);
+              if (response?.data?.success) {
+                console.log(response?.data?.success === true, "response?.data?.data?.success === true")
+                navigation?.navigate("Login");
+            } else {
+                console.log('Please fill all fields');
+            }
+            //   navigation?.navigate("Login");
             // const response = await fetch("http://10.0.80.85:3004/api/auth/reset-password", {
             //     method: "POST",
             //     body: formData,
@@ -61,11 +70,7 @@ const ForgetPass = ({ navigation,route }: any) => {
             //   });
             //   console.log(response, "response+++++")
             // Validate required fields before sending the request
-            if (response.status === 200) {
-                navigation?.navigate("Login");
-            } else {
-                console.log('Please fill all fields');
-            }
+          
          
         } catch (err) {
             console.log('Error:=============', err);
@@ -143,6 +148,38 @@ const ForgetPass = ({ navigation,route }: any) => {
                  
                 />
             </View>
+                  <NormalModal
+        layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
+        containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
+        visible={resetPaswordModalVisible}
+        setVisible={setresetPaswordModalVisible}>
+        <View>
+          <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
+          Password changed successfully!
+          </Text>
+
+          <View style={tw`mt-2`}>
+            {/* <View style={tw`border-t-2 border-gray-800 w-full`}>
+              <Button
+                title="Yes"
+                style={tw`text-white`}
+                containerStyle={tw`bg-transparent px-6`}
+                onPress={ handleLogout}
+              />
+            </View> */}
+            <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+              <Button
+                title="Ok"
+                style={tw`text-white px-6`}
+                containerStyle={tw`bg-gray-900`}
+                onPress={() => {
+                  setresetPaswordModalVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </NormalModal>
             <StatusBar backgroundColor="black" translucent={false} />
         </ScrollView>
     );

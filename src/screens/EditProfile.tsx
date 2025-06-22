@@ -3,18 +3,19 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Image,
   Alert,
   StatusBar,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SvgXml } from 'react-native-svg';
-import { usePatchUpdateUserProfileMutation } from '../redux/apiSlice/userSlice';
+import {
+  useGetUserQuery,
+  usePatchUpdateUserProfileMutation,
+} from '../redux/apiSlice/userSlice';
 import tw from '../lib/tailwind';
 import { IconBack, IconEnvelope, IconUser } from '../assets/icons/icons';
 import InputText from '../components/InputText';
 import TButton from '../components/TButton';
-
 
 const EditProfile = ({ navigation }: any) => {
   const [name, setName] = useState<string>('');
@@ -22,11 +23,22 @@ const EditProfile = ({ navigation }: any) => {
   const [bio, setBio] = useState<string>('');
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
-  const [updateProfile] = usePatchUpdateUserProfileMutation();
-  console.log('27', name, username, bio);
-  // const data = {email, password, name:username, address:location}
-  const allFilled =
 
+  const { data, isLoading, isError, refetch } = useGetUserQuery({});
+  const [updateProfile] = usePatchUpdateUserProfileMutation();
+console.log(name, username, bio, 'state values'); 
+  console.log(data?.data?.name, 'data from get user query');
+
+  // ✅ Set default values when data is fetched
+  useEffect(() => {
+    if (data?.data) {
+      setName(data.data.name || '');
+      setUsername(data.data.username || '');
+      setBio(data.data.bio || '');
+    }
+  }, [data]);
+
+  const allFilled =
     name.trim() !== '' &&
     username.trim() !== '' &&
     bio.trim() !== '';
@@ -35,28 +47,19 @@ const EditProfile = ({ navigation }: any) => {
   const HandleSave = async () => {
     console.log('clicked');
     try {
-
       const formData = new FormData();
       formData.append('name', name);
       formData.append('username', username);
       formData.append('bio', bio);
-      console.log(formData, 'formData beore sending');
+      console.log(formData, 'formData before sending');
 
-      const res = await updateProfile(formData)
+      const res = await updateProfile(formData);
       console.log(res, 'res after sending');
 
-      // const res = await fetch("http://10.0.80.85:3004/api/users/auth/update-profile-by-user", {
-      //   method: "PATCH",
-      //   body: formData,
-      //   // ❌ Don't set Content-Type manually
-      // });
-    
-      // const json = await res.json();
-      // console.log("Final Parsed Response:", json);
-      // if (json?.success === true) {
-      //   Alert.alert('Profile updated successfully');
-      // }
-
+      // Optional success alert
+      if (res?.data?.success) {
+        Alert.alert('Success', 'Profile updated successfully!');
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
     }
@@ -77,70 +80,58 @@ const EditProfile = ({ navigation }: any) => {
           <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
             Edit My Profile
           </Text>
-          {/* Placeholder view for symmetry */}
           <View style={tw`w-8`} />
         </View>
+
         <View style={tw`mt-12`}>
           <View>
             <View style={tw`flex-row gap-2 w-[98%]`}>
               <View style={tw`w-[50%]`}>
                 <InputText
+                  value={data?.data?.name || "name"}
                   cursorColor="white"
                   style={tw`text-white`}
                   containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
                   labelStyle={tw`text-white font-AvenirLTProBlack`}
-                  placeholder={'Write here'}
-                  placeholderColor={'#949494'}
-                  label={'Name'}
+                  placeholder="Write here"
+                  placeholderColor="#949494"
+                  label="Name"
                   iconRight={IconUser}
                   onChangeText={(text: any) => setName(text)}
                 />
               </View>
               <View style={tw`w-[50%]`}>
                 <InputText
+                  value={username}
                   cursorColor="white"
                   style={tw`text-white`}
                   containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
                   labelStyle={tw`text-white font-AvenirLTProBlack`}
-                  placeholder={'Write here'}
-                  placeholderColor={'#949494'}
-                  label={'User name'}
+                  placeholder="Write here"
+                  placeholderColor="#949494"
+                  label="User name"
                   iconRight={IconUser}
                   onChangeText={(text: any) => setUsername(text)}
                 />
               </View>
             </View>
+
             <InputText
+              value={bio}
               cursorColor="white"
               style={tw`text-white`}
               containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
               labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
-              placeholder={'Write it here'}
-              placeholderColor={'#949494'}
-              label={'Bio'}
+              placeholder="Write it here"
+              placeholderColor="#949494"
+              label="Bio"
               iconLeft={IconEnvelope}
-              // iconRight={isShowPassword ? iconLock : iconLock}
               onChangeText={(text: any) => setBio(text)}
-            // isShowPassword={!isShowPassword}
-            // rightIconPress={() => setIsShowPassword(!isShowPassword)}
             />
-            {/* <InputText
-                containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
-                labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
-                placeholder={'Write it here'}
-                placeholderColor={'#949494'}
-                label={'Password'}
-                iconLeft={iconLock}
-                // iconRight={isShowConfirmPassword ? iconLock : iconLock}
-                onChangeText={(text: any) => setConfirmPassword(text)}
-                isShowPassword={!isShowConfirmPassword}
-                rightIconPress={() =>
-                  setIsShowConfirmPassword(!isShowConfirmPassword)
-                }
-              /> */}
           </View>
         </View>
       </View>
+
       <View style={tw`flex-col justify-end `}>
         <TButton
           onPress={HandleSave}

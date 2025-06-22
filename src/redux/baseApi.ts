@@ -153,7 +153,7 @@ export const api = createApi({
   keepUnusedDataFor: 0,
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    // baseUrl: 'https://app.uniflexlimited.com/api/v1', 
+    // baseUrl: 'http://16.171.212.209:3004/api', 
     baseUrl: 'http://10.0.80.85:3004/api',
     credentials: 'include', // Ensures cookies (like auth tokens) are sent with every request
     prepareHeaders: (headers) => {
@@ -339,5 +339,5 @@ export const api = createApi({
 // } = api;
 
 // Image URL for assets (if needed)
-// export const imageUrl = 'https://app.uniflexlimited.com/';
+// export const imageUrl = 'http://16.171.212.209:3004';
 export const imageUrl = 'http://10.0.80.85:3004';

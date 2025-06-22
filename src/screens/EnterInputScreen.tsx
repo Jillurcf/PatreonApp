@@ -101,7 +101,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
 
           {/* Input Area */}
           <View style={tw`mt-8`}>
-            <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Input</Text>
+            <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Instruction</Text>
             <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
               <TextInput
                 onChangeText={(text) => setPromptInput(text)}
@@ -118,7 +118,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
 
           {/* Media Upload */}
           <View style={tw`my-6`}>
-            <Text style={tw`text-white font-AvenirLTProBlack`}>Upload file</Text>
+            <Text style={tw`text-white font-AvenirLTProBlack`}>Upload Knowledge</Text>
             <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
               <View style={tw`flex-row gap-6`}>
                 {/* <IButton containerStyle={tw`p-4 rounded-full`} svg={Gallery} onPress={openGallery} /> */}

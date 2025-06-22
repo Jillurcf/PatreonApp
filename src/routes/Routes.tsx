@@ -34,6 +34,7 @@ import ForgetPass from '../screens/auth/ForgetPasswordScreen';
 import ExplainMembershipScreen from '../screens/ExplainMembership1';
 import MyServices from '../screens/MyService';
 import EditService from '../screens/EditService';
+// import { StripeProvider } from '@stripe/stripe-react-native';
 
 
 
@@ -42,8 +43,9 @@ const Stack = createNativeStackNavigator();
 
 export default function Routes() {
   return (
-    // <StripeProvider publishableKey="pk_test_51QKAtBKOpUtqOuW1x5VdNqH3vG7CZZl1P6V3VuV1qsRUmPLNk26i34AXeu2zCO3QurFJAOZ9zfb0EkWeCVhqBYgH008X41cXr6">
-    <Stack.Navigator
+//   <StripeProvider publishableKey='pk_test_51Q51euIE7z8j8FQDRAixwTBcDJS0zyz8wjvgZVn64nZKzjxyVSdzEPIccMiD3hND02GAHRU8y2eB92YO1tcL1PQk00M6ydxlfZ
+//  '>
+ <Stack.Navigator
     
       screenOptions={{headerShown: false,
         animation: 'slide_from_right'
@@ -93,6 +95,8 @@ export default function Routes() {
       
 
     </Stack.Navigator>
-    // </StripeProvider>
+  // </StripeProvider>
+   
+ 
   );
 }

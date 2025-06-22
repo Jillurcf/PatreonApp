@@ -22,6 +22,7 @@ import { getExplainMemberValue, setExplainMemberValue } from '../utils';
 import tw from '../lib/tailwind';
 import { IconBack, IconCross, IconDollar, IconUpload } from '../assets/icons/icons';
 import TButton from '../components/TButton';
+import { useGetAllCategoryQuery } from '../redux/apiSlice/categorySlice';
 
 const initialDropdown = [
   { label: 'marketing', value: '1' },
@@ -51,11 +52,12 @@ const ExplainMembership = ({ navigation }: { navigation: any }) => {
     },
   });
   console.log(value, "value++++++")
-  const [dropdownItems, setDropdownItems] = useState(initialDropdown);
+  const [dropdownItems, setDropdownItems] = useState();
   const [isFocus, setIsFocus] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [newCategory, setNewCategory] = useState('');
-
+  const { data: category } = useGetAllCategoryQuery({})
+  console.log(category?.data, "category data from api")
   // const [postBecmeAContibutor, { isLoading }] = usePostBecmeAContibutorMutation();
 
   useEffect(() => {
@@ -78,8 +80,8 @@ const ExplainMembership = ({ navigation }: { navigation: any }) => {
 
     //   const res = await postBecmeAContibutor(formData);
     //   if ('data' in res) {
-      setExplainMemberValue(value);
-        navigation.navigate('ExplainMembership1');
+    setExplainMemberValue(value);
+    navigation.navigate('ExplainMembership1');
     //   } else {
     //     Alert.alert('Submission Failed', 'Please try again later.');
     //   }
@@ -161,6 +163,17 @@ const ExplainMembership = ({ navigation }: { navigation: any }) => {
       }
     }
   };
+
+  const formattedCategoryData = [
+    ...(category?.data?.map(item => ({
+      label: item.name,
+      value: item._id,
+      ...item,
+    })) || []),
+    { label: 'Add New...', value: 'add_new' },
+  ];
+
+
   return (
     <ScrollView contentContainerStyle={tw`flex-1 bg-black px-[4%]`}>
       <View style={tw`my-10`}>
@@ -244,19 +257,20 @@ const ExplainMembership = ({ navigation }: { navigation: any }) => {
             style={styles.dropdown}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
-            data={dropdownItems}
-            maxHeight={300}
+            data={formattedCategoryData}
+            maxHeight={600}
             labelField="label"
             valueField="value"
             placeholder={!isFocus ? 'Select category' : '...'}
-            // value={value.category}
+            value={value.category}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
+              console.log(item, "item from dropdown")
               if (item.value === 'add_new') {
                 setShowModal(true);
               } else {
-                setValue(prev => ({ ...prev, category: item.label }));
+                setValue(prev => ({ ...prev, category: item.value }));
               }
               setIsFocus(false);
             }}

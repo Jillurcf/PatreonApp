@@ -78,6 +78,13 @@ const serviceSlice = api.injectEndpoints({
       }),
       invalidatesTags: ['service'],
     }),
+    getMessageUser: builder.query({
+      query: () => ({
+        url: `/services/get-replies-by-user`,
+        method: 'GET',
+      }),
+      providesTags: ['service'],
+    }),
   }),
 
 });
@@ -88,5 +95,6 @@ export const { useGetAllServiceQuery,
   useGettMyServicesQuery,
   useDeleteServicesMutation,
   useGetServicesByIdQuery,
- useUpdateServicesByIdMutation
+ useUpdateServicesByIdMutation,
+ useGetMessageUserQuery
 } = serviceSlice;

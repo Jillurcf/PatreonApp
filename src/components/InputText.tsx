@@ -4,6 +4,7 @@ import { SvgXml } from 'react-native-svg';
 import tw from '../lib/tailwind';
 
 const InputText = ({
+  cursorColor,
   value,
   placeholder,
   placeholderColor,
@@ -36,6 +37,7 @@ const InputText = ({
         ]}>
         {iconLeft && <SvgXml xml={iconLeft} />}
         <TextInput
+        cursorColor={cursorColor || "#000"}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={placeholderColor}

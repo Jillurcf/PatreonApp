@@ -34,6 +34,7 @@ import ForgetPass from '../screens/auth/ForgetPasswordScreen';
 import ExplainMembershipScreen from '../screens/ExplainMembership1';
 import MyServices from '../screens/MyService';
 import EditService from '../screens/EditService';
+import HomeSearchResult from '../screens/HomeSearchResult';
 // import { StripeProvider } from '@stripe/stripe-react-native';
 
 
@@ -64,6 +65,7 @@ export default function Routes() {
       <Stack.Screen name="Popup" component={PopupScreen} />
       <Stack.Screen name="Drawer" component={DrawerRoute} />
       <Stack.Screen name="DiscoverResult" component={DiscoverResult} />
+      <Stack.Screen name="HomeSearchResult" component={HomeSearchResult} />
 
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Profile" component={ProfileScreen} />

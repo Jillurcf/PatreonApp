@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Button,
@@ -12,66 +12,31 @@ import {
 } from 'react-native';
 
 import tw from '../lib/tailwind';
-import {NavigProps} from '../interfaces/NaviProps';
+import { NavigProps } from '../interfaces/NaviProps';
 
-import {SvgXml} from 'react-native-svg';
-import TButton from '../components/buttons/TButton';
+import { SvgXml } from 'react-native-svg';
 
-import {Avatar} from 'react-native-ui-lib';
+
+import { Avatar } from 'react-native-ui-lib';
 import Notification from './Notification';
 import InputText from '../components/InputText';
-import {IconGeneralSearch} from '../assets/icons/icons';
-import { useGetMessageUserQuery } from '../redux/apiSlice/serviceSlice';
+import { IconGeneralSearch } from '../assets/icons/icons';
+import { useGetMessageListQuery } from '../redux/apiSlice/serviceSlice';
+import { imageUrl } from '../redux/baseApi';
+
 
 type ItemData = {
   id: string;
   image: string;
 };
 
-const MessageList = ({navigation}: NavigProps<null>) => {
-  const {data,isLoading,isError,refetch} = useGetMessageUserQuery({});
-  console.log(data?.data, 'data from get message user query');
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      data: {
-        creator_image: require('../assets/images/alteravater.png'),
-        message: 'John Doe commented on your post.',
-        creator_name: 'John Doe',
-      },
-      created_at: new Date().toISOString(),
-      read_at: null,
-    },
-    {
-      id: 2,
-      data: {
-        creator_image: require('../assets/images/alteravater.png'),
-        message: 'Your profile picture was liked.',
-        creator_name: 'User',
-      },
-      created_at: new Date().toISOString(),
-      read_at: new Date().toISOString(),
-    },
-    // Add other notifications here...
-  ]);
+const MessageList = ({ navigation }: NavigProps<null>) => {
+  const [searchTitle, setSearchTitle] = useState('');
+  const { data, isLoading, isError, refetch } = useGetMessageListQuery(searchTitle)
+  console.log(data?.data, 'data from get message List query');
+  const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
 
-  const handleRead = item => {
-    navigation?.navigate('chatScreen', {
-      id: item?.id,
-      is_active: item?.is_active,
-      receiverId: item?.receiver_id,
-      receiverName: item?.name,
-      reeciverImage: item?.avatar,
-    });
-  };
 
-  const handleMessage = item => {
-    navigation?.navigate('chatScreen', {
-      receiverId: item?.id,
-      receiverName: item?.first_name + item?.last_name,
-      reeciverImage: item?.avatar,
-    });
-  };
 
   return (
     <View style={tw`flex-1 bg-black px-[4%]`}>
@@ -80,37 +45,40 @@ const MessageList = ({navigation}: NavigProps<null>) => {
       </Text>
       <View style={tw`my-4`}>
         <InputText
+          style={tw`text-white font-AvenirLTProBlack`}
           containerStyle={tw`bg-[#262329] border border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
           placeholder={'Search & Learn'}
           placeholderColor={'#949494'}
           //   label={'Password'}
+          cursorColor='white'
           iconLeft={IconGeneralSearch}
-          // iconRight={isShowConfirmPassword ? iconLock : iconLock}
-          //   onChangeText={(text: any) => setConfirmPassword(text)}
-          //   isShowPassword={!isShowConfirmPassword}
-          //   rightIconPress={() =>
-          //     setIsShowConfirmPassword(!isShowConfirmPassword)
-          //   }
+          onChangeText={text => {
+            setSearchTitle(text);
+          }}
         />
       </View>
       <FlatList
-        data={notifications}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => {
+     
+        data={data?.data || []}
+        keyExtractor={item => item._id.toString()}
+        renderItem={({ item }) => {
+          console.log(item?.contributor, 'item from message list');
           return (
             <TouchableOpacity
-            onPress={() => navigation.navigate("MessageScreen")}
+              onPress={() => navigation.navigate("MessageScreen")}
               style={tw`flex-row items-center bg-[#262329] my-1 rounded-2xl gap-2 p-2`}>
               <View style={tw`relative items-center`}>
-                {item?.data?.creator_image && (
-                  <Avatar
-                    source={item?.data?.creator_image}
-                    size={50}
-                    containerStyle={tw`mr-4`}
+                {item?.image && (
+                  <Image
+                    source={{ uri: `${imageUrl}/${item?.user?.image}` }}
+                    style={tw`w-12 h-12 rounded-full border border-gray-500`}
+                  
+                    resizeMode="cover"
                   />
                 )}
-                {item?.data?.creator_name ? (
+
+                {item?.contributor ? (
                   <View
                     style={tw`w-3 h-3 bg-gray-400 rounded-full absolute bottom-0 right-4`}
                   />
@@ -123,18 +91,18 @@ const MessageList = ({navigation}: NavigProps<null>) => {
               <View style={tw`flex-1 pb-2`}>
                 <View style={tw`flex-row justify-between mr-2 items-center`}>
                   <Text style={tw`text-white font-AvenirLTProBlack`}>
-                    {item.data?.creator_name}
+                    {item?.title || "Service Title"}
                   </Text>
-                  <View
+                  {/* <View
                     style={tw`bg-white w-4 h-4 items-center justify-center rounded-full`}>
                     <Text style={tw`text-black font-AvenirLTProBlack text-xs`}>
                       2
                     </Text>
-                  </View>
+                  </View> */}
                 </View>
                 <View style={tw`flex-row justify-between mt-2`}>
                   <Text style={tw`text-white font-AvenirLTProBlack`}>
-                    {item.data?.message}
+                    {item.description || "Service Description"}
                   </Text>
                   <Text style={tw`text-white font-AvenirLTProBlack`}>
                     09:41

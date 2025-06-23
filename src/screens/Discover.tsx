@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { SvgUri, SvgXml } from 'react-native-svg';
-import { IconBusiness, IconDrawer, IconEconomy, IconFinance, IconGeneralSearch, IconGoogle, IconLaw, iconLock, IconMarketing, IconWriting } from '../assets/icons/icons';
+import { IconBusiness, IconDrawer, IconEconomy, IconFinance, IconGeneralSearch, IconGoogle, IconLaw, iconLock, IconMarketing, IconSearch, IconWriting } from '../assets/icons/icons';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { useGetAllCategoryQuery } from '../redux/apiSlice/categorySlice';
 import tw from '../lib/tailwind';
@@ -98,7 +98,7 @@ const Discover = () => {
         Discover Contributers to {'\n'} Learn and Consult
       </Text>
       <View style={tw`my-4`}>
-        <InputText
+        {/* <InputText
           style={tw`text-white`}
           containerStyle={tw`bg-[#262329] border h-14 relative border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
@@ -109,34 +109,43 @@ const Discover = () => {
             setSearch(text);
             setShowDropdown(!!text); // Show dropdown if there's input
           }}
-        />
+        /> */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('HomeSearchResult')}
+          style={tw`bg-[#262329] border h-14 border-[#565358] rounded-2xl px-4 justify-center`}>
+          <View style={tw`flex-row items-center gap-3`}>
+            <SvgXml xml={IconSearch} />
+            <Text style={tw`text-white text-base`}>Search here</Text>
+          </View>
+        </TouchableOpacity>
+
 
         {showDropdown && search.length > 0 && (
-        <View style={tw`absolute top-16 bg-[#1e1e1e] w-full rounded-md z-50 p-2`}>
-          {isLoading ? (
-            <Text style={tw`text-white`}>Loading...</Text>
-          ) : data?.data?.result.length === 0 ? (
-            <Text style={tw`text-white`}>No users found</Text>
-          ) : (
-            data?.data?.result?.map((user) => {
-              console.log(user, "user from discover+++++++++++++++")
-              return (
-              <TouchableOpacity
-                key={user.id}
-                onPress={() => {
-                  setShowDropdown(false);
-                  setSearch('');
-                  navigation.navigate('Profile', { userId:user?._id }); // 👈 Pass full user data
-                }}
-                style={tw`p-2 border-b border-[#444]`}
-              >
-                <Text style={tw`text-white`}>{user.username}</Text>
-              </TouchableOpacity>
-            )
-            })
-          )}
-        </View>
-         )} 
+          <View style={tw`absolute top-16 bg-[#1e1e1e] w-full rounded-md z-50 p-2`}>
+            {isLoading ? (
+              <Text style={tw`text-white`}>Loading...</Text>
+            ) : data?.data?.result.length === 0 ? (
+              <Text style={tw`text-white`}>No users found</Text>
+            ) : (
+              data?.data?.result?.map((user) => {
+                console.log(user, "user from discover+++++++++++++++")
+                return (
+                  <TouchableOpacity
+                    key={user.id}
+                    onPress={() => {
+                      setShowDropdown(false);
+                      setSearch('');
+                      navigation.navigate('Profile', { userId: user?._id }); // 👈 Pass full user data
+                    }}
+                    style={tw`p-2 border-b border-[#444]`}
+                  >
+                    <Text style={tw`text-white`}>{user.username}</Text>
+                  </TouchableOpacity>
+                )
+              })
+            )}
+          </View>
+        )}
       </View>
 
       <View>

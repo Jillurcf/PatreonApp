@@ -185,7 +185,9 @@ const ExplainMembership = ({ navigation }: { navigation: any }) => {
           >
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
-          <Text style={tw`text-white font-bold text-2xl`}>Explain Membership</Text>
+          <Text style={tw`text-white font-bold text-2xl`}>
+            Explain Membership
+            </Text>
           <View style={tw`w-8`} />
         </View>
 
@@ -220,7 +222,7 @@ const ExplainMembership = ({ navigation }: { navigation: any }) => {
         <View style={tw`relative mt-2`}>
           <TextInput
             style={tw`w-full h-10 text-white bg-[#262329] border border-gray-400 rounded-2xl px-10`}
-            placeholder="Input currency"
+            placeholder="Enter price"
             placeholderTextColor={'white'}
             value={value.currency}
             onChangeText={text => setValue(prev => ({ ...prev, currency: text }))}

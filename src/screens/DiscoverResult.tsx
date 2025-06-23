@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { useGetAllServiceQuery } from '../redux/apiSlice/serviceSlice';
 import tw from '../lib/tailwind';
@@ -39,7 +40,7 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
     return () => clearTimeout(delayDebounce);
   }, [searchText]);
 
-  const { data, isLoading, error, isFetching } = useGetAllServiceQuery({
+  const { data, isLoading, error, isFetching, refetch } = useGetAllServiceQuery({
     category: lowerCaseTaskId,
     title: titles,
     page,
@@ -87,18 +88,32 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
       </View>
 
       <View style={tw`my-8`}>
-        <InputText
+       <InputText
           style={tw`text-white`}
-          containerStyle={tw`bg-[#262329] border h-14 border-[#565358]`}
+          containerStyle={tw`bg-[#262329] border h-14 relative border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
-          placeholder={'Boxing'}
-          placeholderColor={'white'}
+          placeholder={'Search by user name'}
+          placeholderColor={'#949494'}
           iconLeft={IconGeneralSearch}
-          onChangeText={(text: any) => setSearchText(text)}
+          readonly={true}
+          onChangeText={(text) => {
+            setSearch(text);
+            setShowDropdown(!!text); // Show dropdown if there's input
+          }}
         />
       </View>
 
       <FlatList
+      refreshControl={
+        <RefreshControl
+          refreshing={isFetching}
+          onRefresh={() => {
+            setPage(1);
+            setServices([]);
+            refetch();
+          }}
+        />
+      }
         data={services}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => {

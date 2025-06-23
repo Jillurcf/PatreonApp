@@ -234,7 +234,7 @@ const handleWebViewNavigation = async (event: any) => {
           <View style={tw`border-r-2 w-[33%] h-12 border-[#091218] items-center justify-center`}>
             <TouchableOpacity>
               <Text style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
-                {data?.data?.subscriptions}
+                {data?.data?.subscriptions?.length}
               </Text>
               <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
                 Subscriptions
@@ -266,7 +266,7 @@ const handleWebViewNavigation = async (event: any) => {
       {/* ======================= My services ========================== */}
       <View style={tw`items-center`}>
         <View style={tw`flex-row items-center bg-[#262329]  w-[90%] rounded-2xl p-[6%] justify-between px-[4%]`}>
-          <View style={tw`w-[60%] items-center`}>
+          <View style={tw`w-[100%] items-center`}>
             <TButton
               onPress={() => navigation.navigate('MyService')}
               title="My services"
@@ -274,10 +274,10 @@ const handleWebViewNavigation = async (event: any) => {
               containerStyle={tw`w-full bg-white`}
             />
           </View>
-          <View style={tw`w-[20%] items-center flex-row mx-[4%] `}>
+          {/* <View style={tw`w-[20%] items-center flex-row mx-[4%] `}>
             <Text style={tw`text-white text-center`}>Total =</Text>
             <Text style={tw`text-white`}>15</Text>
-          </View>
+          </View> */}
         </View>
       </View>
       {/* Contributor Box */}

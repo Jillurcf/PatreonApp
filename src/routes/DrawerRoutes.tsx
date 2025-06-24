@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import React, { useState } from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import BottomRoutes from './BottomRoutes';
 import {
   Text,
@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import tw from '../lib/tailwind';
-import {SvgXml} from 'react-native-svg';
+import { SvgXml } from 'react-native-svg';
 import {
   IconDarawerUser,
   IconLogout,
@@ -25,16 +25,16 @@ import CookieManager from '@react-native-cookies/cookies';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { getStorageToken, removeStorageToken } from '../utils/Utils';
 
-function DrawerContent({navigation}: any) {
+function DrawerContent({ navigation }: any) {
   const [vacationMode, setVacationMode] = useState(true);
   const [logoutConfirmationModalVisible, setLogoutConfirmationModalVisible] =
     useState(false);
- 
+
   const handleLogout = () => {
     // Perform your logout logic here
     console.log('Logout pressed');
     setLogoutConfirmationModalVisible(false)
-   navigation.replace('LoadingSplash')
+    navigation.replace('LoadingSplash')
     lStorage.removeItem('token')
     CookieManager.clearAll()
   };
@@ -119,7 +119,7 @@ function DrawerContent({navigation}: any) {
                 title="Yes"
                 style={tw`text-white`}
                 containerStyle={tw`bg-transparent px-6`}
-                onPress={ handleLogout}
+                onPress={handleLogout}
               />
             </View>
             <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>

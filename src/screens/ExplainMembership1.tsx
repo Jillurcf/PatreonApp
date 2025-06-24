@@ -69,7 +69,7 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
             // formData.append('explainMembership', fields)
             formData.append("explainMembership", JSON.stringify(fields)); // ← becomes: '["Member ", "Member 1", "Member 2"]'
 
-            console.log(formData, "formData==================before sending to api")
+            console.log(formData, "formData in explain membership page==================before sending to api")
             const res =await  postBecmeAContibutor(formData).unwrap();
             if(res?.success === true) {
             // If the response is successful, navigate to the SettingProfile screen

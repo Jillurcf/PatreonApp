@@ -21,7 +21,7 @@ import WebView from 'react-native-webview';
 import { useFocusEffect } from '@react-navigation/native';
 // import { useGetUserQuery, usePatchUpdateUserProfileMutation } from '@/src/redux/apiSlice/userSlice';
 
-  const { height, width } = Dimensions.get('screen');
+const { height, width } = Dimensions.get('screen');
 const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
@@ -34,9 +34,10 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
 
 
-useEffect(() => {
- data?.data?.stripeAccountId
-}, [data?.data]);
+  useEffect(() => {
+    data?.data?.stripeAccountId
+     refetch();
+  }, [data?.data]);
 
   const selectImage = async () => {
     console.log("click");
@@ -87,7 +88,7 @@ useEffect(() => {
   //     if (url) {
   //       console.log('Onboarding URL:', url);
   //       setOnboardingUrl(url); // Store URL in state
-        
+
   //     } else {
   //       console.warn('Onboarding URL is undefined:', response);
   //     }
@@ -98,71 +99,71 @@ useEffect(() => {
   //   }
   // };
 
-// When user clicks "Create Connect Account" button
-const handleGetConnect = async () => {
-  console.log('🔘 Button clicked');
-  setLoading(true);
-  try {
-    const response = await postCreateConnect();
-    const url = response?.data?.data?.url;
+  // When user clicks "Create Connect Account" button
+  const handleGetConnect = async () => {
+    console.log('🔘 Button clicked');
+    setLoading(true);
+    try {
+      const response = await postCreateConnect();
+      const url = response?.data?.data?.url;
 
-    if (url) {
-      console.log('🌐 Onboarding URL:', url);
-      setOnboardingUrl(url); // open in WebView
-    } else {
-      console.warn('⚠️ Onboarding URL is undefined:', response);
+      if (url) {
+        console.log('🌐 Onboarding URL:', url);
+        setOnboardingUrl(url); // open in WebView
+      } else {
+        console.warn('⚠️ Onboarding URL is undefined:', response);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching connect URL:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('❌ Error fetching connect URL:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
 
-// const handleWebViewNavigation = async (event: any) => {
-//   console.log('WebView Navigation State:', event.url);
+  // const handleWebViewNavigation = async (event: any) => {
+  //   console.log('WebView Navigation State:', event.url);
 
-//   if (event.url.includes('success')) {
-//     console.log('✅ Onboarding Successful!');
+  //   if (event.url.includes('success')) {
+  //     console.log('✅ Onboarding Successful!');
 
-//     // Optional state update
-//     setConnected(true);
+  //     // Optional state update
+  //     setConnected(true);
 
-//     // Hide WebView
-//     setOnboardingUrl(null);
+  //     // Hide WebView
+  //     setOnboardingUrl(null);
 
-//     // Navigate to Drawer
-//     setTimeout(() => {
-//       navigation?.navigate("Drawer",)
-      
-//     }, 300);
+  //     // Navigate to Drawer
+  //     setTimeout(() => {
+  //       navigation?.navigate("Drawer",)
 
-//   } else if (event.url.includes('your-app-failure-url')) {
-//     console.warn('❌ Onboarding Failed');
-//     setOnboardingUrl(null);
-//   }
-// };
+  //     }, 300);
 
-const handleWebViewNavigation = async (event: any) => {
-  console.log('🌍 WebView Navigation:', event.url);
+  //   } else if (event.url.includes('your-app-failure-url')) {
+  //     console.warn('❌ Onboarding Failed');
+  //     setOnboardingUrl(null);
+  //   }
+  // };
 
-  // Match actual completion URL
-  if (event.url.includes('/onboarding/complete')) {
-    console.log('✅ Onboarding Successful!');
-    setConnected(true);
-    setOnboardingUrl(null);
-    await refetch();
+  const handleWebViewNavigation = async (event: any) => {
+    console.log('🌍 WebView Navigation:', event.url);
 
-    setTimeout(() => {
-      navigation?.navigate('Drawer'); // ensure this matches your navigator name
-    }, 300);
-  } else if (event.url.includes('your-app-failure-url')) {
-    console.warn('❌ Onboarding Failed');
-    setOnboardingUrl(null);
-  }
-};
+    // Match actual completion URL
+    if (event.url.includes('/onboarding/complete')) {
+      console.log('✅ Onboarding Successful!');
+      setConnected(true);
+      setOnboardingUrl(null);
+      await refetch();
+
+      setTimeout(() => {
+        navigation?.navigate('Drawer'); // ensure this matches your navigator name
+      }, 300);
+    } else if (event.url.includes('your-app-failure-url')) {
+      console.warn('❌ Onboarding Failed');
+      setOnboardingUrl(null);
+    }
+  };
 
 
 
@@ -290,22 +291,25 @@ const handleWebViewNavigation = async (event: any) => {
             Consult People anytime anywhere
           </Text>
           <View style={tw`w-full items-center mt-8`}>
-            {data?.data?.stripeAccountId == null ?  (
+            {data?.data?.stripeAccountId == null ? (
               <TButton
                 onPress={handleGetConnect}
                 title="Get connet"
                 titleStyle={tw`text-white`}
                 containerStyle={tw`w-full bg-red-600`}
               />
-            ) :
-            
-            (<TButton
-              onPress={() => navigation.navigate('EnterInput')}
-              title="Become a contributor"
-              titleStyle={tw`text-black`}
-              containerStyle={tw`w-full bg-white`}
-            />)}
+            ) : (
+              data?.data?.services?.length < 1  && (
+                <TButton
+                  onPress={() => navigation.navigate('EnterInput')}
+                  title="Become a contributor"
+                  titleStyle={tw`text-black`}
+                  containerStyle={tw`w-full bg-white`}
+                />
+              )
+            )}
           </View>
+
         </View>
       </View>
 

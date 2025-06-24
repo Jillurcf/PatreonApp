@@ -94,45 +94,25 @@ const HomeSearchResult = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={tw`w-[90%]`}>
-                   <InputText
-                    style={tw`text-white`}
-                    containerStyle={tw`bg-[#262329] border h-10 relative border-[#565358]`}
-                    labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
-                    placeholder={'Search by user name'}
-                    placeholderColor={'#949494'}
-                    iconLeft={IconGeneralSearch}
-                    onChangeText={(text) => {
-                        setSearch(text);
-                        setShowDropdown(!!text); // Show dropdown if there's input
-                    }}
-                />
+                    <InputText
+                        style={tw`text-white`}
+                        containerStyle={tw`bg-[#262329] border h-10 relative border-[#565358]`}
+                        labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
+                        placeholder={'Search by user name'}
+                        placeholderColor={'#949494'}
+                        iconLeft={IconGeneralSearch}
+                        onChangeText={(text) => {
+                            setSearch(text);
+                            setShowDropdown(!!text); // Show dropdown if there's input
+                        }}
+                    />
                 </View>
 
-                {/* <View style={tw`w-8`} /> */}
             </View>
-            {/* <View style={tw`flex-row justify-between my-4 items-center`}>
-        <TouchableOpacity
-          onPress={() => navigation?.dispatch(DrawerActions.openDrawer())}>
-          <SvgXml width={30} xml={IconDrawer} />
-        </TouchableOpacity>
-        <View>
-          <Text style={tw`text-white font-AvenirLTProBlack text-right`}>
-            Welcome Back
-          </Text>
-          <Text style={tw`text-white font-AvenirLTProBlack text-lg text-right`}>
-            Sub Bou
-          </Text>
-        </View>
-      </View>
-      <Text
-        style={tw`text-white font-AvenirLTProBlack text-center text-2xl my-6`}>
-        Discover Contributers to {'\n'} Learn and Consult
-      </Text> */}
-            <View style={tw`my-4`}>
-               
 
+            <View style={tw``}>
                 {showDropdown && search.length > 0 && (
-                    <View style={tw`absolute top-16 bg-[#1e1e1e] w-full rounded-md z-50 p-2`}>
+                    <View style={tw`absolute bg-[#1e1e1e] w-full rounded-md z-50 p-2`}>
                         {isLoading ? (
                             <Text style={tw`text-white`}>Loading...</Text>
                         ) : data?.data?.result.length === 0 ? (
@@ -150,7 +130,11 @@ const HomeSearchResult = () => {
                                         }}
                                         style={tw`p-2 border-b border-[#444]`}
                                     >
-                                        <Text style={tw`text-white`}>{user.username}</Text>
+                                        <View style={tw`flex-row items-center gap-4`}>
+                                            <Image source={{ uri: `${imageUrl}/${user?.image}` }} style={tw`w-12 h-12 rounded-full`} />
+                                            <Text style={tw`text-white`}>{user.username}</Text>
+                                        </View>
+
                                     </TouchableOpacity>
                                 )
                             })
@@ -159,50 +143,7 @@ const HomeSearchResult = () => {
                 )}
             </View>
 
-            {/* <View>
-                <FlatList
-                    // key={`flatlist-2`}
-                    data={DiscoverData}
-                    keyExtractor={(item, index) => item.id || index.toString()}
-                    numColumns={2}
-                    columnWrapperStyle={{ justifyContent: 'center' }}
-                    scrollEnabled={false} // Disable FlatList scrolling
-                    renderItem={({ item }) => {
-                        // console.log(item, "")
-                        // const categoryImg = !item?.image
-                        //             ? { uri: `${imageUrl}/${item?.image}` }
-                        //             : require('../../../assets/images/logo.png'); // fallback image
-                        //   console.log(categoryImg, "categoryImg+++++++=")
-                        return (
-                            (
-                                <TouchableOpacity
-                                    // style={tw`md:w-28 md:h-28 sm:w-20 sm:h-20  rounded-lg m-2 h-24 bg-[#F4F1F1] justify-center items-center`}
-                                    style={{
-                                        width: width * 0.4,
-                                        height: height * 0.12,
-                                        margin: width * 0.02,
-                                        backgroundColor: '#262329',
-                                        borderRadius: width * 0.02,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                    onPress={() => handlePress(item.route, item.id, item.title, item.icon)}>
 
-                                    <SvgXml xml={item?.icon} />
-
-                                    <Text
-                                        style={tw`text-start py-2 text-white font-AvenirLTProBlack`}>
-                                        {item?.title}
-                                    </Text>
-                                </TouchableOpacity>
-                            )
-                        )
-                    }
-
-                    }
-                />
-            </View> */}
             <StatusBar backgroundColor="black" translucent />
         </View>
     );

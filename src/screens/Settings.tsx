@@ -85,7 +85,7 @@ const Settings = ({navigation}) => {
               <SvgXml width={20} xml={IconRightArrow} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('NotificationSetting')}
             style={tw`flex-row gap-3 items-center mt-6`}>
             <View
@@ -98,8 +98,8 @@ const Settings = ({navigation}) => {
               </Text>
               <SvgXml width={20} xml={IconRightArrow} />
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity
           onPress={()=> navigation.navigate("PaymentMethodScreen")}
           style={tw`flex-row gap-3 items-center mt-6`}>
             <View
@@ -112,7 +112,7 @@ const Settings = ({navigation}) => {
               </Text>
               <SvgXml width={20} xml={IconRightArrow} />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 

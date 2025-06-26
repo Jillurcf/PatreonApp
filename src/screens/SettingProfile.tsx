@@ -288,7 +288,10 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
             Become A Contributor
           </Text>
           <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
-            Consult People anytime anywhere
+            Consult People anytime anywhere 
+          </Text>
+          <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
+            First connect your stripe account for payouts, then create your agent.
           </Text>
           <View style={tw`w-full items-center mt-8`}>
             {data?.data?.stripeAccountId == null ? (

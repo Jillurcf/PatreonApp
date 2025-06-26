@@ -7,25 +7,25 @@ const serviceSlice = api.injectEndpoints({
       query: ({ category, title, page = 1, limit = 10 }) => {
         let queryString = '/services/get-all-services';
         const params = new URLSearchParams();
-      
+
         if (category) params.append('category', category);
         if (title) params.append('title', title);
         params.append('page', page);
         params.append('limit', limit);
-      
+
         const queryParams = params.toString();
         if (queryParams) {
           queryString += `?${queryParams}`;
         }
-      
+
         console.log("GET URL:", queryString); // 👈 Check this in browser/devtools console
-      
+
         return {
           url: queryString,
           method: 'GET',
         };
       },
-      
+
       providesTags: ['service'],
     }),
     postBecmeAContibutor: builder.mutation({
@@ -63,7 +63,7 @@ const serviceSlice = api.injectEndpoints({
       providesTags: ['service'],
     }),
     updateServicesById: builder.mutation({
-      query: ({id, data}) => ({
+      query: ({ id, data }) => ({
         url: `/services/update-service-by-id/${id}`,
         method: "PUT",
         body: data,
@@ -78,13 +78,26 @@ const serviceSlice = api.injectEndpoints({
       }),
       invalidatesTags: ['service'],
     }),
+    // getMessageList: builder.query({
+    //   query: (title) => ({
+    //     url: `/services/subscribed-services?title=${title}`,
+    //     method: 'GET',
+    //   }),
+    //   providesTags: ['service'],
+    // }),
     getMessageList: builder.query({
-      query: (title) => ({
-        url: `/services/subscribed-services?title=${title}`,
-        method: 'GET',
-      }),
+      query: (title) => {
+        const hasTitle = title?.trim(); // Check if title is not empty
+        return {
+          url: hasTitle
+            ? `/services/subscribed-services?title=${encodeURIComponent(title)}`
+            : `/services/subscribed-services`,
+          method: 'GET',
+        };
+      },
       providesTags: ['service'],
     }),
+
   }),
 
 });
@@ -95,6 +108,6 @@ export const { useGetAllServiceQuery,
   useGettMyServicesQuery,
   useDeleteServicesMutation,
   useGetServicesByIdQuery,
- useUpdateServicesByIdMutation,
- useGetMessageListQuery
+  useUpdateServicesByIdMutation,
+  useGetMessageListQuery
 } = serviceSlice;

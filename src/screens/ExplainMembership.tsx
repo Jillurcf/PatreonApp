@@ -505,6 +505,7 @@ const ExplainMembership = ({ navigation }) => {
     <View style={[styles.item, { backgroundColor: isDarkMode ? '#222' : '#262329', }]}>
     
       <Text style={{ color: isDarkMode ? '#fff' : 'white' }}>{item.label}</Text>
+   
     </View>
   );
 

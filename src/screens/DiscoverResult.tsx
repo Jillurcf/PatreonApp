@@ -22,6 +22,7 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
   const lowerCaseTaskId = taskId?.toLowerCase() || '';
   // console.log( 'loserCaseTaskId++++++', lowerCaseTaskId);
   const [searchText, setSearchText] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
   const [titles, setTitles] = useState(title || '');
   const [page, setPage] = useState(1);
   const [services, setServices] = useState([]);
@@ -97,7 +98,7 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
           iconLeft={IconGeneralSearch}
           readonly={true}
           onChangeText={(text) => {
-            setSearch(text);
+           setSearchText(text);
             setShowDropdown(!!text); // Show dropdown if there's input
           }}
         />

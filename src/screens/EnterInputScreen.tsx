@@ -110,7 +110,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
                 placeholderTextColor="#c7c7c7"
                 underlineColorAndroid="transparent"
                 multiline
-                maxLength={120}
+                maxLength={1000}
                 textAlignVertical="top"
               />
             </View>

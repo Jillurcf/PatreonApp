@@ -9,6 +9,7 @@ import {
     View,
 } from 'react-native';
 import React, { useState } from 'react';
+
 import { SvgUri, SvgXml } from 'react-native-svg';
 import { IconBack, IconBusiness, IconDrawer, IconEconomy, IconFinance, IconGeneralSearch, IconGoogle, IconLaw, iconLock, IconMarketing, IconWriting } from '../assets/icons/icons';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
@@ -96,7 +97,7 @@ const HomeSearchResult = () => {
                 <View style={tw`w-[90%]`}>
                     <InputText
                         style={tw`text-white`}
-                        containerStyle={tw`bg-[#262329] border h-10 relative border-[#565358]`}
+                        containerStyle={tw`bg-[#262329] border h-12 relative border-[#565358]`}
                         labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
                         placeholder={'Search by user name'}
                         placeholderColor={'#949494'}
@@ -119,20 +120,31 @@ const HomeSearchResult = () => {
                             <Text style={tw`text-white`}>No users found</Text>
                         ) : (
                             data?.data?.result?.map((user) => {
-                                console.log(user, "user from discover+++++++++++++++")
+                                console.log(user?.services, "user from discover+++++++++++++++")
                                 return (
                                     <TouchableOpacity
                                         key={user.id}
                                         onPress={() => {
                                             setShowDropdown(false);
-                                            setSearch('');
-                                            navigation.navigate('Profile', { userId: user?._id }); // 👈 Pass full user data
+                                            // setSearch('');
+                                            navigation.navigate('Profile', { userId: user?._id, serviceId:user?.services[0]?._id, title: user?.services[0]?.title
+                                              }); // 👈 Pass full user data
                                         }}
                                         style={tw`p-2 border-b border-[#444]`}
                                     >
                                         <View style={tw`flex-row items-center gap-4`}>
                                             <Image source={{ uri: `${imageUrl}/${user?.image}` }} style={tw`w-12 h-12 rounded-full`} />
-                                            <Text style={tw`text-white`}>{user.username}</Text>
+                                            {/* <Text style={tw`text-white`}>{user.username}</Text> */}
+                                            <View style={tw``}>
+                                                <Text style={tw`text-white`}>{user.name || "No user name found"}</Text>
+                                                <Text style={tw`text-white`}>{user.services[0]?.title || "No service"}</Text>
+                                                <Text style={tw`text-white`}>
+                                                    {user.services?.length > 0 && user.services[0]?.description
+                                                        ? user.services[0].description.slice(0, 20)
+                                                        : ''}
+                                                </Text>
+
+                                            </View>
                                         </View>
 
                                     </TouchableOpacity>

@@ -17,6 +17,7 @@ import { getExplainMemberValue, loadMediaPromptData } from '../utils';
 import { IconBack, IconPlus } from '../assets/icons/icons';
 
 const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
+    const [serviceSuccess, setServiceSuccess] = useState(false);
     const [fields, setFields] = useState(['', '', '']);
     const [value, setValue] = useState({
         title: '',
@@ -55,6 +56,7 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
     };
 
     const handleSave =async () => {
+       
         // console.log(fields, "Fields ++++++++++++++++++++++")
         try {
             const formData = new FormData()
@@ -72,6 +74,7 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
             console.log(formData, "formData in explain membership page==================before sending to api")
             const res =await  postBecmeAContibutor(formData).unwrap();
             if(res?.success === true) {
+                setServiceSuccess(res?.success ===true);
             // If the response is successful, navigate to the SettingProfile screen
             navigation.navigate('SettingProfile');
             console.log(res, "res++++++++++++++++")
@@ -129,12 +132,17 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
                 </View>
 
                 {/* Save Button */}
-                <TouchableOpacity
+                {serviceSuccess ? (
+                    ""
+                ): (
+                     <TouchableOpacity
                     onPress={handleSave}
-                    style={tw`bg-white rounded-xl py-4 items-center`}
+                    style={tw`bg-white rounded-xl py-4 mb-4 items-center`}
                 >
                     <Text style={tw`text-black font-bold text-base`}>Save</Text>
                 </TouchableOpacity>
+                )}
+               
             </ScrollView>
         </SafeAreaView>
     );

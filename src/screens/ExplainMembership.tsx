@@ -482,6 +482,22 @@ const ExplainMembership = ({ navigation }) => {
   }, [category]);
 
   const handleSave = async () => {
+    const isEmpty =
+      !value.title.trim() ||
+      !value.subtitle.trim() ||
+      !value.currency.trim() ||
+    
+      !value.description.trim() ||
+      !value.category.trim()
+      
+
+    if (isEmpty) {
+      console.log(isEmpty, "isEmpty+++++++++++++")
+      Alert.alert('Error', 'Please fill in all fields before continue.');
+      console.log('Error', 'Please fill in all fields before uploading.');
+      return;
+    }
+
     setExplainMemberValue(value);
     navigation.navigate('ExplainMembership1');
   };
@@ -503,9 +519,9 @@ const ExplainMembership = ({ navigation }) => {
 
   const renderItem = item => (
     <View style={[styles.item, { backgroundColor: isDarkMode ? '#222' : '#262329', }]}>
-    
+
       <Text style={{ color: isDarkMode ? '#fff' : 'white' }}>{item.label}</Text>
-   
+
     </View>
   );
 
@@ -551,7 +567,10 @@ const ExplainMembership = ({ navigation }) => {
           value={value.title}
           onChangeText={text => setValue(prev => ({ ...prev, title: text }))}
         />
-
+        {!value.title.trim() && (
+          <Text style={tw`text-red-600 text-xs mt-2`}>
+            Please enter a title.*</Text>
+        )}
         <Text style={tw`text-white font-bold text-xs mt-2`}>Subtitle</Text>
         <TextInput
           style={tw`mt-1 w-full h-10 text-white bg-[#262329] border border-gray-400 rounded-2xl px-3`}
@@ -560,12 +579,15 @@ const ExplainMembership = ({ navigation }) => {
           value={value.subtitle}
           onChangeText={text => setValue(prev => ({ ...prev, subtitle: text }))}
         />
-
+        {!value.subtitle.trim() && (
+          <Text style={tw`text-red-600 text-xs mt-2`}>
+            Please enter a subtitle.*</Text>
+        )}
         <Text style={tw`text-white font-bold text-xs mt-2`}>Price</Text>
         <View style={tw`relative mt-2`}>
           <TextInput
             style={tw`w-full h-10 text-white bg-[#262329] border border-gray-400 rounded-2xl px-10`}
-            placeholder="Enter price"
+            placeholder="Enter price (Minimum 3$)"
             placeholderTextColor="white"
             value={value.currency}
             onChangeText={text => setValue(prev => ({ ...prev, currency: text }))}
@@ -574,7 +596,10 @@ const ExplainMembership = ({ navigation }) => {
             <SvgXml xml={IconDollar} width={20} height={20} />
           </View>
         </View>
-
+ {!value.currency.trim() && (
+          <Text style={tw`text-red-600 text-xs mt-2`}>
+            Please enter a price.*</Text>
+        )}
         <Text style={tw`text-white font-bold text-xs mt-2`}>About</Text>
         <View style={tw`h-44 mt-2 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
           <Textarea
@@ -589,7 +614,10 @@ const ExplainMembership = ({ navigation }) => {
             textAlignVertical="top"
           />
         </View>
-
+ {!value.description.trim() && (
+          <Text style={tw`text-red-600 text-xs mt-2`}>
+            Please enter a description.*</Text>
+        )}
         <Text style={tw`text-white font-bold text-xs mt-2`}>Category</Text>
         <View style={tw`mt-2`}>
           <Dropdown
@@ -615,9 +643,13 @@ const ExplainMembership = ({ navigation }) => {
             renderItem={renderItem}
           />
         </View>
+        {!value.description.trim() && (
+          <Text style={tw`text-red-600 text-xs mt-2`}>
+            Please select a category.*</Text>
+        )}
       </View>
 
-      <View style={tw`mb-10 mt-6 items-center`}>
+      <View style={tw`mb-10 mt-4 items-center`}>
         <TButton
           onPress={handleSave}
           title="Continue"
@@ -682,7 +714,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: 'gray',
-   
+
   },
 });
 

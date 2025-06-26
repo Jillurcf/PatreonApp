@@ -36,12 +36,13 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [promptInput, setPromptInput] = useState("")
   console.log(promptInput, "input========================")
-
+const allData = {selectedPdf, promptInput}
 
 
   
 
   const handleUploadPdf = async () => {
+    
     try {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.pdf],
@@ -72,6 +73,10 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
     }
   };
   const handleSave = () => {
+    if(!allData.selectedPdf || !allData.promptInput) {
+      Alert.alert('Error', 'Please fill in all fields before uploading.');
+      return;
+    }
     console.log(selectedPdf, promptInput, 'data before sending ==========');
     saveMediaPromptData(selectedPdf, null, promptInput);
     const { selectedImages: savedImages, promptInput: savedPrompt } = loadMediaPromptData();
@@ -113,6 +118,11 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
                 maxLength={1000}
                 textAlignVertical="top"
               />
+              {!promptInput && (
+                <Text style={tw`text-red-600 text-xs mt-2`}>
+                  Please enter your instruction here.*
+                </Text>
+              )}
             </View>
           </View>
 
@@ -131,6 +141,10 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
 
 
             </View>
+            {!selectedPdf && (
+              <Text style={tw`text-red-600 text-xs mt-2`}>
+                Please upload a PDF file.*
+              </Text>)}
           </View>
         </View>
         {selectedPdf && (

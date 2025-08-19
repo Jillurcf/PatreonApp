@@ -154,7 +154,7 @@ export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     // baseUrl: 'http://16.171.212.209:3004/api', 
-    baseUrl: 'http://10.0.80.85:3004/api',
+    baseUrl: 'http://10.10.10.70:3004/api',
     credentials: 'include', // Ensures cookies (like auth tokens) are sent with every request
     prepareHeaders: (headers) => {
       // Optionally, set custom headers if needed (e.g., JSON request type)
@@ -340,4 +340,4 @@ export const api = createApi({
 
 // Image URL for assets (if needed)
 // export const imageUrl = 'http://16.171.212.209:3004';
-export const imageUrl = 'http://10.0.80.85:3004';
+export const imageUrl = 'http://10.10.10.70:3004';

@@ -16,7 +16,7 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import tw from '../lib/tailwind';
 import { IconBack, IconPencil, IconPlus } from '../assets/icons/icons';
 import TButton from '../components/TButton';
-import { usePostCreateConnectMutation } from '../redux/apiSlice/paymentSlice';
+import { usePostCreateConnectMutation, usePostCreateRecipientMutation } from '../redux/apiSlice/paymentSlice';
 import WebView from 'react-native-webview';
 import { useFocusEffect } from '@react-navigation/native';
 // import { useGetUserQuery, usePatchUpdateUserProfileMutation } from '@/src/redux/apiSlice/userSlice';
@@ -27,8 +27,9 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [loading, setLoading] = React.useState(false);
   const [connected, setConnected] = useState()
   const [postCreateConnect] = usePostCreateConnectMutation();
+  const [postCreateRecipient, { isLoading }] = usePostCreateRecipientMutation();
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
-  const { data, isLoading, isError, refetch } = useGetUserQuery({});
+  const { data, isError, refetch } = useGetUserQuery({});
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
   console.log(data?.data, "data======================")
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
@@ -36,7 +37,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
 
   useEffect(() => {
     data?.data?.stripeAccountId
-     refetch();
+    refetch();
   }, [data?.data]);
 
   const selectImage = async () => {
@@ -104,15 +105,18 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
     console.log('🔘 Button clicked');
     setLoading(true);
     try {
-      const response = await postCreateConnect();
-      const url = response?.data?.data?.url;
+      // const response = await postCreateConnect();
+      const response = await postCreateRecipient().unwrap();
+      // const url = response?.data?.data?.url;
+      console.log(response, "recipient, response++++++");
+      navigation.navigate("UpdateRecipient")
 
-      if (url) {
-        console.log('🌐 Onboarding URL:', url);
-        setOnboardingUrl(url); // open in WebView
-      } else {
-        console.warn('⚠️ Onboarding URL is undefined:', response);
-      }
+      // if (url) {
+      //   console.log('🌐 Onboarding URL:', url);
+      //   setOnboardingUrl(url); // open in WebView
+      // } else {
+      //   console.warn('⚠️ Onboarding URL is undefined:', response);
+      // }
     } catch (error) {
       console.error('❌ Error fetching connect URL:', error);
     } finally {
@@ -267,14 +271,24 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
       {/* ======================= My services ========================== */}
       <View style={tw`items-center`}>
         <View style={tw`flex-row items-center bg-[#262329]  w-[90%] rounded-2xl p-[6%] justify-between px-[4%]`}>
-          <View style={tw`w-[100%] items-center`}>
-            <TButton
-              onPress={() => navigation.navigate('MyService')}
-              title="My services"
-              titleStyle={tw`text-black`}
-              containerStyle={tw`w-full bg-white`}
-            />
-          </View>
+          {/* <View style={tw`w-[100%] flex-row justify-between items-center`}>
+            <View style={tw`w-[45%]`}> */}
+              <TButton
+                onPress={() => navigation.navigate('MyService')}
+                title="My services"
+                titleStyle={tw`text-black`}
+                containerStyle={tw`w-full bg-white`}
+              />
+            </View>
+            <View style={tw`w-[45%]`}>
+              {/* <TButton
+                onPress={() => navigation.navigate('MyAccount')}
+                title="My accounts"
+                titleStyle={tw`text-black`}
+                containerStyle={tw`w-full bg-white`}
+              /> */}
+            {/* </View>
+          </View> */}
           {/* <View style={tw`w-[20%] items-center flex-row mx-[4%] `}>
             <Text style={tw`text-white text-center`}>Total =</Text>
             <Text style={tw`text-white`}>15</Text>
@@ -288,21 +302,21 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
             Become A Contributor
           </Text>
           <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
-            Consult People anytime anywhere 
+            Consult People anytime anywhere
           </Text>
           <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
             First connect your stripe account for payouts, then create your agent.
           </Text>
           <View style={tw`w-full items-center mt-8`}>
-            {data?.data?.stripeAccountId == null ? (
+            {data?.data?.attachedBankAccounts.length < 0 ? (
               <TButton
                 onPress={handleGetConnect}
-                title="Get connet"
+                title={isLoading ? "Connecting..." : "Get connet"}
                 titleStyle={tw`text-white`}
                 containerStyle={tw`w-full bg-red-600`}
               />
             ) : (
-              data?.data?.services?.length < 1  && (
+              data?.data?.services?.length < 1 && (
                 <TButton
                   onPress={() => navigation.navigate('EnterInput')}
                   title="Become a contributor"

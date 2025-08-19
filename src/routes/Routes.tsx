@@ -35,6 +35,9 @@ import ExplainMembershipScreen from '../screens/ExplainMembership1';
 import MyServices from '../screens/MyService';
 import EditService from '../screens/EditService';
 import HomeSearchResult from '../screens/HomeSearchResult';
+import UpdateRecipientScreen from '../screens/UpdateRecipientScreen';
+import AttachBankAccountScreen from '../screens/AttachBankAccountScreen';
+import MyAccount from '../screens/MyAccount';
 // import { StripeProvider } from '@stripe/stripe-react-native';
 
 
@@ -70,6 +73,7 @@ export default function Routes() {
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="SettingProfile" component={SettingProfile} />
+      <Stack.Screen name="MyAccount" component={MyAccount} />
       <Stack.Screen name="MyService" component={MyServices} />
       <Stack.Screen name="EditService" component={EditService} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
@@ -82,6 +86,9 @@ export default function Routes() {
       <Stack.Screen name="MessageScreen" component={MessageScreen} />
       <Stack.Screen name="Subscriber" component={Subscriber} />
       <Stack.Screen name="BecomeContributor" component={BecomeContributor} />
+      <Stack.Screen name="UpdateRecipient" component={UpdateRecipientScreen} />
+      <Stack.Screen name="AttachBankAccount" component={AttachBankAccountScreen} />
+
       <Stack.Screen name="EnterInput" component={EnterInput} />
       <Stack.Screen name="ExplainMembership" component={ExplainMembership} />
       <Stack.Screen name="ExplainMembership1" component={ExplainMembershipScreen} />

@@ -486,10 +486,10 @@ const ExplainMembership = ({ navigation }) => {
       !value.title.trim() ||
       !value.subtitle.trim() ||
       !value.currency.trim() ||
-    
+
       !value.description.trim() ||
       !value.category.trim()
-      
+
 
     if (isEmpty) {
       console.log(isEmpty, "isEmpty+++++++++++++")
@@ -548,6 +548,21 @@ const ExplainMembership = ({ navigation }) => {
     }
   };
 
+  const handleCurrencyChange = (text: string) => {
+    // Convert input text to number
+    const price = parseFloat(text);
+
+    // Check if it's a valid number and less than 3
+    if (!isNaN(price) && price < 3) {
+      Alert.alert('Error', 'Minimum price must be $3');
+      return;
+    }
+
+    // If valid, update currency state
+    setValue(prev => ({ ...prev, currency: text }));
+  };
+
+
   return (
     <ScrollView contentContainerStyle={tw`flex-1 bg-black px-[4%]`}>
       <View style={tw`my-10`}>
@@ -590,13 +605,14 @@ const ExplainMembership = ({ navigation }) => {
             placeholder="Enter price (Minimum 3$)"
             placeholderTextColor="white"
             value={value.currency}
-            onChangeText={text => setValue(prev => ({ ...prev, currency: text }))}
+            // onChangeText={text => setValue(prev => ({ ...prev, currency: text }))}
+            onChangeText={handleCurrencyChange}
           />
           <View style={tw`absolute left-3 top-2`}>
             <SvgXml xml={IconDollar} width={20} height={20} />
           </View>
         </View>
- {!value.currency.trim() && (
+        {!value.currency.trim() && (
           <Text style={tw`text-red-600 text-xs mt-2`}>
             Please enter a price.*</Text>
         )}
@@ -614,7 +630,7 @@ const ExplainMembership = ({ navigation }) => {
             textAlignVertical="top"
           />
         </View>
- {!value.description.trim() && (
+        {!value.description.trim() && (
           <Text style={tw`text-red-600 text-xs mt-2`}>
             Please enter a description.*</Text>
         )}

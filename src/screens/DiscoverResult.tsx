@@ -19,6 +19,7 @@ import { imageUrl } from '../redux/baseApi';
 
 const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
   const { title, taskId } = route.params || {};
+  console.log(title, taskId, 'title and taskId+++++++');
   const lowerCaseTaskId = taskId?.toLowerCase() || '';
   // console.log( 'loserCaseTaskId++++++', lowerCaseTaskId);
   const [searchText, setSearchText] = useState('');
@@ -94,6 +95,7 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
           containerStyle={tw`bg-[#262329] border h-14 relative border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
           placeholder={'Search by user name'}
+          cursorColor={'white'}
           placeholderColor={'#949494'}
           iconLeft={IconGeneralSearch}
           readonly={true}
@@ -144,6 +146,11 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
                   <View style={tw`flex-row justify-between mt-2`}>
                     <Text style={tw`text-white font-AvenirLTProBlack`}>
                       {item?.subtitle}
+                    </Text>
+                  </View>
+                  <View style={tw`flex-row justify-between mt-2`}>
+                    <Text style={tw`text-white text-xs font-AvenirLTProBlack`}>
+                     Price: ${item?.price}
                     </Text>
                   </View>
                 </View>

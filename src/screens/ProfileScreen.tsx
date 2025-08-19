@@ -30,7 +30,9 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   const { data, isLoading, isError, refetch } = useGetSingleUserQuery(userId);
   console.log(data, '=======================data')
   const [serviceData, setServiceData] = React.useState<any>(null);
+  const [resSessionId, setResSessionId] = useState<string | null>(null);
   console.log(serviceData, "serviceData++++++");
+  console.log(resSessionId, "resSessionId++++++");
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
   useEffect(() => {
     const service = getServiceData();
@@ -100,56 +102,57 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   //     }
   //   };
 
- const handleWebViewNavigation = useCallback(
-  async (event: any) => {
-    const url = event?.url || '';
-    console.log('WebView Navigation State:=============+', event);
+  const handleWebViewNavigation = useCallback(
+    async (event: any) => {
+      const url = event?.url || '';
+      console.log('WebView Navigation State:=============+', event);
 
-    if (event?.canGoBack === true) {
-      setTimeout(() => {
-        navigation.navigate('Drawer');
-      }, 300);
-    }
+      if (event?.canGoBack === true) {
+        setTimeout(() => {
+          navigation.navigate('Drawer');
+        }, 300);
+      }
 
-    if (url.includes('session_id=')) {
-      console.log('Stripe Redirect Detected. Session ID present.');
+      if (url.includes('session_id=')) {
+        console.log('Stripe Redirect Detected. Session ID present.');
 
-      const match = url.match(/[?&]session_id=([^&]+)/);
-      const sessionId = match ? decodeURIComponent(match[1]) : null;
-      console.log('Extracted Session ID:', sessionId);
+        const match = url.match(/[?&]session_id=([^&]+)/);
+        const sessionId = match ? decodeURIComponent(match[1]) : null;
+        console.log('Extracted Session ID:', sessionId);
+        setResSessionId(sessionId);
+        setOnboardingUrl(null);
 
-      setOnboardingUrl(null);
+        try {
+          const formData = new FormData();
+          formData.append('serviceId', serviceId);
+          formData.append('sessionId', sessionId ?? "");
+          // formData.append('amount', price?.toString());
+          // formData.append('status', 'succeeded');
+          console.log(formData, 'Form Data for Transaction Creation');
 
-      try {
-        const formData = new FormData();
-        formData.append('serviceId', serviceId);
-       formData.append('amount', price?.toString());  
-        formData.append('status', 'succeeded');
-        console.log(formData, 'Form Data for Transaction Creation');
+          const res = await postCreateTransaction(formData).unwrap();
+          console.log(res, 'Transaction Created Successfully');
 
-        const res = await postCreateTransaction(formData).unwrap();
-        console.log(res, 'Transaction Created Successfully');
+          setTimeout(() => {
+            navigation.navigate('PaymentResult');
+          }, 300);
+        } catch (error) {
+          console.error('Transaction creation failed:', error);
+          // navigation.navigate('PaymentFailed');
+        }
+      }
+
+      if (url.includes('cancel') || url.includes('failure')) {
+        console.warn('User cancelled or error occurred');
+        setOnboardingUrl(null);
 
         setTimeout(() => {
-          navigation.navigate('PaymentResult');
+          navigation.navigate('PaymentFailed');
         }, 300);
-      } catch (error) {
-        console.error('Transaction creation failed:', error);
-        // navigation.navigate('PaymentFailed');
       }
-    }
-
-    if (url.includes('cancel') || url.includes('failure')) {
-      console.warn('User cancelled or error occurred');
-      setOnboardingUrl(null);
-
-      setTimeout(() => {
-        navigation.navigate('PaymentFailed');
-      }, 300);
-    }
-  },
-  [navigation, setOnboardingUrl, serviceId, price, postCreateTransaction]
-);
+    },
+    [navigation, setOnboardingUrl, serviceId, price, postCreateTransaction]
+  );
 
 
   if (onboardingUrl) {
@@ -191,7 +194,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         <View style={tw`w-8`} />
       </View>
       <View style={tw`flex items-center justify-center mt-8`}>
-        <Image style={tw`rounded-full`} width={80} height={80} source={{ uri: fullImageUrl }} />
+       {fullImageUrl ?(<Image style={tw`rounded-full`} width={80} height={80} source={{ uri: fullImageUrl }} />): (<Image style={tw`rounded-full`} width={80} height={80} source={require('../assets/images/alteravater.png')} />)} 
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
           {data?.data?.username || 'Username'}
         </Text>

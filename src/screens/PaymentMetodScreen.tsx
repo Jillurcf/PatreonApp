@@ -33,6 +33,8 @@ import TButton from '../components/TButton';
 import tw from '../lib/tailwind';
 import IconArrow from '../components/IconArrow';
 import {SvgXml} from 'react-native-svg';
+import { useGetUserQuery } from '../redux/apiSlice/userSlice';
+import { useGetWalletByUserQuery, usePostCreateWalletMutation } from '../redux/apiSlice/paymentSlice';
 
 const data = [
   {label: 'Item 1', value: '1'},
@@ -46,9 +48,14 @@ const data = [
 ];
 
 const PaymentMethodScreen = ({navigation}: NavigProps<null>) => {
+   const { data, isLoading, isError, refetch } = useGetUserQuery({});
+   const {data:walletInformation, isLoading: walletLoading, isError: walletError} = useGetWalletByUserQuery({});
+   const [postCreateWallet] = usePostCreateWalletMutation();
+   const [walletData, setWalletData] = useState<any>(null);
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
-
+console.log(data?.data, "data======================")
+console.log(walletInformation?.data, "walletInformation======================")
   // const renderLabel = () => {
   //   if (value || isFocus) {
   //     return (
@@ -59,6 +66,17 @@ const PaymentMethodScreen = ({navigation}: NavigProps<null>) => {
   //   }
   //   return null;
   // };
+  const handleCreateWallet = async () => {
+    try {
+      const response = await postCreateWallet();
+      console.log(response?.data?.data, "Create Wallet Response");
+      setWalletData(response?.data?.data);
+      refetch()
+    } catch (error) {
+      console.error('Create Wallet Error:', error);
+      Alert.alert('Error', 'Failed to create wallet');
+    }
+  };
   return (
     <ScrollView
       contentContainerStyle={tw`flex-1 bg-black h-[95%] px-[4%] items-center justify-between`}>
@@ -70,7 +88,7 @@ const PaymentMethodScreen = ({navigation}: NavigProps<null>) => {
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
           <Text style={tw`text-white font-bold font-AvenirLTProBlack text-2xl`}>
-            Payment Method
+            Payout Method
           </Text>
           <View style={tw`w-8`} />
         </View>
@@ -81,7 +99,7 @@ const PaymentMethodScreen = ({navigation}: NavigProps<null>) => {
             style={tw` p-2 bg-[#262329] w-full rounded-3xl py-8`}>
             <Text
               style={tw`text-white font-AvenirLTProBlack text-4xl text-center `}>
-              $170,000
+            { `$${walletInformation?.data?.balance}`}
             </Text>
             <Text style={tw`text-white font-AvenirLTProBlack text-center mt-6`}>
               Available for withdraw
@@ -91,7 +109,8 @@ const PaymentMethodScreen = ({navigation}: NavigProps<null>) => {
       </View>
 
       {/* Continue button */}
-      <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
+      {data?.data?.wallet?.length >= 1 ? (
+        <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
         <TButton
         onPress={()=> navigation?.navigate("WithdrawScreen")}
           titleStyle={tw`text-black font-bold text-center`}
@@ -99,6 +118,15 @@ const PaymentMethodScreen = ({navigation}: NavigProps<null>) => {
           containerStyle={tw`bg-primary w-[90%] rounded-full`}
         />
       </View>
+      ):(<View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
+        <TButton
+        onPress={handleCreateWallet}
+          titleStyle={tw`text-black font-bold text-center`}
+          title="Create Wallet"
+          containerStyle={tw`bg-primary w-[90%] rounded-full`}
+        />
+      </View>)}
+      
 
       <StatusBar backgroundColor={'gray'} translucent={false} />
     </ScrollView>

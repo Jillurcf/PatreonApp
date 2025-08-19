@@ -90,13 +90,14 @@ const HomeSearchResult = () => {
                                 console.log('No screen to go back to');
                             }
                         }}
-                        style={tw`bg-PrimaryFocus rounded-full p-1`}>
+                        style={tw`bg-PrimaryFocus rounded-full p-2`}>
                         <SvgXml xml={IconBack} />
                     </TouchableOpacity>
                 </View>
-                <View style={tw`w-[90%]`}>
+                <View style={tw`w-[90%] mt-2`}>
                     <InputText
                         style={tw`text-white`}
+                        cursorColor={'white'}
                         containerStyle={tw`bg-[#262329] border h-12 relative border-[#565358]`}
                         labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
                         placeholder={'Search by user name'}

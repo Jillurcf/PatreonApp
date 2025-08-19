@@ -16,6 +16,34 @@ export const paymentSlice = api.injectEndpoints({
       }),
       //   providesTags: ['PaymentMethods'], 
     }),
+    postCreateRecipient: builder.mutation({
+      query: () => ({
+        url: `/stripe/create-recipient`,
+        method: 'POST',
+      }),
+      //   providesTags: ['PaymentMethods'], 
+    }),
+
+    putUpdateRecipient: builder.mutation({
+      query: (data) => ({
+        url: `/stripe/update-recipient`,
+        method: 'PUT',
+
+        body: data,
+
+      }),
+      //   providesTags: ['PaymentMethods'], 
+    }),
+    attachBankAccount: builder.mutation({
+      query: (data) => ({
+        url: `/stripe/attach-bank-account-gb`,
+        method: 'PUT',
+
+        body: data,
+
+      }),
+      //   providesTags: ['PaymentMethods'], 
+    }),
     postCreateTransaction: builder.mutation({
       query: (data) => ({
         url: `/transactions/create`,
@@ -24,13 +52,51 @@ export const paymentSlice = api.injectEndpoints({
       }),
       //   providesTags: ['PaymentMethods'], 
     }),
-    
+    postCreateWallet: builder.mutation({
+      query: () => ({
+        url: `/wallets`,
+        method: 'POST',
+        // body: data,
+      }),
+      //   providesTags: ['PaymentMethods'], 
+    }),
+    globalPayout: builder.mutation({
+      query: (data) => ({
+        url: `/stripe/send-payout`,
+        method: 'POST',
+        body: data,
+      }),
+      //   providesTags: ['PaymentMethods'], 
+    }),
+    getWalletByUser: builder.query({
+      query: () => ({
+        url: `/wallets/self`,
+        method: 'GET',
+        // body: data,
+      }),
+      //   providesTags: ['PaymentMethods'], 
+    }),
+    myBanckAccounts: builder.query({
+      query: () => ({
+        url: `/stripe/recipient-payout-methods`,
+        method: 'GET',
+        // body: data,
+      }),
+      //   providesTags: ['PaymentMethods'], 
+    }),
+
   }),
 });
 
 export const { usePostPaymentMethodsMutation,
   usePostCreateConnectMutation,
-  usePostCreateTransactionMutation
-  
-  
- } = paymentSlice;
+  usePostCreateTransactionMutation,
+  usePostCreateRecipientMutation,
+  usePutUpdateRecipientMutation,
+  useAttachBankAccountMutation,
+  usePostCreateWalletMutation,
+  useGlobalPayoutMutation,
+  useGetWalletByUserQuery,
+  useMyBanckAccountsQuery,
+
+} = paymentSlice;

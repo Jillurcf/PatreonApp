@@ -12,16 +12,16 @@ import { IconBack, IconEdit } from '../assets/icons/icons'
 
 type Props = {}
 
-const MyServices = ({navigation} :{navigation:any}) => {
+const MyServices = ({ navigation }: { navigation: any }) => {
     const { data, refetch, isLoading, isError } = useGettMyServicesQuery({})
     console.log(data?.data, "My serviced data =================14")
     const [deleteServices] = useDeleteServicesMutation();
 
     const handleEditService = (item) => {
         console.log(item?._id, "click+++++++++++++++++++++++++")
-       
-          navigation.navigate( "EditService",
-           {
+
+        navigation.navigate("EditService",
+            {
                 id: item?._id,
             }
         )
@@ -66,7 +66,7 @@ const MyServices = ({navigation} :{navigation:any}) => {
                 </View>
             </View>
             {/* =============== my services section =================== */}
-            
+
             <View style={tw`mt-4`}>
                 <FlatList
                     data={data?.data}
@@ -79,24 +79,27 @@ const MyServices = ({navigation} :{navigation:any}) => {
                                 <View style={tw`flex-row items-center`}>
 
                                     <View style={tw`flex-1 pb-2`}>
-                                        <View style={tw`flex-row mr-2 items-center`}>
+                                        <View style={tw` mr-2 `}>
                                             <Text style={tw`text-white font-AvenirLTProBlack`}>
-                                            {item?.title}
+                                                Title: {item?.title}
+                                            </Text>
+                                            <Text style={tw`text-white mt-1 text-xs font-AvenirLTProBlack`}>
+                                                Price: {item?.price ? `$${item?.price}` : 'Free'}
                                             </Text>
                                         </View>
                                         <View style={tw`flex-row justify-between mt-2`}>
                                             <Text style={tw`text-white font-AvenirLTProBlack`}>
-                                                {item?.subtitle}
+                                                Subtitle: {item?.subtitle}
                                             </Text>
                                         </View>
                                         <View style={tw`flex-row justify-between mt-2`}>
                                             <Text style={tw`text-white font-AvenirLTProBlack`}>
-                                                {item?.category}
+                                                Category: {item?.category}
                                             </Text>
                                         </View>
                                         <View style={tw`flex-row justify-between mt-2`}>
-                                            <Text style={tw`text-white font-AvenirLTProBlack`}>
-                                                {item?.description.slice(0, 100)}...
+                                            <Text style={tw` mt-2 text-white font-AvenirLTProBlack`}>
+                                                Description: {item?.description.slice(0, 100)}
                                             </Text>
                                         </View>
                                     </View>

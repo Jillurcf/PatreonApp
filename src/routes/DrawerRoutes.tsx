@@ -9,6 +9,7 @@ import {
 import tw from '../lib/tailwind';
 import { SvgXml } from 'react-native-svg';
 import {
+  IconBack,
   IconDarawerUser,
   IconLogout,
   IconNotification,
@@ -41,11 +42,15 @@ function DrawerContent({ navigation }: any) {
   return (
     <View style={tw`px-4 py-8 h-full justify-between bg-[#000000]`}>
       <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={tw`flex-row justify-end`}>
-          <SvgXml xml={IconRightArrow} />
-        </TouchableOpacity>
+      <View style={tw`flex-row justify-end px-4`}>
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={tw`bg-[#262329] w-10 h-10 items-center justify-center rounded-full`}
+                >
+                  <SvgXml xml={IconBack} width={20} height={20} />
+                </TouchableOpacity>
+              </View>
+
         <View style={tw`mt-4 gap-y-5`}>
           <TouchableOpacity
             onPress={() =>

@@ -106,7 +106,7 @@ const allData = {selectedPdf, promptInput}
 
           {/* Input Area */}
           <View style={tw`mt-8`}>
-            <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Instruction</Text>
+            <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Title</Text>
             <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
               <TextInput
                 onChangeText={(text) => setPromptInput(text)}

@@ -1,33 +1,68 @@
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native'
+// import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native'
 
+// import React from 'react'
+// import tw from '../lib/tailwind'
+
+
+// interface IButton {
+
+//     containerStyle ?: {},
+//     titleStyle ?: {},
+//     title ?: string,
+//     isLoading ?: boolean,
+//     onPress ?: () => void
+// }
+
+
+// const TButton = ({containerStyle,title,titleStyle,isLoading,onPress} :IButton) => {
+//   return (
+//     <TouchableOpacity onPress={onPress} disabled={isLoading} activeOpacity={.5} style={[tw`bg-[#003CFF] py-4 px-3 flex-row justify-center gap-3 rounded-2xl shadow-md w-36`,containerStyle]}>
+//       {
+//         isLoading && <ActivityIndicator />
+//       }
+//     {
+//         title &&    <Text style={[tw`text-white font-semibold`,titleStyle]}>{title}</Text>
+//     }
+ 
+//   </TouchableOpacity>
+//   )
+// }
+
+// export default TButton
+
+// const styles = StyleSheet.create({})
+
+
+
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import tw from '../lib/tailwind'
 
-
 interface IButton {
-
-    containerStyle ?: {},
-    titleStyle ?: {},
-    title ?: string,
-    isLoading ?: boolean,
-    onPress ?: () => void
+  containerStyle?: {},
+  titleStyle?: {},
+  title?: string,
+  isLoading?: boolean,
+  onPress?: () => void,
+  disabled?: boolean, // ✅ added this
 }
 
-
-const TButton = ({containerStyle,title,titleStyle,isLoading,onPress} :IButton) => {
+const TButton = ({ containerStyle, title, titleStyle, isLoading, onPress, disabled }: IButton) => {
   return (
-    <TouchableOpacity onPress={onPress} disabled={isLoading} activeOpacity={.5} style={[tw`bg-[#003CFF] py-4 px-3 flex-row justify-center gap-3 rounded-2xl shadow-md w-36`,containerStyle]}>
-      {
-        isLoading && <ActivityIndicator />
-      }
-    {
-        title &&    <Text style={[tw`text-white font-semibold`,titleStyle]}>{title}</Text>
-    }
- 
-  </TouchableOpacity>
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={isLoading || disabled} // ✅ respects both
+      activeOpacity={0.5}
+      style={[
+        tw`bg-[#003CFF] py-4 px-3 flex-row justify-center gap-3 rounded-2xl shadow-md w-36`,
+        disabled && tw`opacity-50`, // ✅ visual feedback for disabled
+        containerStyle,
+      ]}
+    >
+      {isLoading && <ActivityIndicator color="#fff" />}
+      {title && <Text style={[tw`text-white font-semibold`, titleStyle]}>{title}</Text>}
+    </TouchableOpacity>
   )
 }
 
 export default TButton
-
-const styles = StyleSheet.create({})

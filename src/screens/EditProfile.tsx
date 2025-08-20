@@ -5,6 +5,7 @@ import {
   ScrollView,
   Alert,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SvgXml } from 'react-native-svg';
@@ -16,17 +17,17 @@ import tw from '../lib/tailwind';
 import { IconBack, IconEnvelope, IconUser } from '../assets/icons/icons';
 import InputText from '../components/InputText';
 import TButton from '../components/TButton';
+import NormalModal from '../components/NormalModal';
+import Button from '../components/Button';
 
 const EditProfile = ({ navigation }: any) => {
   const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [bio, setBio] = useState<string>('');
-  const [isShowPassword, setIsShowPassword] = useState(false);
-  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
-
-  const { data, isLoading, isError, refetch } = useGetUserQuery({});
-  const [updateProfile] = usePatchUpdateUserProfileMutation();
-console.log(name, username, bio, 'state values'); 
+  const { data, isError, refetch } = useGetUserQuery({});
+  const [updateProfile, { isLoading }] = usePatchUpdateUserProfileMutation();
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
+  console.log(name, username, bio, 'state values');
   console.log(data?.data?.name, 'data from get user query');
 
   // ✅ Set default values when data is fetched
@@ -56,9 +57,9 @@ console.log(name, username, bio, 'state values');
       const res = await updateProfile(formData);
       console.log(res, 'res after sending');
 
-      // Optional success alert
+      //  success alert
       if (res?.data?.success) {
-        Alert.alert('Success', 'Profile updated successfully!');
+        setSuccessModalVisible(true);
       }
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -88,7 +89,7 @@ console.log(name, username, bio, 'state values');
             <View style={tw`flex-row gap-2 w-[98%]`}>
               <View style={tw`w-[50%]`}>
                 <InputText
-                  value={data?.data?.name || "name"}
+                  value={name}
                   cursorColor="white"
                   style={tw`text-white`}
                   containerStyle={tw`bg-[#262329] h-14 border border-[#565358]`}
@@ -136,10 +137,47 @@ console.log(name, username, bio, 'state values');
         <TButton
           onPress={HandleSave}
           titleStyle={tw`text-black text-lg items-center justify-center font-bold font-AvenirLTProHeavy text-center mx-auto`}
-          title="Save"
+          title={
+            isLoading ? (
+              <View style={tw`flex-row items-center justify-center`}>
+                <Text> Savings...</Text>
+                <ActivityIndicator size="small" color="black" style={tw`mr-2`} />
+
+              </View>
+            ) : (
+              "Save"
+            )
+          }
           containerStyle={tw`bg-white w-[100%] h-16 my-2 items-center rounded-3xl`}
         />
       </View>
+      <NormalModal
+        layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
+        containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
+        visible={successModalVisible}
+        setVisible={setSuccessModalVisible}>
+        <View>
+          <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
+            Profile updated successfully!
+          </Text>
+
+          <View style={tw`mt-2`}>
+            <View style={tw`border-t-2 border-gray-800 w-full`}>
+
+            </View>
+            <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+              <Button
+                title="Done"
+                style={tw`text-white px-6`}
+                containerStyle={tw`bg-gray-900`}
+                onPress={() => {
+                  setSuccessModalVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </NormalModal>
       <StatusBar backgroundColor="black" translucent={false} />
     </ScrollView>
   );

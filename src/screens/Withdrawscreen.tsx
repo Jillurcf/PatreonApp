@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 
 import NumericInput from 'react-native-numeric-input';
@@ -42,43 +43,40 @@ import Button from '../components/Button';
 
 const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
   const { data: withdrawData, isError, refetch } = useGetUserQuery({});
-  const [globalPayout, {isLoading}] = useGlobalPayoutMutation();
+  const [globalPayout, { isLoading }] = useGlobalPayoutMutation();
   console.log(withdrawData?.data?.attachedBankAccounts, "withdrawData======================")
   const [value, setValue] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
   const [payoutConfirmationModalVisible, setPayoutConfirmationModalVisible] =
     useState(false);
   const [amount, setAmount] = useState('');
   const [country, setCountry] = useState('');
   const [errror, setError] = useState<string | null>(null);
+  const [payoutErrror, setPayoutErrror] = useState<string | null>(null);
+  const [latestBankAccount, setLatestBankAccount] = useState<string | null>(null);
   const bankAccounts = withdrawData?.data?.attachedBankAccounts?.map((acc: string, index: number) => ({
-    label: acc, // readable text
-    value: acc, // actual value
+    label: acc, 
+    value: acc, 
   })) ?? [];
-  // const renderLabel = () => {
-  //   if (value || isFocus) {
-  //     return (
-  //       <Text style={[styles.label, isFocus && {color: 'blue'}]}>
-  //         Dropdown label
-  //       </Text>
-  //     );
-  //   }
-  //   return null;
-  // };
-
-  const handlePayout = async () => {
-    if (!value || !amount || !country) {
-      // Alert.alert('Error', 'Please fill in all fields');
-      setError('Please fill in all fields');
-      return;
+  console.log(latestBankAccount, "bankAccounts value")
+  useEffect(() => {
+    if (bankAccounts.length > 0) {
+      const lastValue = bankAccounts[bankAccounts.length - 1].value;
+      setLatestBankAccount(lastValue);
+      console.log(lastValue, "lastIndex value");
+    } else {
+      setLatestBankAccount(null);
     }
-
+  }, [bankAccounts]);
+  const allField = amount && country;
+  const handlePayout = async () => {
+  
     try {
-      // Call your payout API here
+      
       console.log('Payout initiated with:', { accountId: value, amount, country });
       const data = {
         amount: amount,
-        bankAccountId: value,
+        bankAccountId: latestBankAccount,
+        // bankAccountId: value,
         currency: country,
       }
       const payoutResponse = await globalPayout(
@@ -99,7 +97,7 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
       // Alert.alert('Success', 'Payout initiated successfully');
     } catch (error) {
       console.error('Payout error:', error);
-      Alert.alert('Error', 'Failed to initiate payout');
+      setPayoutErrror(error?.data?.message);
     }
   };
   return (
@@ -123,8 +121,8 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
 
         <View style={tw`mt-8`}>
           {/* {renderLabel()} */}
-          <Text style={tw`text-white py-2`}>Account Id</Text>
-          <Dropdown
+          {/* <Text style={tw`text-white py-2`}>Account Id</Text> */}
+          {/* <Dropdown
             style={tw`bg-[#262329] py-4 px-2 rounded-2xl border border-[#565358]`}
             //   style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
             placeholderStyle={tw`text-[#A9A8AA]`}
@@ -145,7 +143,7 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
               setValue(item.value);
               setIsFocus(false);
             }}
-          />
+          /> */}
           <Text style={tw`text-white mt-4`}>Amount</Text>
           <TextInput
             style={tw`border text-white border-[#262329] rounded-xl p-2 mb-4 bg-[#262329] mt-1`}
@@ -170,15 +168,31 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
 
       {/* Continue button */}
       <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
-        {errror && (
+        {/* {errror && (
           <Text style={tw`text-red-500 text-start text-xs my-2`}>
             {errror}*
+          </Text>
+        )} */}
+        {payoutErrror && (
+          <Text style={tw`text-red-500 text-start text-xs my-2`}>
+            {payoutErrror}*
           </Text>
         )}
         <TButton
           onPress={handlePayout}
+          disabled={!allField}
           titleStyle={tw`text-black font-bold text-center`}
-          title={isLoading ? "Wait..." : "Continue"}
+          title={
+            isLoading ? (
+              <View style={tw`flex-row items-center justify-center`}>
+                <Text> Please wait...</Text>
+                <ActivityIndicator size="small" color="black" style={tw`mr-2`} />
+
+              </View>
+            ) : (
+              "Continue"
+            )
+          }
           containerStyle={tw`bg-primary w-[90%] rounded-full`}
         />
       </View>
@@ -189,7 +203,7 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
         setVisible={setPayoutConfirmationModalVisible}>
         <View>
           <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
-          Payout successful!
+            Payout successful!
           </Text>
 
           <View style={tw`mt-2`}>
@@ -197,6 +211,7 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
             <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
               <Button
                 title="Done"
+
                 style={tw`text-white px-6`}
                 containerStyle={tw`bg-gray-900`}
                 onPress={() => {

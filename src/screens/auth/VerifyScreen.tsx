@@ -37,6 +37,7 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
   const [isActive, setIsActive] = useState(true);
   const { screenName, phoneNumber } = route.params || {};
   const [alertVisible, setAlertVisible] = useState(false);
+  const [error, setError] = useState<ErrorResponse | null>(null);
 
   console.log(screenName, phoneNumber , "screenName + Phone number++++++")
 
@@ -147,6 +148,7 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
     } catch (err) {
       // Log error details for debugging
       console.error("Error verifying OTP:", err);
+      setError(err?.data);
     }
 
   };
@@ -256,6 +258,9 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
         </View>
       </View>
       <View style={tw`flex-col justify-end `}>
+        {error && (
+          <Text style={tw`text-red-500`}>{error?.message}*</Text>
+        )}
         <Button
           disabled={!allFilled}
           title={'Verify'}

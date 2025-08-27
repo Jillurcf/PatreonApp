@@ -263,7 +263,7 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
         )}
         <Button
           disabled={!allFilled}
-          title={'Verify'}
+          title={isLoading ? "Wait..." :'Verify'}
           style={tw`text-black font-AvenirLTProBlack items-center`}
           containerStyle={tw`${!allFilled ? 'bg-PrimaryFocus' : 'white'
             } mt-4 h-14 rounded-2xl justify-center`}

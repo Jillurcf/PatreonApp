@@ -206,7 +206,7 @@ console.log(services?._id, "services=====================")
 
             {/* Prompt Input */}
             <View style={tw`mt-8`}>
-                <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Prompt input</Text>
+                <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Prompt Input</Text>
                 <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
                     <TextInput
                         defaultValue={services?.about}
@@ -223,7 +223,7 @@ console.log(services?._id, "services=====================")
 
             {/* File Upload */}
             <View style={tw`my-6`}>
-                <Text style={tw`text-white font-AvenirLTProBlack`}>Upload file</Text>
+                <Text style={tw`text-white font-AvenirLTProBlack`}>Uploaded Knowledge</Text>
                 <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
                     <TouchableOpacity onPress={handleUploadPdf}>
                         <SvgXml xml={IconUpload} />

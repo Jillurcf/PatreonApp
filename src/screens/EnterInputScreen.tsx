@@ -30,19 +30,24 @@ import tw from '../lib/tailwind';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import Pdf from 'react-native-pdf';
+import NormalModal from '../components/NormalModal';
+import Button from '../components/Button';
 
 
 const EnterInput = ({ navigation }: NavigProps<null>) => {
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [promptInput, setPromptInput] = useState("")
+  const [inputConfirmationModalVisible, setInputConfirmationModalVisible] =
+    useState(false);
+
   console.log(promptInput, "input========================")
-const allData = {selectedPdf, promptInput}
+  const allData = { selectedPdf, promptInput }
 
 
-  
+
 
   const handleUploadPdf = async () => {
-    
+
     try {
       const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.pdf],
@@ -68,20 +73,22 @@ const allData = {selectedPdf, promptInput}
         console.log('User cancelled picker');
       } else {
         console.error('Error selecting PDF:', err);
-        Alert.alert('Error', 'Failed to upload PDF file');
+        // Alert.alert('Error', 'Failed to upload PDF file');
       }
     }
   };
   const handleSave = () => {
-    if(!allData.selectedPdf || !allData.promptInput) {
-      Alert.alert('Error', 'Please fill in all fields before uploading.');
+    if (!allData.selectedPdf || !allData.promptInput) {
+      console.log('Error', 'Please fill in all fields before uploading.');
       return;
     }
-    console.log(selectedPdf, promptInput, 'data before sending ==========');
+    // console.log(selectedPdf, promptInput, 'data before sending ==========');
     saveMediaPromptData(selectedPdf, null, promptInput);
     const { selectedImages: savedImages, promptInput: savedPrompt } = loadMediaPromptData();
+
     console.log(savedImages, savedPrompt, 'Retrieved data from storage ++++++++');
-    Alert.alert('Saved', 'Your data has been saved successfully!');
+    // Alert.alert('Saved', 'Your data has been saved successfully!');
+    setInputConfirmationModalVisible(true);
     navigation?.navigate('ExplainMembership');
   };
   return (
@@ -106,7 +113,7 @@ const allData = {selectedPdf, promptInput}
 
           {/* Input Area */}
           <View style={tw`mt-8`}>
-            <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Title</Text>
+            <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Add Instruction</Text>
             <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
               <TextInput
                 onChangeText={(text) => setPromptInput(text)}
@@ -166,7 +173,33 @@ const allData = {selectedPdf, promptInput}
             containerStyle={tw`bg-primary w-[90%] rounded-full`}
           />
         </View>
+        <NormalModal
+          layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
+          containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
+          visible={inputConfirmationModalVisible}
+          setVisible={setInputConfirmationModalVisible}>
+          <View>
+            <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
+              Your data has been saved successfully!
+            </Text>
 
+            <View style={tw`mt-2`}>
+              <View style={tw`border-t-2 border-gray-800 w-full`}>
+
+              </View>
+              <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+                <Button
+                  title="Continue"
+                  style={tw`text-white px-6`}
+                  containerStyle={tw`bg-gray-900`}
+                  onPress={() => {
+                    setInputConfirmationModalVisible(false);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </NormalModal>
         <StatusBar backgroundColor={'gray'} translucent={false} />
       </ScrollView>
     </KeyboardAvoidingView>

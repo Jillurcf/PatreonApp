@@ -136,7 +136,7 @@ const UpdateRecipientScreen = ({ navigation }: { navigation: any }) => {
                             placeholder="NW1 6XE"
                             placeholderTextColor={'#A9A8AA'}
                             cursorColor="white"
-                            keyboardType="numeric"
+                            // keyboardType="numeric"
                             onChangeText={handleChange('postal_code')}
                             onBlur={handleBlur('postal_code')}
                             value={values.postal_code}

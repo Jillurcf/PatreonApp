@@ -20,7 +20,7 @@ import NormalModal from '../../components/NormalModal';
 
 // import {useSignupMutation} from '../../redux/api/apiSlice/apiSlice';
 
-const ForgetPass = ({ navigation,route }: any) => {
+const ForgetPass = ({ navigation, route }: any) => {
     // console.log('navigation', navigation);
     const [resetPaswordModalVisible, setresetPaswordModalVisible] =
         useState(false);
@@ -32,16 +32,17 @@ const ForgetPass = ({ navigation,route }: any) => {
     const [location, setLocation] = useState<string>('');
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState()
     const [checkValue, setCheckValue] = useState(false);
-      const { screenName, phoneNumber } = route?.params || {};
-      console.log(phoneNumber, "phoneNumber++++++")
-   const [ changePassword, { isLoading, isError }] = useChangePasswordMutation();
+    const { screenName, phoneNumber } = route?.params || {};
+    console.log(phoneNumber, "phoneNumber++++++")
+    const [changePassword, { isLoading, isError }] = useChangePasswordMutation();
     console.log('27', password, confirmPassword);
     // const data = {email, password, name:username, address:location}
 
     const allFilled =
         password.trim() !== ''
-        confirmPassword.trim() !== ''
+    confirmPassword.trim() !== ''
 
     console.log(allFilled, "allFilled")
 
@@ -55,12 +56,13 @@ const ForgetPass = ({ navigation,route }: any) => {
             formData.append('confirmPassword', confirmPassword);
             console.log(formData, "formData+++++")
             const response = await changePassword(formData)
-            console.log('Response:++++++++++++++', response?.data?.success);
-              if (response?.data?.success) {
+            console.log('Response:++++++++++++++', response?.error?.data?.message);
+            if (response?.data?.success) {
                 console.log(response?.data?.success === true, "response?.data?.data?.success === true")
                 navigation?.navigate("Login");
             } else {
                 console.log('Please fill all fields');
+                setErrorMessage(response?.error)
             }
             //   navigation?.navigate("Login");
             // const response = await fetch("http://10.0.80.85:3004/api/auth/reset-password", {
@@ -70,11 +72,12 @@ const ForgetPass = ({ navigation,route }: any) => {
             //   });
             //   console.log(response, "response+++++")
             // Validate required fields before sending the request
-          
-         
+
+
         } catch (err) {
             console.log('Error:=============', err);
-            Alert.alert('Error', 'An error occurred while changing password');
+            // setErrorMessage(err)
+            // Alert.alert('Error', 'An error occurred while changing password');
         }
     };
 
@@ -100,7 +103,7 @@ const ForgetPass = ({ navigation,route }: any) => {
 
 
                     <View style={tw`mt-12`}>
-                        
+
                         <InputText
                             cursorColor="white"
                             style={tw`text-white`}
@@ -134,52 +137,48 @@ const ForgetPass = ({ navigation,route }: any) => {
                             }
                         />
                     </View>
-                    
-                   
+
+
                 </View>
             </View>
             <View style={tw`flex-col justify-end `}>
+                {errorMessage?.data?.message && (
+                    <Text style={tw`text-red-600 text-xs`}>{errorMessage?.data?.message}*</Text>
+                )}
                 <Button
                     disabled={!allFilled}
                     title={'Continue'}
                     style={tw`${allFilled ? 'text-black' : 'text-gray-500'} font-AvenirLTProBlack items-center`}
                     containerStyle={tw`${allFilled ? 'bg-white' : 'bg-PrimaryFocus'} mt-4 h-14 rounded-2xl justify-center`}
-                    onPress={handleChangePassword}                      
-                 
+                    onPress={handleChangePassword}
+
                 />
             </View>
-                  <NormalModal
-        layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
-        containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
-        visible={resetPaswordModalVisible}
-        setVisible={setresetPaswordModalVisible}>
-        <View>
-          <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
-          Password changed successfully!
-          </Text>
+            <NormalModal
+                layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
+                containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
+                visible={resetPaswordModalVisible}
+                setVisible={setresetPaswordModalVisible}>
+                <View>
+                    <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
+                        Password changed successfully!
+                    </Text>
 
-          <View style={tw`mt-2`}>
-            {/* <View style={tw`border-t-2 border-gray-800 w-full`}>
-              <Button
-                title="Yes"
-                style={tw`text-white`}
-                containerStyle={tw`bg-transparent px-6`}
-                onPress={ handleLogout}
-              />
-            </View> */}
-            <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
-              <Button
-                title="Ok"
-                style={tw`text-white px-6`}
-                containerStyle={tw`bg-gray-900`}
-                onPress={() => {
-                  setresetPaswordModalVisible(false);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </NormalModal>
+                    <View style={tw`mt-2`}>
+
+                        <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+                            <Button
+                                title="Ok"
+                                style={tw`text-white px-6`}
+                                containerStyle={tw`bg-gray-900`}
+                                onPress={() => {
+                                    setresetPaswordModalVisible(false);
+                                }}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </NormalModal>
             <StatusBar backgroundColor="black" translucent={false} />
         </ScrollView>
     );

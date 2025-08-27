@@ -37,16 +37,16 @@ const PhoneVerification = ({ navigation, route }: { navigation: any }) => {
   console.log(screenName, "ForgetPass")
 
   // Update validity whenever value changes
-//  const handleValueChange = (text: string) => {
-//   setValue(text);
+  //  const handleValueChange = (text: string) => {
+  //   setValue(text);
 
-//   // Check validity after user types
-//   const valid = phoneInput.current?.isValidNumber(text) || false;
-//   setValid(valid);
-// };
+  //   // Check validity after user types
+  //   const valid = phoneInput.current?.isValidNumber(text) || false;
+  //   setValid(valid);
+  // };
 
-// Check if the phone number field is filled and valid
-const allFilled = phoneInput.current?.isValidNumber(value) || false;
+  // Check if the phone number field is filled and valid
+  const allFilled = phoneInput.current?.isValidNumber(value) || false;
 
   const [phoneNoVerification, isLoading, isError] = usePhoneNoVerificationMutation()
   // const fullPhoneNumber = phoneInput.current?.getNumberAfterPossiblyEliminatingZero()?.formattedNumber;
@@ -73,15 +73,17 @@ const allFilled = phoneInput.current?.isValidNumber(value) || false;
         console.log(formData, "formData");
 
         const res = await phoneNoVerification(formData)
-        console.log(`Phone verification response (attempt ${attempts + 1}):`, res);
+        console.log(`Phone verification response (attempt ${attempts + 1}):`, res?.data);
 
         // if (res?.success) {
         //   success = true;
+        if (res?.data?.success === true) {
+          navigation.navigate('Verify',
+            { screenName, phoneNumber: fullPhoneNumber },
+          );
+          return; // Stop execution after successful navigation
+        }
 
-        navigation.navigate('Verify',
-          { screenName, phoneNumber: fullPhoneNumber },
-        );
-        return; // Stop execution after successful navigation
         // }
       } catch (err) {
         console.error(`Verification error (attempt ${attempts + 1}):`, err);
@@ -186,7 +188,7 @@ const allFilled = phoneInput.current?.isValidNumber(value) || false;
             onPress={handlePhoneVerification}
             disabled={!allFilled} // reactive
             titleStyle={tw`text-black items-center justify-center font-bold font-AvenirLTProHeavy text-center mx-auto`}
-            title="Continue"
+            title={"Continue"}
             containerStyle={tw`bg-white w-[100%] h-16 my-2 items-center rounded-3xl`}
           />
 

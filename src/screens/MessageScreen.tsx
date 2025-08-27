@@ -29,7 +29,7 @@ import { AttachmentIcon, CrossIcon, IconBack, Uparrow, VideoCam } from '../asset
 import NormalModal from '../components/NormalModal';
 
 const MessageScreen = ({navigation, route}: {navigation:any}) => {
-  const { id, serviceId, title } = route?.params || {};
+  const { id, serviceId, title, serviceTitle, userName } = route?.params || {};
   console.log(id, serviceId, title, "id+++++++++++++++++++++++41")
   const [openModal, setOpenModal] = useState(false);
   const [conversation_id, setConversation_id] = useState();
@@ -80,9 +80,10 @@ const MessageScreen = ({navigation, route}: {navigation:any}) => {
           type: fileType,
         });
       }
-
+console.log(formData, "form data+++++++++++++++++++++")
       try {
         const res = await postSendMessage({ id: serviceId, data: formData });
+        console.log(res, "response from send message api");
         const aiMessage = {
           text: res?.data?.data || "No response from AI.",
           user: title,
@@ -214,7 +215,9 @@ const MessageScreen = ({navigation, route}: {navigation:any}) => {
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
         <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
-          User Name
+          {userName && (
+          userName
+         ) || "User Name"}
         </Text>
         {/* Placeholder view for symmetry */}
         <View style={tw`w-8`} />
@@ -223,7 +226,9 @@ const MessageScreen = ({navigation, route}: {navigation:any}) => {
       <FlatList
         data={messages}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+          console.log(item, "item==================")
+          return (
           <View style={tw`mb-2 px-4`}>
             <Text style={tw`text-xs mt-4 text-gray-500 mb-1`}>
               {item.user} • {moment(item.createdAt).format('hh:mm A')}
@@ -237,7 +242,8 @@ const MessageScreen = ({navigation, route}: {navigation:any}) => {
               <Text style={tw`text-sm text-black`}>{item.text}</Text>
             </View>
           </View>
-        )}
+        )
+        }}
       />
 
 

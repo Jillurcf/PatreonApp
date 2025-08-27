@@ -41,7 +41,7 @@ const Discover = () => {
   // const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
   const DiscoverData = [
     { id: '1', title: 'marketing', route: '', icon: IconMarketing, iconType: 'image' },
-    { id: '2', title: 'finnance', route: '', icon: IconFinance, iconType: 'image' },
+    { id: '2', title: 'finance', route: '', icon: IconFinance, iconType: 'image' },
     { id: '3', title: 'law', route: '', icon: IconLaw, iconType: 'image' },
     { id: '4', title: 'economy', route: '', icon: IconEconomy, iconType: 'image' },
     { id: '5', title: 'writing', route: '', icon: IconWriting, iconType: 'image' },

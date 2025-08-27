@@ -15,6 +15,8 @@ import {
   IconNotification,
   IconRightArrow,
   IconSettings,
+  IconSupport,
+  iconTickFocus,
   IconUser,
 } from '../assets/icons/icons';
 import NormalModal from '../components/NormalModal';
@@ -79,6 +81,21 @@ function DrawerContent({ navigation }: any) {
               <SvgXml xml={IconNotification} />
               <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>
                 Notification
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              navigation?.navigate('Setting', {
+                // products: [...Array(10)],
+                // title: 'I miei ordini',
+                // from: 'myOrders',
+              })
+            }>
+            <View style={tw`flex-row gap-4`}>
+              <SvgXml xml={IconSupport} />
+              <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>
+              Help & Support
               </Text>
             </View>
           </TouchableOpacity>

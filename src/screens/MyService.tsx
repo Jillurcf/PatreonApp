@@ -33,8 +33,11 @@ const MyServices = ({ navigation }: { navigation: any }) => {
             console.log(item._id, "id++++++++++++++++++ click");
             const res = await deleteServices(item._id).unwrap();
             console.log('Deleted successfully', res)
-            await refetch(); // Refetch the data after deletion
-            navigation.navigate('Drawer'); // Navigate back to MyServices screen
+            if (res?.success === true) {
+                await refetch(); // Refetch the data after deletion
+                navigation.navigate('Drawer'); // Navigate back to MyServices screen
+            }
+
         } catch (error) {
             console.error('Delete failed', error);
         }

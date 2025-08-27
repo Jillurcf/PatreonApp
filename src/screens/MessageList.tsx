@@ -9,10 +9,12 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 
 import tw from '../lib/tailwind';
-import { NavigProps } from '../interfaces/NaviProps';
+
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 import { SvgXml } from 'react-native-svg';
 
@@ -23,6 +25,7 @@ import InputText from '../components/InputText';
 import { IconGeneralSearch } from '../assets/icons/icons';
 import { useGetMessageListQuery } from '../redux/apiSlice/serviceSlice';
 import { imageUrl } from '../redux/baseApi';
+import { NavigProps } from '../interface/NaviProps';
 
 
 type ItemData = {
@@ -32,7 +35,7 @@ type ItemData = {
 
 const MessageList = ({ navigation }: NavigProps<null>) => {
   const [searchTitle, setSearchTitle] = useState('');
-  const { data, isLoading, isError, refetch } = useGetMessageListQuery(searchTitle)
+  const { data, isLoading, isError, isFetching , refetch } = useGetMessageListQuery(searchTitle)
   console.log(data?.data, 'data from get message List query');
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
 
@@ -58,7 +61,7 @@ const MessageList = ({ navigation }: NavigProps<null>) => {
           }}
         />
       </View>
-      <FlatList
+      <SwipeListView
      
         data={data?.data || []}
         keyExtractor={item => item._id.toString()}
@@ -66,7 +69,7 @@ const MessageList = ({ navigation }: NavigProps<null>) => {
           console.log(item?.contributor, 'item from message list');
           return (
             <TouchableOpacity
-              onPress={() => navigation.navigate("MessageScreen")}
+              onPress={() => navigation.navigate("MessageScreen", {serviceTitle: item?.title, userName: item?.contributor?.username, serviceId: item?._id})}
               style={tw`flex-row items-center bg-[#262329] my-1 rounded-2xl gap-2 p-2`}>
               <View style={tw`relative items-center`}>
                 {item?.image && (
@@ -102,11 +105,11 @@ const MessageList = ({ navigation }: NavigProps<null>) => {
                 </View>
                 <View style={tw`flex-row justify-between mt-2`}>
                   <Text style={tw`text-white font-AvenirLTProBlack`}>
-                    {item.description || "Service Description"}
+                    {item.description.slice(0, 100) || "Service Description"}
                   </Text>
-                  <Text style={tw`text-white font-AvenirLTProBlack`}>
+                  {/* <Text style={tw`text-white font-AvenirLTProBlack`}>
                     09:41
-                  </Text>
+                  </Text> */}
                 </View>
                 {/* {item.message === 0 ? (
                   <TouchableOpacity
@@ -141,6 +144,13 @@ const MessageList = ({ navigation }: NavigProps<null>) => {
             </TouchableOpacity>
           );
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching} // from RTK query
+            onRefresh={refetch} // re-run the query
+            tintColor="#fff" // optional: spinner color
+          />
+        }
       />
 
       <StatusBar backgroundColor="black" translucent />

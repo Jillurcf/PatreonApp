@@ -187,7 +187,7 @@ const Login = ({ navigation }: { navigation: any }) => {
     const [loginUser, { isLoading, isError }] = useLoginUserMutation();
     console.log('27', email, password);
     // const data = {email, password, name:username, address:location}
-
+console.log(loginError, "loginError")
     const allFilled =
         email.trim() !== '' &&
         password.trim() !== ''
@@ -212,7 +212,7 @@ const Login = ({ navigation }: { navigation: any }) => {
             console.log("Try catch click")
             const res = await loginUser(formData).unwrap();
             console.log(res, "res+++++++++++++")
-            setLoginError(res)
+            // setLoginError(res)
             console.log("login res++++++++", res?.data?.token)
             if (res?.data?.token) {
                 lStorage.setString('token', res?.data?.token);
@@ -227,7 +227,7 @@ const Login = ({ navigation }: { navigation: any }) => {
 
         } catch (error) {
             console.error('Login failed:', error);
-            setLoginError(error)
+            setLoginError(error?.data?.message);
         }
     };
 
@@ -309,10 +309,13 @@ const Login = ({ navigation }: { navigation: any }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={tw`flex-col justify-end `}>
+            <View style={tw`flex-col justify-end py-2`}>
+                {loginError && (
+                    <Text style={tw`text-red-600 text-xs ont-AvenirLTProBlack `}>{loginError}*</Text>
+                )}
                 <Button
                     disabled={!allFilled}
-                    title={'Continue'}
+                    title={isLoading? "Wait..." :'Continue'}
                     style={tw`${allFilled ? 'text-black' : 'text-gray-500'} font-AvenirLTProBlack items-center`}
                     containerStyle={tw`${allFilled ? 'bg-white' : 'bg-PrimaryFocus'} mt-4 h-14 rounded-2xl justify-center`}
                     onPress={handleLogin}

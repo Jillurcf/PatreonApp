@@ -273,21 +273,21 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
         <View style={tw`flex-row items-center bg-[#262329]  w-[90%] rounded-2xl p-[6%] justify-between px-[4%]`}>
           {/* <View style={tw`w-[100%] flex-row justify-between items-center`}>
             <View style={tw`w-[45%]`}> */}
-              <TButton
-                onPress={() => navigation.navigate('MyService')}
-                title="My services"
-                titleStyle={tw`text-black`}
-                containerStyle={tw`w-full bg-white`}
-              />
-            </View>
-            <View style={tw`w-[45%]`}>
-              {/* <TButton
+          <TButton
+            onPress={() => navigation.navigate('MyService')}
+            title="My services"
+            titleStyle={tw`text-black`}
+            containerStyle={tw`w-full bg-white`}
+          />
+        </View>
+        <View style={tw`w-[45%]`}>
+          {/* <TButton
                 onPress={() => navigation.navigate('MyAccount')}
                 title="My accounts"
                 titleStyle={tw`text-black`}
                 containerStyle={tw`w-full bg-white`}
               /> */}
-            {/* </View>
+          {/* </View>
           </View> */}
           {/* <View style={tw`w-[20%] items-center flex-row mx-[4%] `}>
             <Text style={tw`text-white text-center`}>Total =</Text>
@@ -308,7 +308,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
             First connect your stripe account for payouts, then create your agent.
           </Text>
           <View style={tw`w-full items-center mt-8`}>
-            {data?.data?.attachedBankAccounts.length < 0 ? (
+            {/* {data?.data?.attachedBankAccounts.length === 0 ? (
               <TButton
                 onPress={handleGetConnect}
                 title={isLoading ? "Connecting..." : "Get connet"}
@@ -324,7 +324,26 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
                   containerStyle={tw`w-full bg-white`}
                 />
               )
+            )} */}
+
+            {(data?.data?.attachedBankAccounts?.length ?? 0) === 0 ? (
+              <TButton
+                onPress={handleGetConnect}
+                title={isLoading ? "Connecting..." : "Get connect"}
+                titleStyle={tw`text-white`}
+                containerStyle={tw`w-full bg-red-600`}
+              />
+            ) : (
+              (data?.data?.services?.length ?? 0) < 1 && (
+                <TButton
+                  onPress={() => navigation.navigate('EnterInput')}
+                  title="Become a contributor"
+                  titleStyle={tw`text-black`}
+                  containerStyle={tw`w-full bg-white`}
+                />
+              )
             )}
+
           </View>
 
         </View>

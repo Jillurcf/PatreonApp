@@ -166,7 +166,7 @@ const SignUp = ({ navigation, route }: any) => {
       <View style={tw`flex-col justify-end `}>
         <Button
           disabled={!allFilled}
-          title={'Register'}
+          title={isLoading ? "Wait..." :'Register'}
           style={tw`${allFilled ? 'text-black' : 'text-gray-500'} font-AvenirLTProBlack items-center`}
           containerStyle={tw`${allFilled ? 'bg-white' : 'bg-PrimaryFocus'} mt-4 h-14 rounded-2xl justify-center`}
           onPress={ handleSignup}

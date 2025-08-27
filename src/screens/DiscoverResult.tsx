@@ -94,7 +94,7 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
           style={tw`text-white`}
           containerStyle={tw`bg-[#262329] border h-14 relative border-[#565358]`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
-          placeholder={'Search by user name'}
+          placeholder={'Search by service title'}
           cursorColor={'white'}
           placeholderColor={'#949494'}
           iconLeft={IconGeneralSearch}
@@ -166,11 +166,11 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
           }
         }}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isFetching && hasMore ? (
-            <ActivityIndicator size="large" color="white" />
-          ) : null
-        }
+        // ListFooterComponent={
+        //   isFetching && hasMore ? (
+        //     <ActivityIndicator size="large" color="white" />
+        //   ) : null
+        // }
       />
 
       <StatusBar backgroundColor="black" translucent={false} />

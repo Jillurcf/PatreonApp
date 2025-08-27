@@ -151,6 +151,7 @@ const PhoneVerification = ({ navigation, route }: { navigation: any }) => {
               placeholder="Write it here"
               textInputProps={{
                 placeholderTextColor: '#A9A8AA', // Fixed placeholder text color
+                selectionColor: "white"
               }}
               filterProps={tw`text-white`}
               flagButtonStyle={tw`text-white bg-slate-50`}

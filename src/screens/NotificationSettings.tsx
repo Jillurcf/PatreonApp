@@ -26,7 +26,7 @@ import TButton from '../components/TButton';
 
 type Props = {};
 
-const NotificationSettings = ({navigation}) => {
+const NotificationSettings = ({navigation}: {navigation:any}) => {
   const [pushEnabled, setPushEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(false);
   const [inAppEnabled, setInAppEnabled] = useState(false);

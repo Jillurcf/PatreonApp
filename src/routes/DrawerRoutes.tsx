@@ -86,7 +86,7 @@ function DrawerContent({ navigation }: any) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              navigation?.navigate('Setting', {
+              navigation?.navigate('HelpAndSupport', {
                 // products: [...Array(10)],
                 // title: 'I miei ordini',
                 // from: 'myOrders',

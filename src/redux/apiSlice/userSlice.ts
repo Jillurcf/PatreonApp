@@ -42,6 +42,15 @@ const userSlice = api.injectEndpoints({
             }),
             invalidatesTags: ['user'],
           }),
+          helpAndSupport: builder.mutation({
+            query: (data) => ({
+              url: '/contact-us',
+              method: 'POST',
+              body: data, 
+           
+            }),
+            invalidatesTags: ['user'],
+          }),
           
     })
 })
@@ -52,4 +61,5 @@ export const {
     useUpdateProfileMutation,
     useGetSingleUserQuery,
     useGetAllUserQuery,
+    useHelpAndSupportMutation
 } = userSlice;

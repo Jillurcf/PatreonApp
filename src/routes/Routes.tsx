@@ -38,6 +38,7 @@ import HomeSearchResult from '../screens/HomeSearchResult';
 import UpdateRecipientScreen from '../screens/UpdateRecipientScreen';
 import AttachBankAccountScreen from '../screens/AttachBankAccountScreen';
 import MyAccount from '../screens/MyAccount';
+import HelpSupport from '../screens/HelpAndSupport';
 // import { StripeProvider } from '@stripe/stripe-react-native';
 
 
@@ -72,6 +73,7 @@ export default function Routes() {
 
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="HelpAndSupport" component={HelpSupport} />
       <Stack.Screen name="SettingProfile" component={SettingProfile} />
       <Stack.Screen name="MyAccount" component={MyAccount} />
       <Stack.Screen name="MyService" component={MyServices} />

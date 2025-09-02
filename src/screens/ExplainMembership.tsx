@@ -79,6 +79,7 @@ const ExplainMembership = ({ navigation }) => {
 
     if (isNaN(price)) {
       console.log('Error', 'Please enter a valid number');
+        setPriceError("Please enter a valid number")
       return;
     }
 
@@ -107,15 +108,20 @@ const ExplainMembership = ({ navigation }) => {
       console.log('Error', 'Please fill in all fields before uploading.');
       return;
     }
-   
+
     setExplainMembershipConfirmationModalVisible(true);
     setExplainMemberValue(value);
+    // setValue(
+    //   {
+    //     title: '',
+    //     subtitle: '',
+    //     currency: '',
+    //     description: '',
+    //     category: '',
+    //   }
+    // )
     navigation.navigate('ExplainMembership1');
-     value.title = "";
-    value.subtitle = "";
-    value.currency = "";
-    value.description = "";
-    value.category = "";
+    
   };
 
   const addNewCategory = () => {

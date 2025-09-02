@@ -15,8 +15,11 @@ import { SvgXml } from 'react-native-svg';
 import { usePostBecmeAContibutorMutation } from '../redux/apiSlice/serviceSlice';
 import { getExplainMemberValue, loadMediaPromptData } from '../utils';
 import { IconBack, IconPlus } from '../assets/icons/icons';
+import TButton from '../components/TButton';
+import NormalModal from '../components/NormalModal';
+import Button from '../components/Button';
 
-const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
+const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
     const [serviceSuccess, setServiceSuccess] = useState(false);
     const [fields, setFields] = useState(['', '', '']);
     const [value, setValue] = useState({
@@ -30,6 +33,8 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
     });
     const [promptInput, setPromptInput] = useState<string>("");
     const [selectedImages, setSelectedImages] = useState();
+    const [serviceCreationConfirmationModalVisible, setServiceCreationConfirmationModalVisible] =
+        useState(false);
     const [postBecmeAContibutor, { isLoading, isError }] = usePostBecmeAContibutorMutation();
     // console.log(fields, "fields data +++++++++++++++++++++++++")
 
@@ -55,8 +60,8 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
         setFields(updatedFields);
     };
 
-    const handleSave =async () => {
-       
+    const handleSave = async () => {
+
         // console.log(fields, "Fields ++++++++++++++++++++++")
         try {
             const formData = new FormData()
@@ -72,19 +77,20 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
             formData.append("explainMembership", JSON.stringify(fields)); // ← becomes: '["Member ", "Member 1", "Member 2"]'
 
             console.log(formData, "formData in explain membership page==================before sending to api")
-            const res =await  postBecmeAContibutor(formData).unwrap();
-            if(res?.success === true) {
-                setServiceSuccess(res?.success ===true);
-            // If the response is successful, navigate to the SettingProfile screen
-            navigation.navigate('SettingProfile');
-            console.log(res, "res++++++++++++++++")
-            Alert.alert("Service created succcessfully")
+            const res = await postBecmeAContibutor(formData).unwrap();
+            if (res?.success === true) {
+                setServiceSuccess(res?.success === true);
+                // If the response is successful, navigate to the SettingProfile screen
+                navigation.navigate('SettingProfile');
+                setServiceCreationConfirmationModalVisible(true)
+                console.log(res, "res++++++++++++++++")
+                // Alert.alert("Service created succcessfully")
             } else {
-            // If the response is not successful, you can handle it accordingly
-            console.log("res not success", res)
-            Alert.alert("Service not created succcessfully")
+                // If the response is not successful, you can handle it accordingly
+                console.log("res not success", res)
+               console.log("Service not created succcessfully")
             }
-         
+
         } catch (err) {
             console.log(err)
         }
@@ -127,25 +133,59 @@ const ExplainMembershipScreen = ({navigation}: {navigation: any}) => {
                         onPress={handleAddField}
                         style={tw`self-center bg-neutral-900 w-10 h-10 rounded-full items-center justify-center my-5`}
                     >
-                        <SvgXml xml={IconPlus}/>
+                        <SvgXml xml={IconPlus} />
                     </TouchableOpacity>
                 </View>
 
                 {/* Save Button */}
                 {serviceSuccess ? (
                     ""
-                ): (
-                     <TouchableOpacity
-                    onPress={handleSave}
-                    style={tw`bg-white rounded-xl py-4 mb-4 items-center`}
-                >
-                    <Text style={tw`text-black font-bold text-base`}>Save</Text>
-                </TouchableOpacity>
+                ) : (
+                    //      <TouchableOpacity
+                    //     onPress={handleSave}
+                    //     style={tw`bg-white rounded-xl py-4 mb-4 items-center`}
+                    // >
+                    //     <Text style={tw`text-black font-bold text-base`}>Save</Text>
+                    // </TouchableOpacity>
+                    <View style={tw`flex mb-6 my-12 items-center justify-center w-full`}>
+                        <TButton
+                            onPress={handleSave}
+                            titleStyle={tw`text-black font-bold text-center`}
+                            title={isLoading ? "Saving..." : "Save"}
+                            containerStyle={tw`bg-white w-[90%] rounded-full`}
+                        />
+                    </View>
                 )}
-               
+                <NormalModal
+                    layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
+                    containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
+                    visible={serviceCreationConfirmationModalVisible}
+                    setVisible={setServiceCreationConfirmationModalVisible}>
+                    <View>
+                        <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
+                            Service created succcessfully
+                        </Text>
+
+                        <View style={tw`mt-2`}>
+                            <View style={tw`border-t-2 border-gray-800 w-full`}>
+
+                            </View>
+                            <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+                                <Button
+                                    title="Continue"
+                                    style={tw`text-white px-6`}
+                                    containerStyle={tw`bg-gray-900`}
+                                    onPress={() => {
+                                        setServiceCreationConfirmationModalVisible(false);
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </NormalModal>
             </ScrollView>
         </SafeAreaView>
     );
-};
+}
 
 export default ExplainMembershipScreen;

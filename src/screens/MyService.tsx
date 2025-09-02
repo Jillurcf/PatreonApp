@@ -14,11 +14,11 @@ type Props = {}
 
 const MyServices = ({ navigation }: { navigation: any }) => {
     const { data, refetch, isLoading, isError } = useGettMyServicesQuery({})
-    console.log(data?.data, "My serviced data =================14")
+    // console.log(data?.data, "My serviced data =================14")
     const [deleteServices] = useDeleteServicesMutation();
 
     const handleEditService = (item) => {
-        console.log(item?._id, "click+++++++++++++++++++++++++")
+        // console.log(item?._id, "click+++++++++++++++++++++++++")
 
         navigation.navigate("EditService",
             {
@@ -30,7 +30,7 @@ const MyServices = ({ navigation }: { navigation: any }) => {
 
     const handleDelete = async (item) => {
         try {
-            console.log(item._id, "id++++++++++++++++++ click");
+            // console.log(item._id, "id++++++++++++++++++ click");
             const res = await deleteServices(item._id).unwrap();
             console.log('Deleted successfully', res)
             if (res?.success === true) {

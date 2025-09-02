@@ -51,6 +51,14 @@ const userSlice = api.injectEndpoints({
             }),
             invalidatesTags: ['user'],
           }),
+            deleteAccount: builder.mutation({
+            query: () => ({
+              url: '/users/auth/delete-user',
+              method: 'DELETE',
+            }),
+            invalidatesTags: ['user'],
+          }),
+          
           
     })
 })
@@ -61,5 +69,6 @@ export const {
     useUpdateProfileMutation,
     useGetSingleUserQuery,
     useGetAllUserQuery,
-    useHelpAndSupportMutation
+    useHelpAndSupportMutation,
+    useDeleteAccountMutation
 } = userSlice;

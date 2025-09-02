@@ -22,6 +22,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useGetServicesByIdQuery, useUpdateServicesByIdMutation, } from '../redux/apiSlice/serviceSlice';
 import tw from '../lib/tailwind';
 import { IconBack, IconDollar, IconPlus, IconUpload } from '../assets/icons/icons';
+import NormalModal from '../components/NormalModal';
+import Button from '../components/Button';
 
 
 
@@ -43,16 +45,19 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
     // console.log(id, "id==================")
     const isMounted = useRef(true);
     const [fields, setFields] = useState(['', '', '']);
+    const [serviceCreationConfirmationModalVisible, setServiceCreationConfirmationModalVisible] =
+        useState(false);
     const [promptInput, setPromptInput] = useState('');
     const [selectedPdf, setSelectedPdf] = useState<any>(null);
     const [isFocus, setIsFocus] = useState(false);
     const [selectedImages, setSelectedImages] = useState();
     const { data: serviceData } = useGetServicesByIdQuery(id)
     const [services, setServices] = useState({})
+    const [updateError, setUpdateError] = useState();
     const colorScheme = useColorScheme(); // 'dark' or 'light'
     const isDarkMode = colorScheme === 'dark';
     const [updateServicesById] = useUpdateServicesByIdMutation()
-console.log(services?._id, "services=====================")
+    // console.log(services?._id, "services=====================")
     const [value, setValue] = useState({
         title: '',
         subtitle: '',
@@ -61,7 +66,7 @@ console.log(services?._id, "services=====================")
         description: '',
         category: '',
     });
-// console.log(value, "value=====================")
+    // console.log(value, "value=====================")
     const renderItem = (item) => (
         <View
             style={[
@@ -71,7 +76,7 @@ console.log(services?._id, "services=====================")
                 },
             ]}
         >
-            <Text style={{ color: isDarkMode ? '#fff' : '#fff' }}>{item.label}</Text>
+            <Text style={{ color: isDarkMode ? '#fff' : '#fff', padding: 10 }}>{item.label}</Text>
         </View>
     );
 
@@ -89,6 +94,7 @@ console.log(services?._id, "services=====================")
                 price: service.price?.toString() || '',
                 description: service.description || '',
                 category: data.find(cat => cat.label.toLowerCase() === service.category?.toLowerCase())?.value || '',
+
             }));
             setPromptInput(service.about || '');
             // Handle preloading PDF
@@ -160,7 +166,7 @@ console.log(services?._id, "services=====================")
     };
 
     const handleSave = async () => {
-        console.log(fields, "Fields ++++++++++++++++++++++")
+        // console.log(fields, "Fields ++++++++++++++++++++++")
         try {
             const formData = new FormData()
             formData.append('title', value?.title)
@@ -171,13 +177,19 @@ console.log(services?._id, "services=====================")
             formData.append('about', promptInput)
             formData.append('pdfFiles', selectedImages)
             // formData.append('explainMembership', fields)
-            formData.append("explainMembership", JSON.stringify(fields)); // ← becomes: '["Member ", "Member 1", "Member 2"]'
+            formData.append("explainMembership", JSON.stringify(fields));
             const res = await updateServicesById({ id, data: formData })
+            console.log(res?.data, "res++++++++++++++++")
+            if (res?.data.success === true) {
+                navigation?.navigate('SettingProfile');
+                setServiceCreationConfirmationModalVisible(true)
+                console.log("Service updated succcessfully")
+            } else if (res?.data?.error) {
+                setUpdateError(res?.data?.error)
+            }
             console.log(formData, "formData==================")
 
-            navigation?.navigate('SettingProfile');
-            console.log(res, "res++++++++++++++++")
-            Alert.alert("Service updated succcessfully")
+
         } catch (err) {
             console.log(err)
         }
@@ -341,12 +353,42 @@ console.log(services?._id, "services=====================")
                 <SvgXml xml={IconPlus} />
             </TouchableOpacity>
             {/* Save Button */}
+            {updateError && (
+                <Text style={tw`text-red-600 py-4`}>{updateError}*</Text>
+            )}
             <TouchableOpacity
                 onPress={handleSave}
                 style={tw`bg-white rounded-xl py-4 items-center`}
             >
                 <Text style={tw`text-black font-bold text-base`}>Save</Text>
             </TouchableOpacity>
+            <NormalModal
+                layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
+                containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
+                visible={serviceCreationConfirmationModalVisible}
+                setVisible={setServiceCreationConfirmationModalVisible}>
+                <View>
+                    <Text style={tw`text-white text-lg text-center font-RoboBold mb-2`}>
+                        Service updated succcessfully
+                    </Text>
+
+                    <View style={tw`mt-2`}>
+                        <View style={tw`border-t-2 border-gray-800 w-full`}>
+
+                        </View>
+                        <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+                            <Button
+                                title="Continue"
+                                style={tw`text-white px-6`}
+                                containerStyle={tw`bg-gray-900`}
+                                onPress={() => {
+                                    setServiceCreationConfirmationModalVisible(false);
+                                }}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </NormalModal>
         </ScrollView>
     );
 };

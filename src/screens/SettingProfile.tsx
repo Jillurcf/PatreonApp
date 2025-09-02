@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   StatusBar,
@@ -29,9 +30,9 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [postCreateConnect] = usePostCreateConnectMutation();
   const [postCreateRecipient, { isLoading }] = usePostCreateRecipientMutation();
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
-  const { data, isError, refetch } = useGetUserQuery({});
+  const { data, isError, refetch, isFetching } = useGetUserQuery({});
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
-  console.log(data?.data, "data======================")
+  // console.log(data?.data, "data======================")
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
 
 
@@ -41,7 +42,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   }, [data?.data]);
 
   const selectImage = async () => {
-    console.log("click");
+    // console.log("click");
     try {
       const image = await ImageCropPicker.openPicker({
         width: 300,
@@ -182,7 +183,13 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   }
 
 
-
+if(isFetching && !data){
+  return (
+    <View style={tw`flex-1 bg-black items-center, justify-center`}>
+      <ActivityIndicator size='large' color="gray"/>
+    </View>
+  )
+}
   return (
     <View style={tw`bg-black flex-1`}>
       {/* Header */}

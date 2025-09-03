@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { SvgXml } from 'react-native-svg';
 import { OtpInput } from 'react-native-otp-entry';
-import { useOtipVerifyMutation } from '../../redux/apiSlice/authSlice';
+import { useEmailVerifySignupMutation, useOtipVerifyMutation } from '../../redux/apiSlice/authSlice';
 import tw from '../../lib/tailwind';
 import { IconBack } from '../../assets/icons/icons';
 import Button from '../../components/Button';
@@ -28,14 +28,10 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
   const [otp, setOtp] = useState<string>('');
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const inputs = useRef<Array<TextInput | null>>([]);
-  const [email, setEmail] = useState('');
-  const [otipVerify, { isLoading, isError }] = useOtipVerifyMutation();
-  // const [forgetpass,] = useForgetpassMutation()
-  // console.log("211", email, otp);
-  // const { from } = route?.params || {};
+   const [emailVerify, {isLoading}] = useEmailVerifySignupMutation();
   const [seconds, setSeconds] = useState(119);
   const [isActive, setIsActive] = useState(true);
-  const { screenName, phoneNumber } = route.params || {};
+  const { screenName, phoneNumber, email } = route.params || {};
   const [alertVisible, setAlertVisible] = useState(false);
   const [error, setError] = useState<ErrorResponse | null>(null);
 
@@ -123,10 +119,10 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
 
     try {
       const formData = new FormData();
-      formData.append("phone", String(phoneNumber));
+      formData.append("email", String(email));
       formData.append("code", String(otp));
       console.log(formData, "formdata before sending+++++++")
-      const response = await otipVerify(formData).unwrap();
+      const response = await emailVerify(formData).unwrap();
 
       // Process the successful response
       console.log("response verify", response);
@@ -137,10 +133,10 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
         if (screenName === "forgetPass") {
          navigation.navigate(
             'ForgetPass',
-              { phoneNumber: phoneNumber },
+              { email: email },
             );
         } else {
-          navigation?.navigate("Signup", { phoneNumber: phoneNumber })
+          navigation?.navigate("Popup", { email: email })
         }
       } else {
         console.error("OTP verification failed:", response?.message);

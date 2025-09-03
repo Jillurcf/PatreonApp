@@ -24,7 +24,6 @@ const ForgetPass = ({ navigation, route }: any) => {
     // console.log('navigation', navigation);
     const [resetPaswordModalVisible, setresetPaswordModalVisible] =
         useState(false);
-    const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
@@ -34,7 +33,7 @@ const ForgetPass = ({ navigation, route }: any) => {
     const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState()
     const [checkValue, setCheckValue] = useState(false);
-    const { screenName, phoneNumber } = route?.params || {};
+    const { screenName, phoneNumber, email } = route?.params || {};
     console.log(phoneNumber, "phoneNumber++++++")
     const [changePassword, { isLoading, isError }] = useChangePasswordMutation();
     console.log('27', password, confirmPassword);
@@ -51,7 +50,7 @@ const ForgetPass = ({ navigation, route }: any) => {
         try {
             console.log('handleChangePassword called');
             const formData = new FormData();
-            formData.append('phoneNumber', phoneNumber);
+            formData.append('email', email);
             formData.append('password', password);
             formData.append('confirmPassword', confirmPassword);
             console.log(formData, "formData+++++")
@@ -64,20 +63,8 @@ const ForgetPass = ({ navigation, route }: any) => {
                 console.log('Please fill all fields');
                 setErrorMessage(response?.error)
             }
-            //   navigation?.navigate("Login");
-            // const response = await fetch("http://10.0.80.85:3004/api/auth/reset-password", {
-            //     method: "POST",
-            //     body: formData,
-            //     // ❌ Don't set Content-Type manually
-            //   });
-            //   console.log(response, "response+++++")
-            // Validate required fields before sending the request
-
-
         } catch (err) {
             console.log('Error:=============', err);
-            // setErrorMessage(err)
-            // Alert.alert('Error', 'An error occurred while changing password');
         }
     };
 
@@ -141,7 +128,7 @@ const ForgetPass = ({ navigation, route }: any) => {
 
                 </View>
             </View>
-            <View style={tw`flex-col justify-end `}>
+            <View style={tw`flex-col justify-end my-4 `}>
                 {errorMessage?.data?.message && (
                     <Text style={tw`text-red-600 text-xs`}>{errorMessage?.data?.message}*</Text>
                 )}
@@ -164,7 +151,7 @@ const ForgetPass = ({ navigation, route }: any) => {
                         Password changed successfully!
                     </Text>
 
-                    <View style={tw`mt-2`}>
+                    <View style={tw`my-4`}>
 
                         <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
                             <Button

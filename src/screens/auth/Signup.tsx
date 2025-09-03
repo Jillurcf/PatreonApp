@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { SvgXml } from 'react-native-svg';
 import { useRegisterUserMutation } from '../../redux/apiSlice/authSlice';
 import tw from '../../lib/tailwind';
-import { IconBack, IconEnvelope, iconLock, IconUser } from '../../assets/icons/icons';
+import { IconBack, IconCloseEye, IconEnvelope, iconLock, IconOpenEye, IconUser } from '../../assets/icons/icons';
 import InputText from '../../components/InputText';
 import Button from '../../components/Button';
 
@@ -58,12 +58,12 @@ const SignUp = ({ navigation, route }: any) => {
       formData.append("username", username);
       formData.append("email", email);
       formData.append("password", password);
-      formData.append("phone", phoneNumber);
+      // formData.append("phone", phoneNumber);
       console.log(formData, "formdata before sending---------------")
       const response = await SignUp(formData).unwrap();
       console.log(response?.success, "response singup=========")
       if(response?.success === true){
-       navigation?.navigate("Popup");
+       navigation?.navigate("Verify", {email: email});
       }
      
     } catch (err) {
@@ -153,6 +153,7 @@ const SignUp = ({ navigation, route }: any) => {
               placeholderColor={'#949494'}
               label={'Password'}
               iconLeft={iconLock}
+                  iconRight={isShowPassword ? IconOpenEye : IconCloseEye}
               // iconRight={isShowConfirmPassword ? iconLock : iconLock}
               onChangeText={(text: any) => setPassword(text)}
               isShowPassword={!isShowConfirmPassword}
@@ -163,7 +164,7 @@ const SignUp = ({ navigation, route }: any) => {
           </View>
         </View>
       </View>
-      <View style={tw`flex-col justify-end `}>
+      <View style={tw`flex-col justify-end mb-4 `}>
         <Button
           disabled={!allFilled}
           title={isLoading ? "Wait..." :'Register'}

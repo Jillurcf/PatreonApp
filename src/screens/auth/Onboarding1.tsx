@@ -26,7 +26,7 @@ const Onboarding1 = ({navigation}: {navigation: any}) => {
       console.log(error);
     }
     navigation.navigate(
-     "PhoneVerifation",
+     "Signup",
       { screenName: "signup" }
     )
   };

@@ -39,6 +39,7 @@ import UpdateRecipientScreen from '../screens/UpdateRecipientScreen';
 import AttachBankAccountScreen from '../screens/AttachBankAccountScreen';
 import MyAccount from '../screens/MyAccount';
 import HelpSupport from '../screens/HelpAndSupport';
+import EmailVerificationScreen from '../screens/auth/EmailVerificationScreen';
 // import { StripeProvider } from '@stripe/stripe-react-native';
 
 
@@ -64,6 +65,8 @@ export default function Routes() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Verify" component={VerifyScreen} />
       <Stack.Screen name="PhoneVerifation" component={PhoneVerification} />
+      <Stack.Screen name="EmailVerification" component={EmailVerificationScreen} />
+
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="ForgetPass" component={ForgetPass} />
       <Stack.Screen name="Popup" component={PopupScreen} />

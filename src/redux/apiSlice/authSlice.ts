@@ -63,6 +63,30 @@ const authSlice = api.injectEndpoints({
         }),
         invalidatesTags: ['user'],
       }),
+      emailVerifySignup: builder.mutation({
+      query: (data) => ({
+        url: `/auth/verify-email`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'application/json',
+        },
+        body: data,
+      }),
+      invalidatesTags: ['user'],
+    }),
+    othersEmailVerify: builder.mutation({
+      query: (data) => ({
+        url: `/auth/send-verification-code-to-email`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          // 'Content-Type': 'application/json',
+        },
+        body: data,
+      }),
+      invalidatesTags: ['user'],
+    }),
       resentOtp: builder.mutation({
         query: (otp) => ({
           url: `/resent-otp`,
@@ -110,5 +134,7 @@ export const {useLoginUserMutation,
     useChangePasswordMutation,
     usePostSocialLoginMutation,
     usePhoneNoVerificationMutation,
-    usePostCheckTokenMutation
+    usePostCheckTokenMutation,
+    useEmailVerifySignupMutation,
+    useOthersEmailVerifyMutation,
 } = authSlice;

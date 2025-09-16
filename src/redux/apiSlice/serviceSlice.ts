@@ -48,6 +48,14 @@ const serviceSlice = api.injectEndpoints({
 
 
     }),
+      messageHistory: builder.query({
+      query: () => ({
+        url: `/services/get-replies-by-user`,
+        method: "Get",
+      }),
+      providesTags: ['service'],
+
+    }),
     gettMyServices: builder.query({
       query: () => ({
         url: `/services/get-service-by-contributor`,
@@ -105,6 +113,7 @@ const serviceSlice = api.injectEndpoints({
 export const { useGetAllServiceQuery,
   usePostBecmeAContibutorMutation,
   usePostSendMessageMutation,
+  useMessageHistoryQuery,
   useGettMyServicesQuery,
   useDeleteServicesMutation,
   useGetServicesByIdQuery,

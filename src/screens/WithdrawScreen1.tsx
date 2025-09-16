@@ -49,7 +49,7 @@ const WithdrawScreen1 = ({navigation}) => {
                 // navigation.navigate('HomeScreen');
               }
             }}
-            style={tw`bg-PrimaryFocus rounded-full p-1`}>
+            style={tw`bg-black rounded-full p-1`}>
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
           <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>

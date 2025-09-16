@@ -52,8 +52,8 @@ const PaymentMethodScreen = ({ navigation }: NavigProps<null>) => {
       <View style={tw`my-10`}>
         <View style={tw`flex-row w-full justify-between mt-4`}>
           <TouchableOpacity
-            onPress={() => navigation?.goBack()}
-            style={tw`bg-PrimaryFocus rounded-full p-1`}>
+            onPress={() => navigation?.navigate("Drawer")}
+            style={tw`bg-black rounded-full p-1`}>
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
           <Text style={tw`text-white font-bold font-AvenirLTProBlack text-2xl`}>
@@ -90,7 +90,7 @@ const PaymentMethodScreen = ({ navigation }: NavigProps<null>) => {
             ) : hasWallet ? (
               <>
                 <Text style={tw`text-white font-AvenirLTProBlack text-4xl text-center`}>
-                  {`$${balance.toFixed(2)}`}
+                  {`£${balance.toFixed(2)}`}
                 </Text>
                 <Text style={tw`text-white font-AvenirLTProBlack text-center mt-6`}>
                   Available for withdraw

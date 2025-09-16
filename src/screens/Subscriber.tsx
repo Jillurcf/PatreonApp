@@ -87,7 +87,7 @@ const Subscriber = ({navigation}: NavigProps<null>) => {
               console.log('No screen to go back to');
             }
           }}
-          style={tw`bg-PrimaryFocus rounded-full p-1`}>
+          style={tw`bg-black rounded-full p-1`}>
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
         <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>

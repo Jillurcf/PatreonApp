@@ -85,7 +85,7 @@ const EmailVerificationScreen = ({navigation, route}) => {
             <View style={tw`flex-row w-full justify-between px-[4%] mt-4`}>
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
-                    style={tw`bg-PrimaryFocus rounded-full p-1`}>
+                    style={tw`bg-black rounded-full p-1`}>
                     <SvgXml xml={IconBack} />
                 </TouchableOpacity>
                 <View></View>

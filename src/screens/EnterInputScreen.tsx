@@ -102,7 +102,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
           <View style={tw`flex-row w-full justify-between mt-4`}>
             <TouchableOpacity
               onPress={() => navigation?.goBack()}
-              style={tw`bg-PrimaryFocus rounded-full p-1`}>
+              style={tw`bg-black rounded-full p-1`}>
               <SvgXml xml={IconBack} />
             </TouchableOpacity>
             <Text style={tw`text-white font-bold font-AvenirLTProBlack text-2xl`}>
@@ -136,22 +136,26 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
           {/* Media Upload */}
           <View style={tw`my-6`}>
             <Text style={tw`text-white font-AvenirLTProBlack`}>Upload Knowledge</Text>
-            <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
-              <View style={tw`flex-row gap-6`}>
-                {/* <IButton containerStyle={tw`p-4 rounded-full`} svg={Gallery} onPress={openGallery} /> */}
-                <TouchableOpacity onPress={handleUploadPdf}>
+            <TouchableOpacity 
+            onPress={handleUploadPdf}
+            >
+              <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
+                <View style={tw`flex-row gap-6`}>
+                  {/* <IButton containerStyle={tw`p-4 rounded-full`} svg={Gallery} onPress={openGallery} /> */}
+                  <TouchableOpacity onPress={handleUploadPdf}>
 
-                  <SvgXml xml={IconUpload} />
-                </TouchableOpacity>
+                    <SvgXml xml={IconUpload} />
+                  </TouchableOpacity>
+                </View>
+                <Text style={tw`text-white my-4`}>Upload file (50 mb maximum)</Text>
+
+
               </View>
-              <Text style={tw`text-white my-4`}>Upload file (50 mb maximum)</Text>
-
-
-            </View>
-            {!selectedPdf && (
-              <Text style={tw`text-red-600 text-xs mt-2`}>
-                Please upload a PDF file.*
-              </Text>)}
+              {!selectedPdf && (
+                <Text style={tw`text-red-600 text-xs mt-2`}>
+                  Please upload a PDF file.*
+                </Text>)}
+            </TouchableOpacity>
           </View>
         </View>
         {selectedPdf && (

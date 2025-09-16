@@ -30,6 +30,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [postCreateConnect] = usePostCreateConnectMutation();
   const [postCreateRecipient, { isLoading }] = usePostCreateRecipientMutation();
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const { data, isError, refetch, isFetching } = useGetUserQuery({});
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
   // console.log(data?.data, "data======================")
@@ -75,32 +76,6 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
     }
   };
 
-  // const handleGetConnect = async () => {
-  //   console.log('Button clicked');
-  //   setLoading(true);
-  //   try {
-  //     // const formData = new FormData();
-  //     // formData.append('email', profileData?.data?.email);
-
-  //     // Call API to create Stripe Connect account
-  //     const response = await postCreateConnect();
-  //     console.log('Raw response:', response?.data?.data?.url);
-
-  //     const url = response?.data?.data?.url;
-  //     if (url) {
-  //       console.log('Onboarding URL:', url);
-  //       setOnboardingUrl(url); // Store URL in state
-
-  //     } else {
-  //       console.warn('Onboarding URL is undefined:', response);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching connect URL:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   // When user clicks "Create Connect Account" button
   const handleGetConnect = async () => {
     console.log('🔘 Button clicked');
@@ -125,31 +100,6 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
     }
   };
 
-
-
-  // const handleWebViewNavigation = async (event: any) => {
-  //   console.log('WebView Navigation State:', event.url);
-
-  //   if (event.url.includes('success')) {
-  //     console.log('✅ Onboarding Successful!');
-
-  //     // Optional state update
-  //     setConnected(true);
-
-  //     // Hide WebView
-  //     setOnboardingUrl(null);
-
-  //     // Navigate to Drawer
-  //     setTimeout(() => {
-  //       navigation?.navigate("Drawer",)
-
-  //     }, 300);
-
-  //   } else if (event.url.includes('your-app-failure-url')) {
-  //     console.warn('❌ Onboarding Failed');
-  //     setOnboardingUrl(null);
-  //   }
-  // };
 
   const handleWebViewNavigation = async (event: any) => {
     console.log('🌍 WebView Navigation:', event.url);
@@ -183,20 +133,20 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   }
 
 
-if(isFetching && !data){
-  return (
-    <View style={tw`flex-1 bg-black items-center, justify-center`}>
-      <ActivityIndicator size='large' color="gray"/>
-    </View>
-  )
-}
+  if (isFetching && !data) {
+    return (
+      <View style={tw`flex-1 bg-black items-center, justify-center`}>
+        <ActivityIndicator size='large' color="gray" />
+      </View>
+    )
+  }
   return (
     <View style={tw`bg-black flex-1`}>
       {/* Header */}
       <View style={tw`flex-row w-full justify-between mt-4 px-[4%]`}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={tw`bg-PrimaryFocus rounded-full p-1`}>
+          onPress={() => navigation.navigate("Drawer")}
+          style={tw`bg-black rounded-full p-1`}>
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
         <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
@@ -235,9 +185,18 @@ if(isFetching && !data){
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
           {data?.data?.username || 'Username'}
         </Text>
-        <Text style={tw`text-white font-AvenirLTProBlack`}>
-          {data?.data?.bio || 'Bio'}
-        </Text>
+        <View style={tw`px-[4%] mt-2`}>
+          <Text style={tw`text-white font-AvenirLTProBlack   `}>
+            {expanded ? data?.data?.bio : data?.data?.bio?.slice(0, 35) || 'Bio'}
+          </Text>
+          {data?.data?.bio?.length > 35 && (
+            <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+              <Text style={tw`text-blue-600 font-AvenirLTProBlack underline text-xs`}>
+                {expanded ? " Show less" : "Show more..."}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Stats Box */}
@@ -287,20 +246,7 @@ if(isFetching && !data){
             containerStyle={tw`w-full bg-white`}
           />
         </View>
-        <View style={tw`w-[45%]`}>
-          {/* <TButton
-                onPress={() => navigation.navigate('MyAccount')}
-                title="My accounts"
-                titleStyle={tw`text-black`}
-                containerStyle={tw`w-full bg-white`}
-              /> */}
-          {/* </View>
-          </View> */}
-          {/* <View style={tw`w-[20%] items-center flex-row mx-[4%] `}>
-            <Text style={tw`text-white text-center`}>Total =</Text>
-            <Text style={tw`text-white`}>15</Text>
-          </View> */}
-        </View>
+
       </View>
       {/* Contributor Box */}
       <View style={tw`items-center justify-center`}>
@@ -309,7 +255,7 @@ if(isFetching && !data){
             Become A Contributor
           </Text>
           <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
-            Consult People anytime anywhere
+            Consult People anytime anywhere.
           </Text>
           <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
             First connect your stripe account for payouts, then create your agent.

@@ -19,18 +19,20 @@ import Button from '../../components/Button';
 
 const SignUp = ({ navigation, route }: any) => {
   // console.log('navigation', navigation);
-  const { screenName, phoneNumber } = route.params || {};
+  // const { screenName, phoneNumber } = route.params || {};
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   // const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [name, setName] = useState<string>('');
+  const [signupError, setSignupError] = useState();
   const [location, setLocation] = useState<string>('');
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [SignUp, {isLoading, isError}] = useRegisterUserMutation();
   console.log('27',name, email, password, username);
   // const data = {email, password, name:username, address:location}
+  console.log(signupError, "signupError++++++++++++++")
 
   const allFilled =
     email.trim() !== '' &&
@@ -48,28 +50,20 @@ const SignUp = ({ navigation, route }: any) => {
         Alert.alert('Error', 'All fields are required.');
         return;
       }
-      // if (allFilled) {
-      //   router.push("/screens/auth/PopupScreen");
-      // } else {
-      //   Alert.alert('Please fill all fields');
-      // }
       const formData = new FormData();
       formData.append("name", name);
       formData.append("username", username);
       formData.append("email", email);
       formData.append("password", password);
-      // formData.append("phone", phoneNumber);
-      console.log(formData, "formdata before sending---------------")
+      console.log(formData, "formdata before sending-+++++++++++++++")
       const response = await SignUp(formData).unwrap();
-      console.log(response?.success, "response singup=========")
+      console.log(response, "response singup=========");
       if(response?.success === true){
        navigation?.navigate("Verify", {email: email});
       }
-     
     } catch (err) {
       console.error('Error during SignUp:', err);
-
-     
+      setSignupError(err?.data?.message)    
     }
   };
 
@@ -82,7 +76,7 @@ const SignUp = ({ navigation, route }: any) => {
         <View style={tw`flex-row w-full justify-between mt-4`}>
           <TouchableOpacity
             onPress={() => navigation?.goBack()}
-            style={tw`bg-PrimaryFocus rounded-full p-1`}>
+            style={tw`bg-black rounded-full p-1`}>
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
           <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
@@ -130,6 +124,7 @@ const SignUp = ({ navigation, route }: any) => {
                 />
               </View>
             </View>
+          
             <InputText
               cursorColor="white"
               style={tw`text-white`}
@@ -144,6 +139,9 @@ const SignUp = ({ navigation, route }: any) => {
               // isShowPassword={!isShowPassword}
               // rightIconPress={() => setIsShowPassword(!isShowPassword)}
             />
+              {signupError && (
+              <Text style={tw`text-red-600 text-xs`}>{signupError}*</Text>
+            )}
             <InputText
               cursorColor="white"
               style={tw`text-white`}

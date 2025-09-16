@@ -7,36 +7,15 @@ import {
   IconNotificationMessage,
 } from '../assets/icons/icons';
 import {SvgXml} from 'react-native-svg';
+import { useNotificationQuery } from '../redux/apiSlice/userSlice';
 
 type Props = {};
 
-const Notification = ({navigation}) => {
-  const notificationData = [
-    {
-      id: 1,
-      title: 'Update available',
-      message:
-        'Lorem ipsum dolor sit amet consectetur. Pharetra dolor est cursus massa vitae dictum tempus adipiscing. Lorem ipsum dolor sit amet consectetur. Pharetra dolor est cursus massa vitae dictum tempus adipiscing.',
-    },
-    {
-      id: 2,
-      title: 'Update available',
-      message:
-        'Lorem ipsum dolor sit amet consectetur. Pharetra dolor est cursus massa vitae dictum tempus adipiscing.',
-    },
-    {
-      id: 3,
-      title: 'Update available',
-      message:
-        'Lorem ipsum dolor sit amet consectetur. Pharetra dolor est cursus massa vitae dictum tempus adipiscing.',
-    },
-    {
-      id: 4,
-      title: 'Update available',
-      message:
-        'Lorem ipsum dolor sit amet consectetur. Pharetra dolor est cursus massa vitae dictum tempus adipiscing.',
-    },
-  ];
+const Notification = ({navigation}: {navigation:any}) => {
+  const {data, isLoading, isError} = useNotificationQuery({});
+  console.log(data?.data, "data+++++++++")
+
+ 
   return (
     <View style={tw`flex-1 bg-black px-[4%]`}>
       <View style={tw`flex-row w-full justify-between mt-4`}>
@@ -50,7 +29,7 @@ const Notification = ({navigation}) => {
               // navigation.navigate('HomeScreen');
             }
           }}
-          style={tw`bg-PrimaryFocus rounded-full p-1`}>
+          style={tw`bg-black rounded-full p-1`}>
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
         <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
@@ -61,17 +40,18 @@ const Notification = ({navigation}) => {
       </View>
       <View style={tw`mt-6`}>
         <FlatList
-          data={notificationData}
+          data={data?.data}
           keyExtractor={item => item.id}
           renderItem={({item, index}) => {
+            console.log(item, "Item++++++++++++")
             return (
               <View
-                style={tw`flex-row gap-3 bg-[#262329] p-4 my-1 rounded-lg px-[4%]`}>
+                style={tw`flex-row gap-3 bg-[#262329] p-4 my-1 items-center rounded-lg px-[4%]`}>
                 <SvgXml xml={IconNotificationMessage} />
                 <View style={tw``}>
-                  <Text style={tw`text-white font-AvenirLTProBlack pr-[2%]`}>
+                  {/* <Text style={tw`text-white font-AvenirLTProBlack pr-[2%]`}>
                     {item?.title}
-                  </Text>
+                  </Text> */}
                   <Text style={tw`text-white font-AvenirLTProBlack pr-[14%]`}>
                     {item?.message}
                   </Text>

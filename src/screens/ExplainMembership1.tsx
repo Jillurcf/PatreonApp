@@ -81,7 +81,7 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
             if (res?.success === true) {
                 setServiceSuccess(res?.success === true);
                 // If the response is successful, navigate to the SettingProfile screen
-                navigation.navigate('SettingProfile');
+                navigation.navigate('PaymentMethodScreen');
                 setServiceCreationConfirmationModalVisible(true)
                 console.log(res, "res++++++++++++++++")
                 // Alert.alert("Service created succcessfully")
@@ -106,7 +106,7 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
                     <View style={tw`flex-row items-center mb-6`}>
                         <TouchableOpacity
                             onPress={() => navigation.goBack()}
-                            style={tw`bg-PrimaryFocus rounded-full p-1`}>
+                            style={tw`bg-black rounded-full p-1`}>
                             <SvgXml xml={IconBack} />
                         </TouchableOpacity>
                         <Text style={tw`text-white text-lg font-bold ml-2`}>

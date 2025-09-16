@@ -40,12 +40,12 @@ const UpdateRecipientScreen = ({ navigation }: { navigation: any }) => {
     };
 
     return (
-        <View style={tw`bg-black flex-1`}>
+        <ScrollView style={tw`bg-black flex-1 keyboardAvoidingView`}>
             {/* Header */}
             <View style={tw`flex-row w-full justify-between mt-4 px-[4%] items-center`}>
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
-                    style={tw`bg-PrimaryFocus rounded-full p-1`}>
+                    style={tw`bg-black rounded-full p-1`}>
                     <SvgXml xml={IconBack} />
                 </TouchableOpacity>
                 <Text style={tw`text-white font-AvenirLTProBlack text-lg`}>
@@ -172,7 +172,7 @@ const UpdateRecipientScreen = ({ navigation }: { navigation: any }) => {
             </Formik>
 
             <StatusBar backgroundColor="black" translucent />
-        </View>
+        </ScrollView>
     );
 };
 

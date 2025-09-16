@@ -146,12 +146,11 @@ export const IconVerified = `<svg width="10" height="12" viewBox="0 0 10 12" fil
 </svg>
 `;
 
-export const IconBack = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12.5005 16.5999L7.06719 11.1666C6.42552 10.5249 6.42552 9.4749 7.06719 8.83324L12.5005 3.3999" stroke="white" stroke-width="1.25" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+export const IconBack = `
+<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="28" height="28" rx="14" fill="#262329"/>
+<path d="M16.5005 20.5999L11.0672 15.1666C10.4255 14.5249 10.4255 13.4749 11.0672 12.8332L16.5005 7.3999" stroke="white" stroke-width="1.25" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-
-</svg>
-
 `;
 
 export const IconRating = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">

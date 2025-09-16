@@ -21,18 +21,19 @@ type Props = {};
 
 const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   const { userId, serviceId, title, price } = route.params || {};
-  console.log(userId, serviceId, title, price, "id++++++");
+  // console.log(userId, serviceId, title, price, "id++++++");
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
   const [postPaymentMethods,] = usePostPaymentMethodsMutation();
   const [postCreateTransaction] = usePostCreateTransactionMutation()
-  const [connected, setConnected] = useState()
-  console.log(userId, serviceId, title, "id++++++18");
+  const [error, setError] = useState()
+  console.log(error, "error++")
   const { data, isLoading, isError, refetch } = useGetSingleUserQuery(userId);
-  console.log(data, '=======================data')
+  // console.log(data, '=======================data')
   const [serviceData, setServiceData] = React.useState<any>(null);
   const [resSessionId, setResSessionId] = useState<string | null>(null);
-  console.log(serviceData, "serviceData++++++");
-  console.log(resSessionId, "resSessionId++++++");
+  const [expanded, setExpanded] = useState(false);
+  // console.log(serviceData, "serviceData++++++");
+  // console.log(resSessionId, "resSessionId++++++");
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
   useEffect(() => {
     const service = getServiceData();
@@ -57,6 +58,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
       }
     } catch (error) {
       console.log(error);
+      setError(error?.data?.message)
     }
 
   };
@@ -131,7 +133,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
           console.log(formData, 'Form Data for Transaction Creation');
 
           const res = await postCreateTransaction(formData).unwrap();
-          console.log(res, 'Transaction Created Successfully');
+          console.log(res?.success, 'Transaction Created Successfully');
 
           setTimeout(() => {
             navigation.navigate('PaymentResult');
@@ -184,7 +186,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
           onPress={() => {
             navigation?.goBack()
           }}
-          style={tw`bg-PrimaryFocus rounded-full p-1`}>
+          style={tw`bg-black rounded-full p-1`}>
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
         {/* <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
@@ -194,13 +196,23 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         <View style={tw`w-8`} />
       </View>
       <View style={tw`flex items-center justify-center mt-8`}>
-       {fullImageUrl ?(<Image style={tw`rounded-full`} width={80} height={80} source={{ uri: fullImageUrl }} />): (<Image style={tw`rounded-full`} width={80} height={80} source={require('../assets/images/alteravater.png')} />)} 
+        {fullImageUrl ? (<Image style={tw`rounded-full`} width={80} height={80} source={{ uri: fullImageUrl }} />) : (<Image style={tw`rounded-full`} width={80} height={80} source={require('../assets/images/alteravater.png')} />)}
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
           {data?.data?.username || 'Username'}
         </Text>
-        <Text style={tw`text-white font-AvenirLTProBlack   `}>
-          {data?.data?.bio || 'Bio'}
-        </Text>
+     
+          <View style={tw`px-[4%] mt-2`}>
+            <Text style={tw`text-white font-AvenirLTProBlack   `}>
+              {expanded ? data?.data?.bio : data?.data?.bio.slice(0, 35) || 'Bio'}
+            </Text>
+            {data?.data?.bio?.length > 35 && (
+              <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+                <Text style={tw`text-blue-600 font-AvenirLTProBlack underline text-xs`}>
+                  {expanded ? " Show less" : "Show more..."}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>    
       </View>
       <View style={tw`flex items-center justify-center my-8`}>
         <View
@@ -257,16 +269,11 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         </View>
       </View>
       <View style={tw`w-full items-center my-6`}>
+        {error && (
+          <Text style={tw`text-red-600 text-xs my-2`}>{error}*</Text>
+        )}
         <TButton
           onPress={handleSubscribe}
-          //   onPress={() => navigation?.navigate(
-          //  'Payment',
-          //   {
-          //       userId: userId, // ✅ Pass the userId you already have
-          //       serviceId: serviceId,
-          //       title: title,
-          //     }
-          //   )}
           title="Subscribe"
           titleStyle={tw`text-black`}
           containerStyle={tw`w-[90%] bg-white`}

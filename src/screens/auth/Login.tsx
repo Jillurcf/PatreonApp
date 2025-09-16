@@ -89,7 +89,7 @@ const Login = ({ navigation }: { navigation: any }) => {
                 <View style={tw`flex-row w-full gap-2 justify-between mt-4`}>
                     <TouchableOpacity
                         onPress={() => navigation.goBack()}
-                        style={tw`bg-PrimaryFocus rounded-full p-1`}>
+                        style={tw`bg-black rounded-full p-1`}>
                         <SvgXml xml={IconBack} />
                     </TouchableOpacity>
                     <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>

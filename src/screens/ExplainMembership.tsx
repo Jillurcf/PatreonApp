@@ -203,7 +203,7 @@ const ExplainMembership = ({ navigation }) => {
     <ScrollView contentContainerStyle={tw`flex-1 bg-black px-[4%]`}>
       <View style={tw`my-10`}>
         <View style={tw`flex-row w-full justify-between items-center`}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={tw`bg-PrimaryFocus rounded-full p-1`}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={tw`bg-black rounded-full p-1`}>
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
           <Text style={tw`text-white font-bold text-2xl`}>Explain Membership</Text>

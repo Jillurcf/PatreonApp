@@ -1,4 +1,4 @@
-import {InteractionManager, StatusBar, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, InteractionManager, StatusBar, StyleSheet, View} from 'react-native';
 // import {getSocket, initiateSocket} from '../../redux/services/socket';
 
 import React, { useEffect } from 'react';
@@ -51,11 +51,12 @@ useEffect(() => {
 
   return (
     <View style={tw`flex-1 w-full bg-black justify-center items-center`}>
-      <FastImage
+      {/* <FastImage
         style={tw`w-28 h-28 flex-1 `}
         resizeMode={FastImage.resizeMode.contain}
         source={require('../assets/images/logo.png')}
-      />
+      /> */}
+      <ActivityIndicator size="large" color="#fff" />
       <StatusBar barStyle="light-content" backgroundColor={'black'} />
     </View>
   );

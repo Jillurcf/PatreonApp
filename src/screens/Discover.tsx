@@ -16,7 +16,7 @@ import { useGetAllCategoryQuery } from '../redux/apiSlice/categorySlice';
 import tw from '../lib/tailwind';
 import { imageUrl } from '../redux/baseApi';
 import InputText from '../components/InputText';
-import { useGetAllUserQuery } from '../redux/apiSlice/userSlice';
+import { useGetAllUserQuery, useGetUserQuery } from '../redux/apiSlice/userSlice';
 
 
 type Props = {};
@@ -25,6 +25,7 @@ const Discover = () => {
   const navigation = useNavigation();
   const [successModal, setSuccessModal] = useState(false);
   const [search, setSearch] = useState('');
+  const { data: userData } = useGetUserQuery({});
 
   console.log("Search input:", search);
 
@@ -89,7 +90,7 @@ const Discover = () => {
             Welcome Back
           </Text>
           <Text style={tw`text-white font-AvenirLTProBlack text-lg text-right`}>
-            Sub Bou
+            {userData?.data?.name}
           </Text>
         </View>
       </View>

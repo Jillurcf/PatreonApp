@@ -90,7 +90,7 @@ const HomeSearchResult = () => {
                                 console.log('No screen to go back to');
                             }
                         }}
-                        style={tw`bg-PrimaryFocus rounded-full p-2`}>
+                        style={tw`bg-black rounded-full p-2`}>
                         <SvgXml xml={IconBack} />
                     </TouchableOpacity>
                 </View>

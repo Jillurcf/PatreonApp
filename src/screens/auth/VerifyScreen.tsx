@@ -170,7 +170,7 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
         <View style={tw`flex-row w-full justify-between px-[4%] mt-4`}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            style={tw`bg-PrimaryFocus rounded-full p-1`}>
+            style={tw`bg-black rounded-full p-1`}>
             <SvgXml xml={IconBack} />
           </TouchableOpacity>
           <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
@@ -181,10 +181,10 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
         </View>
         <View style={tw`mt-4`}>
           <Text style={tw`text-white text-2xl font-AvenirLTProBlack mt-6`}>
-            Verify Your Number
+            Verify Your Email
           </Text>
           <Text style={tw`text-white text-xs font-AvenirLTProBlack mb-8`}>
-            Enter code that we send you on your number.
+            Enter code that we send you on your email.
           </Text>
 
           <View style={tw` gap-y-4`}>

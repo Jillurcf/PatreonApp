@@ -7,14 +7,14 @@ const resources = {
     translation: {
       welcome: "Hello! How are you?",
       food: "Favorite Food",
-      terms_agreements: "Terms & Agreements",
+      terms_agreements: "Terms of service",
     },
   },
   enUK: {
     translation: {
       welcome: "Hello! How are you doing?",
       food: "Favourite Food",
-      terms_agreements: "Terms & Agreements (UK)",
+      terms_agreements: "Terms of service",
     },
   },
 };

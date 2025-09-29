@@ -60,6 +60,8 @@ const SignUp = ({ navigation, route }: any) => {
       console.log(response, "response singup=========");
       if(response?.success === true){
        navigation?.navigate("Verify", {email: email});
+      }else if(response?.success === false){
+        setSignupError(response?.message)    
       }
     } catch (err) {
       console.error('Error during SignUp:', err);
@@ -151,7 +153,7 @@ const SignUp = ({ navigation, route }: any) => {
               placeholderColor={'#949494'}
               label={'Password'}
               iconLeft={iconLock}
-                  iconRight={isShowPassword ? IconOpenEye : IconCloseEye}
+                  iconRight={isShowConfirmPassword ? IconOpenEye : IconCloseEye}
               // iconRight={isShowConfirmPassword ? iconLock : iconLock}
               onChangeText={(text: any) => setPassword(text)}
               isShowPassword={!isShowConfirmPassword}
@@ -160,6 +162,22 @@ const SignUp = ({ navigation, route }: any) => {
               }
             />
           </View>
+           <View style={tw`mt-4 flex-row gap-2`}>
+                        {/* <Text style={tw`text-white font-AvenirLTProBlack`}>
+                           Please read
+                        </Text> */}
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('TermsOfService')}
+                        >
+                            <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>Terms Of Service</Text>
+                        </TouchableOpacity>
+                        <Text style={tw`text-white font-AvenirLTProBlack`}>&</Text>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('PrivacyPolicy')}
+                        >
+                            <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>Privacy Policy</Text>
+                        </TouchableOpacity>
+                    </View>
         </View>
       </View>
       <View style={tw`flex-col justify-end mb-4 `}>

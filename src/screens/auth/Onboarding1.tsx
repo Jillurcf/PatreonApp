@@ -35,32 +35,32 @@ const Onboarding1 = ({navigation}: {navigation: any}) => {
       <View style={tw`flex-col justify-between h-full items-center`}>
         <View style={tw`z-2 flex mx-auto items-center justify-center mt-32`}>
           <Text
-            style={tw` font-AvenirLTProBlack text-center text-white  text-5xl`}>
+            style={tw` font-AvenirLTProBlack text-center text-white  text-4xl`}>
             Get expert
           </Text>
           <Text
-            style={tw`font-AvenirLTProBlack text-center text-white  text-5xl py-4`}>
+            style={tw`font-AvenirLTProBlack text-center text-white  text-4xl py-4`}>
             advice anytime
           </Text>
           <Text
-            style={tw`font-AvenirLTProBlack text-center text-white  text-5xl`}>
+            style={tw`font-AvenirLTProBlack text-center text-white  text-4xl`}>
             anywhere
           </Text>
         </View>
         <View style={tw`z-2 flex mx-auto mb-0 top-0`}>
-          <View style={tw`my-2 flex items-center justify-center`}>
+          <View style={tw`my-2 flex items-center gap-2 justify-center`}>
             <TButton
               onPress={handleCreateUser}
               // onPress={()=> navigation?.navigate('AccountCreationEmail')}
               titleStyle={tw`text-whiteBtnText font-bold font-AvenirLTProHeavy text-center mx-auto`}
               title="Sign up"
-              containerStyle={tw`bg-white w-[90%] my-2 rounded-full`}
+              containerStyle={tw`bg-white w-[90%] rounded-full`}
             />
             <TButton
               onPress={() => navigation.navigate('Login', {from: 'Login'})}
               titleStyle={tw`text-white font-bold font-AvenirLTProHeavy text-center mx-auto`}
               title="Log in"
-              containerStyle={tw`bg-PrimaryFocus w-[90%] my-2 rounded-full`}
+              containerStyle={tw`bg-PrimaryFocus w-[90%] rounded-full`}
             />
           </View>
         </View>

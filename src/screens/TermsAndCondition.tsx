@@ -1,4 +1,5 @@
 import {
+  Alert,
   StatusBar,
   StyleSheet,
   Text,
@@ -23,6 +24,8 @@ import { useTranslation } from "react-i18next";
 import { RadioButton } from 'react-native-ui-lib';
 import TButton from '../components/TButton';
 // import RadioButtonRN from 'radio-buttons-react-native';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
 
 type Props = {};
 
@@ -32,6 +35,26 @@ const TermsAndCondition = ({ navigation }: { navigation: any }) => {
   const handleRadioButtonPress = (option: string) => {
     setSelectedOption(option);
   };
+
+  const handleDownload = async () => {
+    try {
+      const destPath = RNFS.CachesDirectoryPath + '/pp.pdf';
+
+      // Copy from assets to cache
+      await RNFS.copyFileAssets('pp.pdf', destPath);
+
+      // Open share dialog
+      await Share.open({
+        url: 'file://' + destPath,
+        type: 'application/pdf',
+        title: 'Share PDF',
+      });
+
+    } catch (error) {
+      console.log('Error downloading PDF:', error);
+      // Alert.alert('Error', 'Could not download or share PDF.');
+    }
+  }
   return (
     <View style={tw`flex-1 bg-black px-[4%]`}>
       <View style={tw`flex-row w-full justify-between mt-4`}>
@@ -51,27 +74,35 @@ const TermsAndCondition = ({ navigation }: { navigation: any }) => {
         <Text style={tw`text-white font-AvenirLTProBlack text-2xl`}>
           {/* Terms & Agreements */}
           {/* {t("Terms & Agreements")} */}
-           {t("terms_agreements")}
+          {t("terms_agreements")}
         </Text>
         {/* Placeholder view for symmetry */}
         <View style={tw`w-8`} />
       </View>
       {/* ======================================Content area ======================= */}
 
-      <View style={tw` my-6`}>
-        <View>
-          <Text style={tw`text-white font-AvenirLTProBlack text-xl`} >1. Types of Data We Collect</Text>
-          <Text style={tw`text-white font-AvenirLTProBlack mt-4`} >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text>
-        </View>
-        <View style={tw`mt-4`}>
-          <Text style={tw`text-white font-AvenirLTProBlack text-xl`} >2. Uswe of Your Personal Data</Text>
-          <Text style={tw`text-white font-AvenirLTProBlack mt-4`} >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text>
-        </View>
-        <View style={tw`mt-4`}>
-          <Text style={tw`text-white font-AvenirLTProBlack text-xl`} >3. Disclosure of your Personal Data</Text>
-          <Text style={tw`text-white font-AvenirLTProBlack mt-4`} >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text>
-        </View>
+      <View style={tw`my-6`}>
+        <Text style={tw`text-white font-AvenirLTProBlack text-xl`}>
+          1. Introduction
+        </Text>
+        <Text style={tw`text-white mt-4 font-AvenirLTProBlack`}>
+          1.1. By using or accessing the Between AI Agent Marketplace (the “Marketplace”) and/or
+          downloading or using any applications, tools, configurations, features, software,
+          products, source code, agents, code, use cases and services provided through the
+          Marketplace (collectively “Marketplace Services”), you acknowledge and agree that
+          you have read, understood, and agree to the terms of service outlined below (“Terms”).
+          This agreement is effective between you and Betweenai Limited (“we”, “us” “our”) as
+          of the date of your accepting these Terms. Additional terms may apply...
+        </Text>
       </View>
+      <TouchableOpacity
+        onPress={handleDownload}
+        style={tw`bg-PrimaryFocus p-4 rounded-2xl mb-10`}
+      >
+        <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
+          Read more? Download TOS as PDF
+        </Text>
+      </TouchableOpacity>
 
       <StatusBar backgroundColor="black" translucent />
     </View>

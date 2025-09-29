@@ -5,6 +5,7 @@ import { SvgXml } from 'react-native-svg'
 import { useDeleteServicesMutation, useGettMyServicesQuery } from '../redux/apiSlice/serviceSlice'
 import tw from '../lib/tailwind'
 import { IconBack, IconEdit } from '../assets/icons/icons'
+import MyServiceList from '../components/MyServiceList'
 
 
 
@@ -45,7 +46,7 @@ const MyServices = ({ navigation }: { navigation: any }) => {
 
     {
         isLoading && (
-            <View style={tw`absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-white/60 z-50`}>
+            <View style={tw` justify-center items-center`}>
                 <ActivityIndicator size="large" color="#ffffff" />
                 <Text style={tw`text-white mt-2`}>Loading...</Text>
             </View>
@@ -53,8 +54,8 @@ const MyServices = ({ navigation }: { navigation: any }) => {
     }
 
     return (
-        <ScrollView
-            contentContainerStyle={tw`flex-1 bg-black h-[95%] px-[4%]`}>
+        <View
+           style={tw`flex-1 bg-black h-[95%] px-[4%]`}>
             <View style={tw``}>
                 <View style={tw`flex-row w-full justify-between mt-4`}>
                     <TouchableOpacity
@@ -71,7 +72,7 @@ const MyServices = ({ navigation }: { navigation: any }) => {
             {/* =============== my services section =================== */}
 
             <View style={tw`mt-4`}>
-                <FlatList
+                {/* <FlatList
                     data={data?.data}
                     keyExtractor={(item, index) => item.id?.toString() || index.toString()}
                     renderItem={({ item }) => {
@@ -123,10 +124,17 @@ const MyServices = ({ navigation }: { navigation: any }) => {
                             </View>
                         );
                     }}
+                /> */}
+
+                <MyServiceList
+                    data={data?.data}
+                    handleDelete={handleDelete}
+                    handleEditService={handleEditService}
+                    IconEdit={IconEdit}
                 />
             </View>
             <StatusBar translucent={false} />
-        </ScrollView>
+        </View>
     )
 }
 

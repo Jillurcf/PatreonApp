@@ -138,13 +138,29 @@ const Login = ({ navigation }: { navigation: any }) => {
                         <Text style={tw`text-white text-xs`}>Do not have an account please </Text>
                         <TouchableOpacity
                             // onPress={() => navigation.navigate({ pathname: "/screens/auth/Signup", params: { screenName: "signup" } })}>
-                            onPress={() => navigation.navigate('Signup', {screenName: "signup"})}>
+                            onPress={() => navigation.navigate('Signup', { screenName: "signup" })}>
 
                             <Text style={tw`text-gray-400 text-xs underline`}>Signup</Text>
                         </TouchableOpacity>
 
                     </View>
-                    <Text style={tw`text-white`}>By logging in you accept our TOS & PP</Text>
+                    <View style={tw`mt-4 flex-row gap-2`}>
+                        <Text style={tw`text-white font-AvenirLTProBlack`}>
+                            By logging in you accept our
+                        </Text>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('TermsOfService')}
+                        >
+                            <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>TOS</Text>
+                        </TouchableOpacity>
+                        <Text style={tw`text-white font-AvenirLTProBlack`}>&</Text>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('PrivacyPolicy')}
+                        >
+                            <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>PP</Text>
+                        </TouchableOpacity>
+                    </View>
+
                     {/* <View style={tw``}>
                         <Checkbox
                             value={checkValue}

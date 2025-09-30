@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { SvgXml } from 'react-native-svg';
 import { OtpInput } from 'react-native-otp-entry';
-import { useEmailVerifySignupMutation, useOtipVerifyMutation } from '../../redux/apiSlice/authSlice';
+import { useEmailVerifySignupMutation, useOthersEmailVerifyMutation, useOtipVerifyMutation } from '../../redux/apiSlice/authSlice';
 import tw from '../../lib/tailwind';
 import { IconBack } from '../../assets/icons/icons';
 import Button from '../../components/Button';
@@ -24,18 +24,20 @@ interface ErrorResponse {
   };
 }
 
-const VerifyScreen = ({navigation, route}: {navigation:any}) => {
+const VerifyScreen = ({ navigation, route }: { navigation: any }) => {
   const [otp, setOtp] = useState<string>('');
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const inputs = useRef<Array<TextInput | null>>([]);
-   const [emailVerify, {isLoading}] = useEmailVerifySignupMutation();
+  const [emailVerify, { isLoading }] = useEmailVerifySignupMutation();
+  const [emailVerification] = useOthersEmailVerifyMutation();
   const [seconds, setSeconds] = useState(119);
   const [isActive, setIsActive] = useState(true);
   const { screenName, phoneNumber, email } = route.params || {};
   const [alertVisible, setAlertVisible] = useState(false);
   const [error, setError] = useState<ErrorResponse | null>(null);
 
-  console.log(screenName, phoneNumber , "screenName + Phone number++++++")
+
+  console.log(screenName, phoneNumber, "screenName + Phone number++++++")
 
   const showCustomAlert = () => {
     setAlertVisible(true);
@@ -73,24 +75,24 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
       return;
     }
 
-    //  try {
-    //    console.log("Sending payload:", { email }); // Log the payload for debugging
-    //    const response = await forgetpass({ email }).unwrap(); // Pass email as an object
-    //    console.log("Response received:", response);
+    try {
+      const formData = new FormData();
+      formData.append("email", email);
+      console.log(formData, "formData");
 
-    //    if (response?.status) {
-    //      setAlertVisible(true);
-    //      navigation?.navigate('VerifyOtp');
-    //    } else {
-    //      console.log('Error', response?.message || 'Failed to send OTP.');
-    //    }
-    //  } catch (err) {
-    //    console.log("Error details:", JSON.stringify(err, null, 2));
-    //    console.log(
-    //      'Error',
-    //      err?.data?.message?.email?.join(', ') || err?.data?.message || 'An unexpected error occurred.'
-    //    );
-    //  }
+      const res = await emailVerification(formData);
+      console.log(res, "resend otp response");
+
+      // if (res?.success) {
+      //   success = true;
+      // if (res?.data?.success === true) {
+      //   navigation.navigate("Verify", { screenName: screenName, email: email });
+      //   return;
+      // }
+
+    } catch (err) {
+      console.error(`Verification error (attempt)`, err);
+    }
   };
 
   // Resend OTP timer
@@ -113,7 +115,7 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
 
   const allFilled =
     otp.length === 6 && otp.split('').every(item => item !== '');
-  
+
 
   const handleSendOtp = async () => {
 
@@ -131,10 +133,10 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
       if (response?.success === true) {
         console.log("OTP Verified Successfully!");
         if (screenName === "forgetPass") {
-         navigation.navigate(
+          navigation.navigate(
             'ForgetPass',
-              { email: email },
-            );
+            { email: email },
+          );
         } else {
           navigation?.navigate("Popup", { email: email })
         }
@@ -246,9 +248,16 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
                 }}
               />
             </View>
-            <Text style={tw`text-white font-AvenirLTProBlack`}>
-              Haven't received any code? Send again
-            </Text>
+            <View style={tw`flex-row items-center gap-2`}>
+              <Text style={tw`text-white font-AvenirLTProBlack`}>
+                Haven't received any code?
+              </Text>
+              <TouchableOpacity
+                onPress={handleSendAgainOtp}
+              >
+                <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>Send again</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
         </View>
@@ -259,7 +268,7 @@ const VerifyScreen = ({navigation, route}: {navigation:any}) => {
         )}
         <Button
           disabled={!allFilled}
-          title={isLoading ? "Wait..." :'Verify'}
+          title={isLoading ? "Wait..." : 'Verify'}
           style={tw`text-black font-AvenirLTProBlack items-center`}
           containerStyle={tw`${!allFilled ? 'bg-PrimaryFocus' : 'white'
             } mt-4 h-14 rounded-2xl justify-center`}

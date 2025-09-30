@@ -29,20 +29,29 @@ const SignUp = ({ navigation, route }: any) => {
   const [location, setLocation] = useState<string>('');
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
-  const [SignUp, {isLoading, isError}] = useRegisterUserMutation();
-  console.log('27',name, email, password, username);
+  const [SignUp, { isLoading, isError }] = useRegisterUserMutation();
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  console.log('27', name, email, password, username);
+
   // const data = {email, password, name:username, address:location}
   console.log(signupError, "signupError++++++++++++++")
 
   const allFilled =
     email.trim() !== '' &&
     password.trim() !== '' &&
-    username.trim() !== '';
+    username.trim() !== '' &&
     name.trim() !== '';
 
   console.log(allFilled, "allFilled")
-
+const validatePassword = () => {
+  if (password.length < 6) {
+   setPasswordError('Password must be at least 6 characters long.');
+    return false;
+  }
+  return true;
+};
   const handleSignup = async () => {
+    if (!validatePassword()) return;
     console.log("click")
     try {
       // Validate required fields before sending the request
@@ -58,17 +67,18 @@ const SignUp = ({ navigation, route }: any) => {
       console.log(formData, "formdata before sending-+++++++++++++++")
       const response = await SignUp(formData).unwrap();
       console.log(response, "response singup=========");
-      if(response?.success === true){
-       navigation?.navigate("Verify", {email: email});
-      }else if(response?.success === false){
-        setSignupError(response?.message)    
+      if (response?.success === true) {
+        navigation?.navigate("Verify", { email: email });
+      } else if (response?.success === false) {
+        setSignupError(response?.message)
       }
     } catch (err) {
       console.error('Error during SignUp:', err);
-      setSignupError(err?.data?.message)    
+      setSignupError(err?.data?.message)
     }
   };
 
+  
   return (
     <ScrollView
       keyboardShouldPersistTaps="always"
@@ -126,7 +136,7 @@ const SignUp = ({ navigation, route }: any) => {
                 />
               </View>
             </View>
-          
+
             <InputText
               cursorColor="white"
               style={tw`text-white`}
@@ -138,12 +148,13 @@ const SignUp = ({ navigation, route }: any) => {
               iconLeft={IconEnvelope}
               // iconRight={isShowPassword ? iconLock : iconLock}
               onChangeText={(text: any) => setEmail(text)}
-              // isShowPassword={!isShowPassword}
-              // rightIconPress={() => setIsShowPassword(!isShowPassword)}
+            // isShowPassword={!isShowPassword}
+            // rightIconPress={() => setIsShowPassword(!isShowPassword)}
             />
-              {signupError && (
+            {signupError && (
               <Text style={tw`text-red-600 text-xs`}>{signupError}*</Text>
             )}
+           
             <InputText
               cursorColor="white"
               style={tw`text-white`}
@@ -153,7 +164,7 @@ const SignUp = ({ navigation, route }: any) => {
               placeholderColor={'#949494'}
               label={'Password'}
               iconLeft={iconLock}
-                  iconRight={isShowConfirmPassword ? IconOpenEye : IconCloseEye}
+              iconRight={isShowConfirmPassword ? IconOpenEye : IconCloseEye}
               // iconRight={isShowConfirmPassword ? iconLock : iconLock}
               onChangeText={(text: any) => setPassword(text)}
               isShowPassword={!isShowConfirmPassword}
@@ -161,32 +172,35 @@ const SignUp = ({ navigation, route }: any) => {
                 setIsShowConfirmPassword(!isShowConfirmPassword)
               }
             />
+             {passwordError && (
+              <Text style={tw`text-red-600 text-xs`}>{passwordError}*</Text>
+            )}  
           </View>
-           <View style={tw`mt-4 flex-row gap-2`}>
-                        {/* <Text style={tw`text-white font-AvenirLTProBlack`}>
+          <View style={tw`mt-4 flex-row gap-2`}>
+            {/* <Text style={tw`text-white font-AvenirLTProBlack`}>
                            Please read
                         </Text> */}
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('TermsOfService')}
-                        >
-                            <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>Terms Of Service</Text>
-                        </TouchableOpacity>
-                        <Text style={tw`text-white font-AvenirLTProBlack`}>&</Text>
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('PrivacyPolicy')}
-                        >
-                            <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>Privacy Policy</Text>
-                        </TouchableOpacity>
-                    </View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('TermsOfService')}
+            >
+              <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>Terms Of Service</Text>
+            </TouchableOpacity>
+            <Text style={tw`text-white font-AvenirLTProBlack`}>&</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('PrivacyPolicy')}
+            >
+              <Text style={tw`text-gray-400 font-AvenirLTProBlack underline`}>Privacy Policy</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <View style={tw`flex-col justify-end mb-4 `}>
         <Button
           disabled={!allFilled}
-          title={isLoading ? "Wait..." :'Register'}
+          title={isLoading ? "Wait..." : 'Register'}
           style={tw`${allFilled ? 'text-black' : 'text-gray-500'} font-AvenirLTProBlack items-center`}
           containerStyle={tw`${allFilled ? 'bg-white' : 'bg-PrimaryFocus'} mt-4 h-14 rounded-2xl justify-center`}
-          onPress={ handleSignup}
+          onPress={handleSignup}
         />
       </View>
       <StatusBar backgroundColor="black" translucent={false} />

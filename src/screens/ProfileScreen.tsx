@@ -10,7 +10,7 @@ import { FlatList } from 'react-native-gesture-handler';
 
 import tw from '../lib/tailwind';
 import TButton from '../components/TButton';
-import { useGetSingleUserQuery } from '../redux/apiSlice/userSlice';
+import { useGetSingleUserQuery, useGetUserQuery } from '../redux/apiSlice/userSlice';
 import { imageUrl } from '../redux/baseApi';
 import { getServiceData } from '../utils';
 import { usePostCreateTransactionMutation, usePostPaymentMethodsMutation } from '../redux/apiSlice/paymentSlice';
@@ -28,12 +28,28 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   const [error, setError] = useState()
   console.log(error, "error++")
   const { data, isLoading, isError, refetch } = useGetSingleUserQuery(userId);
-  // console.log(data, '=======================data')
+  console.log(data?.data?.services[0], '=======================data');
+  const { data: loginUserData, refetch:fetchLoginUser, isFetching } = useGetUserQuery({});
+  console.log(loginUserData?.data, 'login user Data=======================data');
   const [serviceData, setServiceData] = React.useState<any>(null);
   const [resSessionId, setResSessionId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
   // console.log(serviceData, "serviceData++++++");
   // console.log(resSessionId, "resSessionId++++++");
+   const serviceIdfromUser = data?.data?.services[0];
+  const userSubscription = loginUserData?.data?.subscriptions || [];
+  useEffect(() => {
+   fetchLoginUser()
+  if (userSubscription.includes(serviceIdfromUser)) {
+    console.log("subscribed")
+    setSubscribed(true);
+  }else {
+    console.log("not subscribed")
+  }
+  }, [serviceIdfromUser, userSubscription]);
+ 
+
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
   useEffect(() => {
     const service = getServiceData();
@@ -200,19 +216,19 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
           {data?.data?.username || 'Username'}
         </Text>
-     
-          <View style={tw`px-[4%] mt-2`}>
-            <Text style={tw`text-white font-AvenirLTProBlack   `}>
-              {expanded ? data?.data?.bio : data?.data?.bio.slice(0, 35) || 'Bio'}
-            </Text>
-            {data?.data?.bio?.length > 35 && (
-              <TouchableOpacity onPress={() => setExpanded(!expanded)}>
-                <Text style={tw`text-blue-600 font-AvenirLTProBlack underline text-xs`}>
-                  {expanded ? " Show less" : "Show more..."}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>    
+
+        <View style={tw`px-[4%] mt-2`}>
+          <Text style={tw`text-white font-AvenirLTProBlack   `}>
+            {expanded ? data?.data?.bio : data?.data?.bio?.slice(0, 35) || 'Bio'}
+          </Text>
+          {data?.data?.bio?.length > 35 && (
+            <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+              <Text style={tw`text-blue-600 font-AvenirLTProBlack underline text-xs`}>
+                {expanded ? " Show less" : "Show more..."}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <View style={tw`flex items-center justify-center my-8`}>
         <View
@@ -273,8 +289,9 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
           <Text style={tw`text-red-600 text-xs my-2`}>{error}*</Text>
         )}
         <TButton
+          disabled={subscribed}
           onPress={handleSubscribe}
-          title="Subscribe"
+          title={subscribed ? "Subscribed" :"Subscribe"}
           titleStyle={tw`text-black`}
           containerStyle={tw`w-[90%] bg-white`}
         />

@@ -30,10 +30,13 @@ const PaymentMethodScreen = ({ navigation }: NavigProps<null>) => {
   const handleCreateWallet = async () => {
     try {
       const response = await postCreateWallet();
-      console.log(response?.data?.data, "Create Wallet Response");
+      console.log(response?.data?.success === true, "Create Wallet Response");
       setWalletData(response?.data?.data);
       await refetch()
-      await refetchWallet()
+      await refetchWallet();
+      // if(response?.data?.success === true) {
+      //  navigation?.navigate("Drawer")
+      // }
     } catch (error) {
       console.error('Create Wallet Error:', error);
 

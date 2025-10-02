@@ -629,37 +629,7 @@ const ProductAddFields = ({
         )}
       </View>
 
-      {/* <NormalModal
-        layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
-        containerStyle={tw`rounded-xl bg-white p-5`}
-        visible={stripePaymentVisble}
-        setVisible={setStripePaymentVisble}>
-        <Text style={tw`text-center text-title text-lg font-RoboMedium mb-4`}>
-          Give your card details
-        </Text>
-        <View style={tw`gap-y-2`}>
-          <InputText
-            placeholder="Card Number"
-            value={cardNumber}
-            onChangeText={setCardNumber}
-            keyboardType="number-pad"
-          />
-          <InputText
-            placeholder="MM/YY"
-            value={expiry}
-            onChangeText={setExpiry}
-            keyboardType="number-pad"
-          />
-          <InputText
-            placeholder="CVC"
-            value={cvc}
-            onChangeText={setCvc}
-            keyboardType="number-pad"
-            secureTextEntry
-          />
-        </View>
-        <Button title="Submit Payment" onPress={handlePayment} />
-      </NormalModal> */}
+     
     </View>
   );
 };

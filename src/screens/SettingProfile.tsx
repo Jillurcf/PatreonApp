@@ -20,6 +20,7 @@ import TButton from '../components/TButton';
 import { usePostCreateConnectMutation, usePostCreateRecipientMutation } from '../redux/apiSlice/paymentSlice';
 import WebView from 'react-native-webview';
 import { useFocusEffect } from '@react-navigation/native';
+import { useGettMyServicesQuery } from '../redux/apiSlice/serviceSlice';
 // import { useGetUserQuery, usePatchUpdateUserProfileMutation } from '@/src/redux/apiSlice/userSlice';
 
 const { height, width } = Dimensions.get('screen');
@@ -32,10 +33,11 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const { data, isError, refetch, isFetching } = useGetUserQuery({});
+  const {data:myService} = useGettMyServicesQuery({});
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
-  // console.log(data?.data, "data======================")
+  console.log(data?.data, "data======================")
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
-
+console.log(myService?.data[0].subscribers.length, "my service++++++++++++++")
 
   useEffect(() => {
     data?.data?.stripeAccountId
@@ -216,7 +218,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
           <View style={tw`border-r-2 w-[33%] h-12 border-[#091218] items-center justify-center`}>
             <TouchableOpacity>
               <Text style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
-                {data?.data?.subscriberCount}
+              {myService?.data[0].subscribers.length}
               </Text>
               <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
                 Subscribers

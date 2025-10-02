@@ -30,11 +30,11 @@ import NormalModal from '../components/NormalModal';
 
 const MessageScreen = ({ navigation, route }: { navigation: any }) => {
   const { id, serviceId, title, serviceTitle, userName } = route?.params || {};
-  console.log(id, serviceId, title, "id+++++++++++++++++++++++41")
+  console.log(id, serviceId, title, userName, "id+++++++++++++++++++++++41")
   const [openModal, setOpenModal] = useState(false);
   const [conversation_id, setConversation_id] = useState();
   const [postSendMessage, { isLoading, isError }] = usePostSendMessageMutation()
-  const { data: messageHistory } = useMessageHistoryQuery({});
+  const { data: messageHistory, refetch: refetchMessages } = useMessageHistoryQuery({});
   const [mediaUri, setMediaUri] = useState(null); // For holding the selected media URI
   const [mediaType, setMediaType] = useState(null); // 'image', 'video', or 'document'
   const [text, setText] = useState(''); // Message input field
@@ -46,80 +46,135 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
 
   useEffect(() => {
     if (messageHistory) {
-      const fetchedMessages = messageHistory.data.map((item) => ({
-        id: item._id,
-        user: item.user.name,
-        question: item.question,
-        answer: item.answer,
-        createdAt: item.createdAt,
+      const fetchedMessages = messageHistory.data.map((item: any) => ({
+        id: item?._id,
+        user: item?.user?.name,
+        question: item?.question,
+        answer: item?.answer,
+        createdAt: item?.createdAt,
       }));
       setMessages(fetchedMessages)
     }
   }, [messageHistory]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetchMessages();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+  // const sendMessage = async () => {
+  //   if (text.trim() || mediaUri) {
+  //     const questionText = text.trim() || 'Sent a document';
+
+  //     const userMessage = {
+  //       text: questionText,
+  //       user: user?.data?.name,
+  //       createdAt: new Date(),
+  //       media: mediaUri,
+  //       mediaType,
+  //       is_sender: true,
+  //     };
+
+  //     // Add the user's question to the chat immediately
+  //     setMessages(prev => [...prev, userMessage]);
+
+  //     // Clear input fields
+  //     setText('');
+  //     setMediaUri(null);
+  //     setMediaType(null);
+
+  //     const formData = new FormData();
+  //     formData.append("message", questionText);
+
+  //     if (mediaUri) {
+  //       const fileName = mediaUri.split('/').pop();
+  //       const fileType = mediaType || 'image/jpeg';
+
+  //       formData.append('media', {
+  //         uri: mediaUri,
+  //         name: fileName,
+  //         type: fileType,
+  //       });
+  //     }
+  //     console.log(formData, "form data+++++++++++++++++++++")
+  //     try {
+  //       const res = await postSendMessage({ id: serviceId, data: formData });
+  //       console.log(res, "response from send message api");
+  //       const aiMessage = {
+  //         text: res?.data?.data || "No response from AI.",
+  //         user: title,
+  //         createdAt: new Date(),
+  //         is_sender: false,
+  //       };
+
+  //       // Add the AI's answer to the chat
+  //       setMessages(prev => [...prev, aiMessage]);
+  //     } catch (err) {
+  //       console.log(err, "error sending message");
+
+  //       const errorMessage = {
+  //         text: "Failed to get response from AI.",
+  //         user: "System",
+  //         createdAt: new Date(),
+  //         is_sender: false,
+  //       };
+
+  //       setMessages(prev => [...prev, errorMessage]);
+  //     }
+  //   }
+  // };
 
   const sendMessage = async () => {
-    if (text.trim() || mediaUri) {
-      const questionText = text.trim() || 'Sent a document';
+    if (!text.trim() && !mediaUri) return;
 
-      const userMessage = {
-        text: questionText,
-        user: user?.data?.name,
+    const questionText = text.trim() || 'Sent a document';
+    const userMessage = {
+      id: Date.now().toString(),
+      text: questionText,
+      user: user?.data?.name,
+      createdAt: new Date(),
+      media: mediaUri,
+      mediaType,
+      is_sender: true,
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setText('');
+    setMediaUri(null);
+    setMediaType(null);
+
+    const formData = new FormData();
+    formData.append('message', questionText);
+    if (mediaUri) {
+      const fileName = mediaUri.split('/').pop();
+      const fileType = mediaType || 'image/jpeg';
+      formData.append('media', { uri: mediaUri, name: fileName, type: fileType } as any);
+    }
+
+    try {
+      const res: any = await postSendMessage({ id: serviceId, data: formData });
+      const aiMessage = {
+        id: Date.now().toString() + '_ai',
+        text: res?.data?.data || 'No response from AI',
+        user: title,
         createdAt: new Date(),
-        media: mediaUri,
-        mediaType,
-        is_sender: true,
+        is_sender: false,
       };
+      setMessages(prev => [...prev, aiMessage]);
 
-      // Add the user's question to the chat immediately
-      setMessages(prev => [...prev, userMessage]);
-
-      // Clear input fields
-      setText('');
-      setMediaUri(null);
-      setMediaType(null);
-
-      const formData = new FormData();
-      formData.append("message", questionText);
-
-      if (mediaUri) {
-        const fileName = mediaUri.split('/').pop();
-        const fileType = mediaType || 'image/jpeg';
-
-        formData.append('media', {
-          uri: mediaUri,
-          name: fileName,
-          type: fileType,
-        });
-      }
-      console.log(formData, "form data+++++++++++++++++++++")
-      try {
-        const res = await postSendMessage({ id: serviceId, data: formData });
-        console.log(res, "response from send message api");
-        const aiMessage = {
-          text: res?.data?.data || "No response from AI.",
-          user: title,
-          createdAt: new Date(),
-          is_sender: false,
-        };
-
-        // Add the AI's answer to the chat
-        setMessages(prev => [...prev, aiMessage]);
-      } catch (err) {
-        console.log(err, "error sending message");
-
-        const errorMessage = {
-          text: "Failed to get response from AI.",
-          user: "System",
-          createdAt: new Date(),
-          is_sender: false,
-        };
-
-        setMessages(prev => [...prev, errorMessage]);
-      }
+      // Scroll to bottom
+      flatListRef.current?.scrollToEnd({ animated: true });
+    } catch (err) {
+      console.log(err);
+      setMessages(prev => [
+        ...prev,
+        { id: Date.now().toString() + '_err', text: 'Failed to get AI response', user: 'System', createdAt: new Date(), is_sender: false },
+      ]);
     }
   };
-
 
   async function requestCameraPermission() {
     if (Platform.OS === 'android') {
@@ -144,7 +199,7 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
     }
   }
 
-  
+
   // Function to pick document (PDF, Word, etc.)
   const pickDocument = async () => {
     try {
@@ -222,7 +277,7 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             console.log(item, "item+++++++++++++")
-            if(!item?.answer) return null;
+            if (!item?.answer) return null;
             return (
               (
                 <View style={tw`mb-4`}>

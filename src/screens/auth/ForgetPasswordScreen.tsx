@@ -36,6 +36,7 @@ const ForgetPass = ({ navigation, route }: any) => {
     const { screenName, phoneNumber, email } = route?.params || {};
     console.log(phoneNumber, "phoneNumber++++++")
     const [changePassword, { isLoading, isError }] = useChangePasswordMutation();
+    const [passwordError, setPasswordError] = useState<string | null>(null);
     console.log('27', password, confirmPassword);
     // const data = {email, password, name:username, address:location}
 
@@ -44,8 +45,24 @@ const ForgetPass = ({ navigation, route }: any) => {
     confirmPassword.trim() !== ''
 
     console.log(allFilled, "allFilled")
+    const validatePassword = () => {
+        if (password.length < 6) {
+            setPasswordError('Password must be at least 6 characters long.');
+            return false;
+        }
+        return true;
+    };
+    const validateConfirmPassword = () => {
+        if (confirmPassword.length < 6) {
+            setPasswordError('Password must be at least 6 characters long.');
+            return false;
+        }
+        return true;
+    };
 
     const handleChangePassword = async () => {
+        if (!validatePassword()) return
+        if (!validateConfirmPassword()) return;
         console.log('clicked');
         try {
             console.log('handleChangePassword called');
@@ -107,6 +124,11 @@ const ForgetPass = ({ navigation, route }: any) => {
                                 setIsShowPassword(!isShowPassword)
                             }
                         />
+                        {passwordError && (
+                            <Text style={tw`text-red-600 text-xs`}>{passwordError}*</Text>
+                        )}
+                    </View>
+                    <View style={tw`mt-4`}>
                         <InputText
                             cursorColor="white"
                             style={tw`text-white`}
@@ -123,6 +145,9 @@ const ForgetPass = ({ navigation, route }: any) => {
                                 setIsShowConfirmPassword(!isShowConfirmPassword)
                             }
                         />
+                        {passwordError && (
+                            <Text style={tw`text-red-600 text-xs`}>{passwordError}*</Text>
+                        )}
                     </View>
 
 

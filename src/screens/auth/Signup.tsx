@@ -7,13 +7,16 @@ import {
   Alert,
   StatusBar,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SvgXml } from 'react-native-svg';
 import { useRegisterUserMutation } from '../../redux/apiSlice/authSlice';
 import tw from '../../lib/tailwind';
 import { IconBack, IconCloseEye, IconEnvelope, iconLock, IconOpenEye, IconUser } from '../../assets/icons/icons';
 import InputText from '../../components/InputText';
 import Button from '../../components/Button';
+import NormalModal from '../../components/NormalModal';
+import { useCheckExistingUserNameQuery } from '../../redux/apiSlice/userSlice';
+import { use } from 'i18next';
 
 
 
@@ -24,13 +27,69 @@ const SignUp = ({ navigation, route }: any) => {
   const [password, setPassword] = useState<string>('');
   // const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const [existingUserName, setExistingUserName] = useState<string>('');
+  const [spaceError, setSpaceError] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
   const [signupError, setSignupError] = useState();
   const [location, setLocation] = useState<string>('');
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [SignUp, { isLoading, isError }] = useRegisterUserMutation();
+  const { data, isFetching, refetch: userRefetch } = useCheckExistingUserNameQuery(username, { skip: !username });
+  console.log(data?.success === true, "data for user name+++++++++++++++")
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordValidModal, setPasswordValidModal] =
+    useState(false);
+
+
+
+  // handle input change
+  const handleUsernameChange = async (text: string) => {
+    if (text.includes(' ')) {
+      setSpaceError('Username cannot contain spaces.');
+      setUsername('');
+      setExistingUserName('');
+      return;
+    } else {
+      setSpaceError(null);
+      setUsername(text);
+    }
+
+    if (text) {
+      setExistingUserName('Checking username...');
+      try {
+        const result = await userRefetch(); // wait for query to finish
+        console.log(result.data, 'refetch result');
+        if (result.data?.success === true) {
+          setExistingUserName('Username already exists. Please choose another.');
+        } else {
+          setExistingUserName('Username is available.');
+        }
+      } catch (err) {
+        console.error(err);
+        setExistingUserName('Error checking username.');
+      }
+    } else {
+      setExistingUserName('');
+    }
+  };
+
+  // update message based on API
+  useEffect(() => {
+    if (!username) {
+
+      return;
+    }
+    if (data?.success === true) {
+      setExistingUserName('Username already exists. Please choose another.');
+    } else if (data?.success === false) {
+      setExistingUserName('Username is available.');
+    }
+  }, [data, username]);
+
+
+  console.log(existingUserName, "existingUserName++++++++++++++")
+
   console.log('27', name, email, password, username);
 
   // const data = {email, password, name:username, address:location}
@@ -43,15 +102,16 @@ const SignUp = ({ navigation, route }: any) => {
     name.trim() !== '';
 
   console.log(allFilled, "allFilled")
-const validatePassword = () => {
-  if (password.length < 6) {
-   setPasswordError('Password must be at least 6 characters long.');
-    return false;
-  }
-  return true;
-};
+  const validatePassword = () => {
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long.');
+      return false;
+    }
+    return true;
+  };
   const handleSignup = async () => {
     if (!validatePassword()) return;
+    if (existingUserName === "Username already exists. Please choose another.") return;
     console.log("click")
     try {
       // Validate required fields before sending the request
@@ -78,7 +138,7 @@ const validatePassword = () => {
     }
   };
 
-  
+
   return (
     <ScrollView
       keyboardShouldPersistTaps="always"
@@ -132,8 +192,19 @@ const validatePassword = () => {
                   placeholderColor={'#949494'}
                   label={'User name'}
                   iconRight={IconUser}
-                  onChangeText={(text: any) => setUsername(text)}
+                  onChangeText={handleUsernameChange}
                 />
+                {spaceError && (
+                  <Text style={tw`text-red-600 text-xs`}>{spaceError}*</Text>
+                )}
+                {existingUserName ? (
+                  existingUserName.includes("available") ? (
+                    <Text style={tw`text-green-600 text-xs`}>{existingUserName}*</Text>
+                  ) : (
+                    <Text style={tw`text-red-600 text-xs`}>{existingUserName}*</Text>
+                  )
+                ) : null}
+
               </View>
             </View>
 
@@ -154,7 +225,7 @@ const validatePassword = () => {
             {signupError && (
               <Text style={tw`text-red-600 text-xs`}>{signupError}*</Text>
             )}
-           
+
             <InputText
               cursorColor="white"
               style={tw`text-white`}
@@ -172,9 +243,9 @@ const validatePassword = () => {
                 setIsShowConfirmPassword(!isShowConfirmPassword)
               }
             />
-             {passwordError && (
+            {passwordError && (
               <Text style={tw`text-red-600 text-xs`}>{passwordError}*</Text>
-            )}  
+            )}
           </View>
           <View style={tw`mt-4 flex-row gap-2`}>
             {/* <Text style={tw`text-white font-AvenirLTProBlack`}>
@@ -203,6 +274,17 @@ const validatePassword = () => {
           onPress={handleSignup}
         />
       </View>
+      <NormalModal
+        layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
+        containerStyle={tw`rounded-xl bg-white p-5`}
+        visible={passwordValidModal}
+        setVisible={setPasswordValidModal}>
+        <Text style={tw`text-center text-title text-lg font-RoboMedium mb-4`}>
+          Give your card details
+        </Text>
+
+        <Button title="Submit Payment" onPress={() => setPasswordValidModal(false)} />
+      </NormalModal>
       <StatusBar backgroundColor="black" translucent={false} />
     </ScrollView>
   );

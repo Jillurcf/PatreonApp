@@ -80,7 +80,7 @@ const HomeSearchResult = () => {
 
     return (
         <View style={tw`bg-black flex-1 px-[4%] `}>
-            <View style={tw`flex-row w-full gap-4 mt-4 px-[4%] mb-8 items-center`}>
+            <View style={tw`flex-row w-full gap-4 mt-4 mb-8 items-center`}>
                 <View>
                     <TouchableOpacity
                         onPress={() => {
@@ -94,7 +94,7 @@ const HomeSearchResult = () => {
                         <SvgXml xml={IconBack} />
                     </TouchableOpacity>
                 </View>
-                <View style={tw`w-[90%] mt-2`}>
+                <View style={tw`w-[80%] mt-2`}>
                     <InputText
                         style={tw`text-white`}
                         cursorColor={'white'}

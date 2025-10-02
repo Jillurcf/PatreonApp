@@ -67,6 +67,14 @@ const userSlice = api.injectEndpoints({
             providesTags: ['user'],
             
           }),
+            checkExistingUserName: builder.query({
+            query: (username) => ({
+              url: `/users/by-username/${username}`,
+              method: 'GET',
+              
+            }),
+            providesTags: ['user'],
+          }),
           
           
     })
@@ -81,4 +89,5 @@ export const {
     useHelpAndSupportMutation,
     useDeleteAccountMutation,
     useNotificationQuery,
+    useCheckExistingUserNameQuery,
 } = userSlice;

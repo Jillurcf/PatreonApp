@@ -14,7 +14,6 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { useColorScheme } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import Textarea from 'react-native-textarea';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 
@@ -63,7 +62,7 @@ const ExplainMembership = ({ navigation }) => {
           label: item.name,
           value: item._id,
         })),
-        { label: 'Add New...', value: 'add_new' },
+        // { label: 'Add New...', value: 'add_new' },
       ];
       setDropdownItems(formatted);
     }
@@ -287,11 +286,11 @@ const ExplainMembership = ({ navigation }) => {
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
             onChange={item => {
-              if (item.value === 'add_new') {
-                setShowModal(true);
-              } else {
+              // if (item.value === 'add_new') {
+              //   setShowModal(true);
+              // } else {
                 setValue(prev => ({ ...prev, category: item.label }));
-              }
+              // }
               setIsFocus(false);
             }}
             renderItem={renderItem}
@@ -315,7 +314,7 @@ const ExplainMembership = ({ navigation }) => {
       <Modal visible={showModal} transparent animationType="slide">
         <View style={tw`flex-1 justify-center items-center bg-black/50`}>
           <View style={tw`bg-[#262329] w-[90%] p-5 rounded-xl`}>
-            <Text style={tw`text-lg font-semibold mb-3 text-white`}>Add New Category</Text>
+            {/* <Text style={tw`text-lg font-semibold mb-3 text-white`}>Add New Category</Text>
 
             <TextInput
               placeholder="Enter category name"
@@ -323,7 +322,7 @@ const ExplainMembership = ({ navigation }) => {
               onChangeText={setNewCategory}
               placeholderTextColor="#999"
               style={tw`border border-gray-300 px-3 py-2 rounded-lg text-white`}
-            />
+            /> */}
 
             <View style={tw`flex-row justify-end mt-4`}>
               <TouchableOpacity

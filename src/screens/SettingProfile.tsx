@@ -37,7 +37,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
   console.log(data?.data, "data======================")
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
-console.log(myService?.data[0].subscribers.length, "my service++++++++++++++")
+// console.log(myService?.data[0].subscribers.length, "my service++++++++++++++")
 
   useEffect(() => {
     data?.data?.stripeAccountId
@@ -86,7 +86,7 @@ console.log(myService?.data[0].subscribers.length, "my service++++++++++++++")
       // const response = await postCreateConnect();
       const response = await postCreateRecipient().unwrap();
       // const url = response?.data?.data?.url;
-      console.log(response, "recipient, response++++++");
+      // console.log(response, "recipient, response++++++");
       navigation.navigate("UpdateRecipient")
 
       // if (url) {

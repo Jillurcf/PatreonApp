@@ -16,6 +16,7 @@ import { getServiceData } from '../utils';
 import { usePostCreateTransactionMutation, usePostPaymentMethodsMutation } from '../redux/apiSlice/paymentSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import WebView from 'react-native-webview';
+import { useGettMyServicesQuery } from '../redux/apiSlice/serviceSlice';
 const { width, height } = Dimensions.get("screen")
 type Props = {};
 
@@ -28,29 +29,32 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   const [error, setError] = useState()
   console.log(error, "error++")
   const { data, isLoading, isError, refetch } = useGetSingleUserQuery(userId);
-  console.log(data?.data?.services[0], '=======================data');
-  const { data: loginUserData, refetch:fetchLoginUser, isFetching } = useGetUserQuery({});
-  console.log(loginUserData?.data, 'login user Data=======================data');
+  console.log(data?.data, '=======================data');
+  const { data: loginUserData, refetch: fetchLoginUser, isFetching } = useGetUserQuery({});
+  // console.log(loginUserData?.data, 'login user Data=======================data');
+  const { data: myService } = useGettMyServicesQuery({});
+  //  console.log(myService, "myService=======================data");
   const [serviceData, setServiceData] = React.useState<any>(null);
   const [resSessionId, setResSessionId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   // console.log(serviceData, "serviceData++++++");
   // console.log(resSessionId, "resSessionId++++++");
-   const serviceIdfromUser = data?.data?.services[0];
+  const serviceIdfromUser = data?.data?.services[0];
   const userSubscription = loginUserData?.data?.subscriptions || [];
   useEffect(() => {
-   fetchLoginUser()
-  if (userSubscription.includes(serviceIdfromUser)) {
-    console.log("subscribed")
-    setSubscribed(true);
-  }else {
-    console.log("not subscribed")
-  }
+    fetchLoginUser()
+    if (userSubscription.includes(serviceIdfromUser)) {
+      console.log("subscribed")
+      setSubscribed(true);
+    } else {
+      console.log("not subscribed")
+    }
   }, [serviceIdfromUser, userSubscription]);
- 
 
-  const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
+
+  const fullImageUrl = data?.data?.image ? `${imageUrl}/${data?.data?.image}` : null;
+  console.log(fullImageUrl, "fullImageUrl++++++");
   useEffect(() => {
     const service = getServiceData();
     setServiceData(service);
@@ -212,7 +216,30 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         <View style={tw`w-8`} />
       </View>
       <View style={tw`flex items-center justify-center mt-8`}>
-        {fullImageUrl ? (<Image style={tw`rounded-full`} width={80} height={80} source={{ uri: fullImageUrl }} />) : (<Image style={tw`rounded-full`} width={80} height={80} source={require('../assets/images/alteravater.png')} />)}
+        {data?.data?.image ? (
+          <Image
+            style={tw`rounded-full`}
+            width={80}
+            height={80}
+            source={{ uri: fullImageUrl as string }}
+          />
+        ) : (
+          <Image
+            style={tw`rounded-full`}
+            width={80}
+            height={80}
+            source={require('../assets/images/alteravater.png')}
+          />
+        )}
+
+
+        {/* <Image
+          style={tw`rounded-full`}
+          width={80}
+          height={80}
+          source={require('../assets/images/alteravater.png')}
+        /> */}
+
         <Text style={tw`text-white font-AvenirLTProBlack text-lg mt-2`}>
           {data?.data?.username || 'Username'}
         </Text>
@@ -237,7 +264,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
             style={tw`border-r-2 w-[50%] h-12 border-[#091218] items-center justify-center`}>
             <Text
               style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
-              {data?.data?.subscriberCount || '0'}
+              {myService?.data[0].subscribers.length}
             </Text>
             <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
               Subscribers
@@ -291,7 +318,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         <TButton
           disabled={subscribed}
           onPress={handleSubscribe}
-          title={subscribed ? "Subscribed" :"Subscribe"}
+          title={subscribed ? "Subscribed" : "Subscribe"}
           titleStyle={tw`text-black`}
           containerStyle={tw`w-[90%] bg-white`}
         />

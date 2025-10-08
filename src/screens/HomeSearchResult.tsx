@@ -11,7 +11,7 @@ import {
 import React, { useState } from 'react';
 
 import { SvgUri, SvgXml } from 'react-native-svg';
-import { IconBack, IconBusiness, IconDrawer, IconEconomy, IconFinance, IconGeneralSearch, IconGoogle, IconLaw, iconLock, IconMarketing, IconWriting } from '../assets/icons/icons';
+import { IconBack, IconBusiness, IconDrawer, IconEconomy, IconFinance, IconGeneralSearch, IconGoogle, IconLaw, iconLock, IconMarketing, IconRightArrow, IconWriting } from '../assets/icons/icons';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { useGetAllCategoryQuery } from '../redux/apiSlice/categorySlice';
 import tw from '../lib/tailwind';
@@ -114,7 +114,7 @@ const HomeSearchResult = () => {
 
             <View style={tw``}>
                 {showDropdown && search.length > 0 && (
-                    <View style={tw`absolute bg-[#1e1e1e] w-full rounded-md z-50 p-2`}>
+                    <View style={tw``}>
                         {isLoading ? (
                             <Text style={tw`text-white`}>Loading...</Text>
                         ) : data?.data?.result.length === 0 ? (
@@ -128,23 +128,28 @@ const HomeSearchResult = () => {
                                         onPress={() => {
                                             setShowDropdown(false);
                                             // setSearch('');
-                                            navigation.navigate('Profile', { userId: user?._id, serviceId:user?.services[0]?._id, title: user?.services[0]?.title
-                                              }); // 👈 Pass full user data
+                                            navigation.navigate('Profile', {
+                                                userId: user?._id, serviceId: user?.services[0]?._id, title: user?.services[0]?.title
+
+                                            }); // 👈 Pass full user data
                                         }}
-                                        style={tw`p-2 border-b border-[#444]`}
+                                        style={tw`p-4 bg-[#262329] my-1 rounded-3xl`}
                                     >
-                                        <View style={tw`flex-row items-center gap-4`}>
+                                        <View style={tw`flex-row justify-center items-center gap-4`}>
                                             <Image source={{ uri: `${imageUrl}/${user?.image}` }} style={tw`w-12 h-12 rounded-full`} />
                                             {/* <Text style={tw`text-white`}>{user.username}</Text> */}
-                                            <View style={tw``}>
-                                                <Text style={tw`text-white`}>{user.name || "No user name found"}</Text>
-                                                <Text style={tw`text-white`}>{user.services[0]?.title || "No service"}</Text>
-                                                <Text style={tw`text-white`}>
-                                                    {user.services?.length > 0 && user.services[0]?.description
-                                                        ? user.services[0].description.slice(0, 20)
-                                                        : ''}
-                                                </Text>
+                                            <View style={tw`flex-row justify-between items-center w-[80%]`}>
+                                                <View style={tw`flex-col gap-2`}>
+                                                    {/* <Text style={tw`text-white`}>{user.name || "No user name found"}</Text> */}
+                                                    <Text style={tw`text-[#FFFFFF] font-AvenirLTProBlack text-[16px]`}>{user.services[0]?.title || "No service"}</Text>
+                                                    <Text style={tw`text-[#C9C8C9] font-AvenirLTProLight text-[12px]`}>
+                                                        {user.services?.length > 0 && user.services[0]?.description
+                                                            ? user.services[0].description.slice(0, 20)
+                                                            : ''}
+                                                    </Text>
 
+                                                </View>
+                                                <SvgXml xml={IconRightArrow} />
                                             </View>
                                         </View>
 

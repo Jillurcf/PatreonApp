@@ -112,21 +112,21 @@ const PaymentDetails = ({navigation}: NavigProps<null>) => {
             <TouchableOpacity
               onPress={() => setSelectedMethod('paypal')}
               style={tw`bg-[#262329] items-center justify-center py-4 px-8 rounded-2xl ${
-                selectedMethod === 'paypal' ? 'border-2 border-white' : ''
+                selectedMethod === 'paypal' ? 'border-2 border-[#565358]' : ''
               }`}>
               <SvgXml xml={IconPaypal} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setSelectedMethod('card')}
               style={tw`bg-[#262329] items-center justify-center py-4 px-8 rounded-2xl ${
-                selectedMethod === 'card' ? 'border-2 border-white' : ''
+                selectedMethod === 'card' ? 'border-2 border-[#565358]' : ''
               }`}>
               <SvgXml xml={IconCard} />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setSelectedMethod('apple')}
               style={tw`bg-[#262329] items-center justify-center py-4 px-8 rounded-2xl ${
-                selectedMethod === 'apple' ? 'border-2 border-white' : ''
+                selectedMethod === 'apple' ? 'border-2 border-[#565358]' : ''
               }`}>
               <SvgXml xml={IconAple} />
             </TouchableOpacity>
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   dropdown: {
     height: 50,
     color: 'white',
-    borderColor: 'gray',
+    borderColor: '#565358',
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,

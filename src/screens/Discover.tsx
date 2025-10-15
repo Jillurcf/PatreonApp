@@ -113,7 +113,7 @@ const Discover = () => {
         /> */}
         <TouchableOpacity
           onPress={() => navigation.navigate('HomeSearchResult')}
-          style={tw`bg-[#262329] border h-14 border-[#565358] rounded-2xl px-4 justify-center`}>
+          style={tw`bg-[#262329] h-14 rounded-2xl px-4 justify-center`}>
           <View style={tw`flex-row items-center gap-3`}>
             <SvgXml xml={IconSearch} />
             <Text style={tw`text-white text-base`}>Search here</Text>
@@ -138,7 +138,7 @@ const Discover = () => {
                       setSearch('');
                       navigation.navigate('Profile', { userId: user?._id }); // 👈 Pass full user data
                     }}
-                    style={tw`p-2 border-b border-[#444]`}
+                    style={tw`p-2 border-b border-[#565358]`}
                   >
                     <Text style={tw`text-white`}>{user.username}</Text>
                   </TouchableOpacity>

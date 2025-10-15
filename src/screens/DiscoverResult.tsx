@@ -90,9 +90,9 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
       </View>
 
       <View style={tw`my-8`}>
-       <InputText
+        <InputText
           style={tw`text-white`}
-          containerStyle={tw`bg-[#262329] border h-14 relative border-[#565358]`}
+          containerStyle={tw`bg-[#262329] h-14 relative`}
           labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
           placeholder={'Search by service title'}
           cursorColor={'white'}
@@ -100,35 +100,35 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
           iconLeft={IconGeneralSearch}
           readonly={true}
           onChangeText={(text) => {
-           setSearchText(text);
+            setSearchText(text);
             setShowDropdown(!!text); // Show dropdown if there's input
           }}
         />
       </View>
 
       <FlatList
-      refreshControl={
-        <RefreshControl
-          refreshing={isFetching}
-          onRefresh={() => {
-            setPage(1);
-            setServices([]);
-            refetch();
-          }}
-        />
-      }
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={() => {
+              setPage(1);
+              setServices([]);
+              refetch();
+            }}
+          />
+        }
         data={services}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => {
           const contributorImage = item?.contributor?.image
             ? { uri: `${imageUrl}/${item?.contributor?.image}` }
-            : require('../assets/images/logo.png');
+            : require('../assets/images/alteravater.png');
 
           return (
             <TouchableOpacity
               onPress={() => handleService(index, item)}
-              style={tw`flex-row items-center bg-[#262329] my-1 rounded-2xl gap-2 p-2`}>
-              <View style={tw`flex-row items-center`}>
+              style={tw`flex-row items-center bg-[#262329] my-1 rounded-2xl gap-2 p-3`}>
+              <View style={tw`flex-row items-center justify-center`}>
                 <View style={tw`relative items-center mr-2`}>
                   <Image
                     source={contributorImage}
@@ -137,22 +137,21 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
                   />
                 </View>
 
-                <View style={tw`flex-1 pb-2`}>
-                  <View style={tw`flex-row justify-between mr-2 items-center`}>
+                <View style={tw`flex-1 justify-center`}>
+                  <View style={tw`flex-col gap-2`}>
                     <Text style={tw`text-white font-AvenirLTProBlack`}>
                       {item?.title}
                     </Text>
-                  </View>
-                  <View style={tw`flex-row justify-between mt-2`}>
-                    <Text style={tw`text-white font-AvenirLTProBlack`}>
-                      {item?.subtitle}
+                    <Text style={tw`text-[#C9C8C9] font-AvenirLTProLight`}>
+                      {item?.description
+                        ? item.description.replace(/\s*\n\s*/g, ' ').trim().slice(0, 30)
+                        : "Service Description"}
                     </Text>
                   </View>
-                  <View style={tw`flex-row justify-between mt-2`}>
-                    <Text style={tw`text-white text-xs font-AvenirLTProBlack`}>
-                     Price: ${item?.price}
-                    </Text>
-                  </View>
+                  {/* <View style={tw`flex-row justify-between `}>
+                   
+                  </View> */}
+
                 </View>
 
                 <SvgXml xml={IconRightArrow} />
@@ -166,11 +165,11 @@ const DiscoverResult = ({ navigation, route }: { navigation: any }) => {
           }
         }}
         onEndReachedThreshold={0.5}
-        // ListFooterComponent={
-        //   isFetching && hasMore ? (
-        //     <ActivityIndicator size="large" color="white" />
-        //   ) : null
-        // }
+      // ListFooterComponent={
+      //   isFetching && hasMore ? (
+      //     <ActivityIndicator size="large" color="white" />
+      //   ) : null
+      // }
       />
 
       <StatusBar backgroundColor="black" translucent={false} />

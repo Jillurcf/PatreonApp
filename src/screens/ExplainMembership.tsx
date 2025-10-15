@@ -211,7 +211,7 @@ const ExplainMembership = ({ navigation }) => {
 
         <Text style={tw`text-white font-bold text-xs mt-4`}>Title</Text>
         <TextInput
-          style={tw`mt-1 w-full h-10 text-white bg-[#262329] border border-gray-400 rounded-2xl px-3`}
+          style={tw`mt-1 w-full h-10 text-white bg-[#262329] rounded-2xl px-3`}
           placeholder="Write title here"
           placeholderTextColor="white"
           value={value.title}
@@ -223,7 +223,7 @@ const ExplainMembership = ({ navigation }) => {
         )}
         <Text style={tw`text-white font-bold text-xs mt-2`}>Subtitle</Text>
         <TextInput
-          style={tw`mt-1 w-full h-10 text-white bg-[#262329] border border-gray-400 rounded-2xl px-3`}
+          style={tw`mt-1 w-full h-10 text-white bg-[#262329] rounded-2xl px-3`}
           placeholder="Write subtitle here"
           placeholderTextColor="white"
           value={value.subtitle}
@@ -236,7 +236,7 @@ const ExplainMembership = ({ navigation }) => {
         <Text style={tw`text-white font-bold text-xs mt-2`}>Price</Text>
         <View style={tw`relative mt-2`}>
           <TextInput
-            style={tw`w-full h-10 text-white bg-[#262329] border border-gray-400 rounded-2xl px-10`}
+            style={tw`w-full h-10 text-white bg-[#262329] rounded-2xl px-10`}
             placeholder="Enter price (Minimum 3$)"
             placeholderTextColor="white"
             value={value.currency}
@@ -255,7 +255,7 @@ const ExplainMembership = ({ navigation }) => {
             Please enter a price.*</Text>
         )}
         <Text style={tw`text-white font-bold text-xs mt-2`}>About</Text>
-        <View style={tw`h-44 mt-2 p-2 bg-[#262329] border border-gray-400 w-full rounded-2xl`}>
+        <View style={tw`h-44 mt-2 p-2 bg-[#262329] w-full rounded-2xl`}>
           <TextInput
             selectionColor="white"
             style={tw`text-white rounded-lg p-3 h-32 `}
@@ -307,7 +307,7 @@ const ExplainMembership = ({ navigation }) => {
           onPress={handleSave}
           title="Continue"
           titleStyle={tw`text-black font-bold`}
-          containerStyle={tw`bg-primary w-[90%] rounded-full`}
+          containerStyle={tw`bg-primary w-[100%] rounded-2xl`}
         />
       </View>
 
@@ -353,10 +353,10 @@ const ExplainMembership = ({ navigation }) => {
           </Text>
 
           <View style={tw`mt-2`}>
-            <View style={tw`border-t-2 border-gray-800 w-full`}>
+            <View style={tw`border-t-2 border-[#565358] w-full`}>
 
             </View>
-            <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+            <View style={tw`border-t-2 border-b-2 border-[#565358] w-full`}>
               <Button
                 title="Continue"
                 style={tw`text-white px-6`}
@@ -376,8 +376,8 @@ const ExplainMembership = ({ navigation }) => {
 const styles = StyleSheet.create({
   dropdown: {
     height: 40,
-    borderColor: '#888',
-    borderWidth: 1,
+    // borderColor: '#565358',
+    // borderWidth: 1,
     borderRadius: 18,
     paddingHorizontal: 10,
     backgroundColor: '#262329',

@@ -2,6 +2,7 @@ import {
     Dimensions,
     FlatList,
     Image,
+    ScrollView,
     StatusBar,
     StyleSheet,
     Text,
@@ -62,7 +63,7 @@ const HomeSearchResult = () => {
                 route: route
             }
             );
-        }
+        } 
     };
     // const handleTransfer = () => {
     //   navigation.navigate('cashTransfer');
@@ -98,7 +99,7 @@ const HomeSearchResult = () => {
                     <InputText
                         style={tw`text-white`}
                         cursorColor={'white'}
-                        containerStyle={tw`bg-[#262329] border h-12 relative border-[#565358]`}
+                        containerStyle={tw`bg-[#262329] h-12 relative border-[#565358]`}
                         labelStyle={tw`text-white font-AvenirLTProBlack mt-3`}
                         placeholder={'Search by user name'}
                         placeholderColor={'#949494'}
@@ -114,7 +115,7 @@ const HomeSearchResult = () => {
 
             <View style={tw``}>
                 {showDropdown && search.length > 0 && (
-                    <View style={tw``}>
+                    <ScrollView style={tw`px-2`}>
                         {isLoading ? (
                             <Text style={tw`text-white`}>Loading...</Text>
                         ) : data?.data?.result.length === 0 ? (
@@ -157,12 +158,12 @@ const HomeSearchResult = () => {
                                 )
                             })
                         )}
-                    </View>
+                    </ScrollView>
                 )}
             </View>
 
 
-            <StatusBar backgroundColor="black" translucent />
+            <StatusBar backgroundColor="black" translucent={false} />
         </View>
     );
 };

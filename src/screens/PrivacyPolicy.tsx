@@ -16,6 +16,7 @@ import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import tw from '../lib/tailwind';
 import { IconBack } from '../assets/icons/icons';
+import PrivacyPolicyHtmlToText from '../components/PrivacyPolicyHtmlToText';
 
 
 const PrivacyPolicy = ({ navigation }: { navigation: any }) => {
@@ -55,25 +56,9 @@ const PrivacyPolicy = ({ navigation }: { navigation: any }) => {
             </View>
 
             {/* Content */}
-            <View style={tw`my-6`}>
-                <Text style={tw`text-white font-AvenirLTProBlack text-xl`}>
-                    1. Introduction
-                </Text>
-                <Text style={tw`text-white mt-4 font-AvenirLTProBlack`}>
-                    1.1. Unless otherwise defined in this Privacy Policy, capitalized terms shall have the same
-                    meaning as set forth in the Terms of Use of the Between AI Agent Marketplace....
-                </Text>
-            </View>
-
-            {/* Download Button */}
-            <TouchableOpacity
-                onPress={handleDownload}
-                style={tw`bg-PrimaryFocus p-4 rounded-2xl mb-10`}
-            >
-                <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
-                    Read more? Download PP as PDF
-                </Text>
-            </TouchableOpacity>
+            <ScrollView style={{ flex: 1, padding: 15, backgroundColor: '#0000' }}>
+                <PrivacyPolicyHtmlToText />
+            </ScrollView>
 
             <StatusBar backgroundColor="black" translucent={false} />
         </ScrollView>

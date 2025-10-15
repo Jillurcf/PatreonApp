@@ -33,11 +33,11 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const { data, isError, refetch, isFetching } = useGetUserQuery({});
-  const {data:myService} = useGettMyServicesQuery({});
+  const { data: myService } = useGettMyServicesQuery({});
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
   console.log(data?.data, "data======================")
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
-// console.log(myService?.data[0].subscribers.length, "my service++++++++++++++")
+  // console.log(myService?.data[0].subscribers.length, "my service++++++++++++++")
 
   useEffect(() => {
     data?.data?.stripeAccountId
@@ -204,7 +204,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
       {/* Stats Box */}
       <View style={tw`flex items-center justify-center my-8`}>
         <View style={tw`bg-[#262329] w-[90%] h-20 rounded-2xl flex-row items-center justify-between`}>
-          <View style={tw`border-r-2 w-[33%] h-12 border-[#091218] items-center justify-center`}>
+          <View style={tw`border-r-2 w-[33%] h-12 border-[#565358] items-center justify-center`}>
             <TouchableOpacity>
               <Text style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
                 {data?.data?.subscriptions?.length}
@@ -215,10 +215,10 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
             </TouchableOpacity>
           </View>
 
-          <View style={tw`border-r-2 w-[33%] h-12 border-[#091218] items-center justify-center`}>
+          <View style={tw`border-r-2 w-[33%] h-12 border-[#565358] items-center justify-center`}>
             <TouchableOpacity>
               <Text style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
-              {myService?.data[0].subscribers.length}
+                {myService?.data[0].subscribers.length}
               </Text>
               <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
                 Subscribers
@@ -253,15 +253,28 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
       {/* Contributor Box */}
       <View style={tw`items-center justify-center`}>
         <View style={tw`bg-[#262329] w-[90%] mt-6 rounded-2xl p-[6%]`}>
-          <Text style={tw`text-white text-xl text-center font-AvenirLTProBlack`}>
-            Become A Contributor
-          </Text>
-          <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
-            Consult People anytime anywhere.
-          </Text>
-          <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
-            First connect your stripe account for payouts, then create your agent.
-          </Text>
+          {(data?.data?.services?.length ?? 0) < 1 ? (
+            <View>
+              <Text style={tw`text-white text-xl text-center font-AvenirLTProBlack`}>
+                Become A Contributor
+              </Text>
+              <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
+                Consult People anytime anywhere.
+              </Text>
+              <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
+                First connect your stripe account for payouts, then create your agent.
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={tw`text-white text-lg text-center font-AvenirLTProBlack`}>
+                Welcome!
+              </Text>
+              <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
+                Now you are a contributor.
+              </Text>
+            </View>
+          )}
           <View style={tw`w-full items-center mt-8`}>
             {/* {data?.data?.attachedBankAccounts.length === 0 ? (
               <TButton

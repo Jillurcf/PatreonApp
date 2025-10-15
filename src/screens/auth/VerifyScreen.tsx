@@ -241,7 +241,7 @@ const VerifyScreen = ({ navigation, route }: { navigation: any }) => {
                   // pinCodeContainerStyle: tw`bg-red-300`,
                   pinCodeTextStyle: tw`text-white `,
                   focusStickStyle: tw`bg-red-400 text-red-700`,
-                  focusedPinCodeContainerStyle: tw`border-gray-600`,
+                  focusedPinCodeContainerStyle: tw`border-[#565358]`,
                   placeholderTextStyle: tw`text-white`,
                   filledPinCodeContainerStyle: tw``,
                   disabledPinCodeContainerStyle: tw`border-red-500`,

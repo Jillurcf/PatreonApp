@@ -1,4 +1,4 @@
-const {blue} = require('react-native-reanimated/lib/typescript/Colors');
+// const {blue} = require('react-native-reanimated/lib/typescript/Colors');
 const plugin = require('tailwindcss/plugin');
 
 module.exports = {

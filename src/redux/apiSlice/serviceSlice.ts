@@ -48,10 +48,18 @@ const serviceSlice = api.injectEndpoints({
 
 
     }),
-      messageHistory: builder.query({
+    messageHistory: builder.query({
       query: () => ({
         url: `/services/get-replies-by-user`,
         method: "Get",
+      }),
+      providesTags: ['service'],
+
+    }),
+    messageHistoryById: builder.query({
+      query: (id) => ({
+        url: `/services/get-replies-for-service/${id}`,
+        method: "GET",
       }),
       providesTags: ['service'],
 
@@ -114,6 +122,7 @@ export const { useGetAllServiceQuery,
   usePostBecmeAContibutorMutation,
   usePostSendMessageMutation,
   useMessageHistoryQuery,
+  useMessageHistoryByIdQuery,
   useGettMyServicesQuery,
   useDeleteServicesMutation,
   useGetServicesByIdQuery,

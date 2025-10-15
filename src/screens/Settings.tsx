@@ -156,10 +156,10 @@ const Settings = ({ navigation }: { navigation: any }) => {
           </Text>
 
           <View style={tw`mt-2`}>
-            <View style={tw`border-t-2 border-gray-800 w-full`}>
+            <View style={tw`border-t-2 border-[#565358] w-full`}>
 
             </View>
-            <View style={tw`border-t-2 border-b-2 flex-row gap-6 items-center justify-center border-slate-800 w-full`}>
+            <View style={tw`border-t-2 border-b-2 flex-row gap-6 items-center justify-center border-[#565358] w-full`}>
               <Button
                 title="Yes"
                 style={tw`text-white px-6`}

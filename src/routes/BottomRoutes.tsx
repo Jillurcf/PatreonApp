@@ -1,7 +1,7 @@
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {SvgXml} from 'react-native-svg';
+import { Platform, TouchableOpacity, View } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SvgXml } from 'react-native-svg';
 import tw from '../lib/tailwind';
 import Home from '../screens/Home/Home';
 import {
@@ -23,16 +23,30 @@ import Discover from '../screens/Discover';
 import IconArrow from '../components/IconArrow';
 import MessageScreen from '../screens/MessageScreen';
 import MessageList from '../screens/MessageList';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
 function BottomRoutes() {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        
+      screenOptions={({ route }) => ({
+
         headerShown: false,
-        tabBarStyle: tw`h-14 bg-black`,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: '#141316',
+          borderTopWidth: 0,
+          elevation: 8, // 👈 slight shadow for Android
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          // 👇 Platform-specific bottom height
+          height: Platform.OS === 'ios' ? 60 + insets.bottom : 60,
+          paddingBottom: Platform.OS === 'ios' ? insets.bottom : 8,
+        },
         tabBarItemStyle: {
           marginVertical: 10,
         },
@@ -42,7 +56,7 @@ function BottomRoutes() {
         },
         tabBarActiveTintColor: '', // You can adjust this to the color you want for active label
         tabBarButton: props => <TouchableOpacity {...props} />,
-        tabBarIcon: ({focused}) => {
+        tabBarIcon: ({ focused }) => {
           let icon;
           let iconBackground = focused ? '' : 'transparent'; // Red background for active tab
 
@@ -75,7 +89,7 @@ function BottomRoutes() {
       })}>
       <Tab.Screen name="Discover" component={Discover} />
       <Tab.Screen name="Message" component={MessageList} />
-     
+
     </Tab.Navigator>
   );
 }

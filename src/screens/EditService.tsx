@@ -250,7 +250,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
             {/* Title */}
             <View style={tw`flex-row w-full items-center p-3`}>
                 <TextInput
-                    style={tw`w-full h-10 border text-white bg-[#262329] border-gray-400 rounded-2xl px-2`}
+                    style={tw`w-full h-10 border text-white bg-[#262329] border-[#565358] rounded-2xl px-2`}
                     placeholder="Write title here"
                     placeholderTextColor={'white'}
                     defaultValue={services?.title}
@@ -262,7 +262,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
             {/* Subtitle */}
             <View style={tw`flex-row w-full items-center p-3`}>
                 <TextInput
-                    style={tw`w-full h-10 border text-white bg-[#262329] border-gray-400 rounded-2xl px-2`}
+                    style={tw`w-full h-10 border text-white bg-[#262329] border-[#565358] rounded-2xl px-2`}
                     placeholder="Write subtitle"
                     placeholderTextColor={'white'}
                     defaultValue={services?.subtitle}
@@ -276,7 +276,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
                     <SvgXml xml={IconDollar} width={20} height={20} />
                 </TouchableOpacity>
                 <TextInput
-                    style={tw`w-full h-10 border text-white bg-[#262329] border-gray-400 rounded-2xl px-2`}
+                    style={tw`w-full h-10 border text-white bg-[#262329] border-[#565358]rounded-2xl px-2`}
                     placeholder="Input currency"
                     placeholderTextColor={'white'}
                     defaultValue={services?.price?.toString()}
@@ -306,7 +306,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
             {/* Dropdown */}
             <View style={tw`mt-8`}>
                 <Dropdown
-                    style={[styles.dropdown, isFocus && { borderColor: 'bg-gray-500' }]}
+                    style={[styles.dropdown, isFocus && { borderColor: '#565358' }]}
                     placeholderStyle={styles.placeholderStyle}
                     selectedTextStyle={styles.selectedTextStyle}
                     inputSearchStyle={styles.inputSearchStyle}
@@ -373,10 +373,10 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
                     </Text>
 
                     <View style={tw`mt-2`}>
-                        <View style={tw`border-t-2 border-gray-800 w-full`}>
+                        <View style={tw`border-t-2 border-[#565358] w-full`}>
 
                         </View>
-                        <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+                        <View style={tw`border-t-2 border-b-2 border-[#565358] w-full`}>
                             <Button
                                 title="Continue"
                                 style={tw`text-white px-6`}

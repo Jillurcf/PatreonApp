@@ -114,7 +114,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
           {/* Input Area */}
           <View style={tw`mt-8`}>
             <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Add Instruction</Text>
-            <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
+            <View style={tw`h-44 p-2 bg-[#262329] w-full rounded-lg`}>
               <TextInput
                 onChangeText={(text) => setPromptInput(text)}
                 style={tw`text-left h-40 text-white`}
@@ -139,7 +139,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
             <TouchableOpacity 
             onPress={handleUploadPdf}
             >
-              <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 border border-[#565358] justify-center`}>
+              <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 justify-center`}>
                 <View style={tw`flex-row gap-6`}>
                   {/* <IButton containerStyle={tw`p-4 rounded-full`} svg={Gallery} onPress={openGallery} /> */}
                   <TouchableOpacity onPress={handleUploadPdf}>
@@ -174,7 +174,7 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
             onPress={handleSave}
             titleStyle={tw`text-black font-bold text-center`}
             title="Save"
-            containerStyle={tw`bg-primary w-[90%] rounded-full`}
+            containerStyle={tw`bg-primary w-[100%] rounded-2xl`}
           />
         </View>
         <NormalModal
@@ -188,10 +188,10 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
             </Text>
 
             <View style={tw`mt-2`}>
-              <View style={tw`border-t-2 border-gray-800 w-full`}>
+              <View style={tw`border-t-2 border-[#565358] w-full`}>
 
               </View>
-              <View style={tw`border-t-2 border-b-2 border-slate-800 w-full`}>
+              <View style={tw`border-t-2 border-b-2 border-[#565358] w-full`}>
                 <Button
                   title="Continue"
                   style={tw`text-white px-6`}

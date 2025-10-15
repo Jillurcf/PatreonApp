@@ -22,7 +22,7 @@ import Video from 'react-native-video'; // Ensure this is installed: npm install
 
 import { SvgXml } from 'react-native-svg';
 import moment from 'moment';
-import { useMessageHistoryQuery, usePostSendMessageMutation } from '../redux/apiSlice/serviceSlice';
+import { useMessageHistoryByIdQuery, useMessageHistoryQuery, usePostSendMessageMutation } from '../redux/apiSlice/serviceSlice';
 import { useGetUserQuery } from '../redux/apiSlice/userSlice';
 import tw from '../lib/tailwind';
 import { AttachmentIcon, CrossIcon, IconBack, Uparrow, VideoCam } from '../assets/icons/icons';
@@ -34,7 +34,7 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
   const [openModal, setOpenModal] = useState(false);
   const [conversation_id, setConversation_id] = useState();
   const [postSendMessage, { isLoading, isError }] = usePostSendMessageMutation()
-  const { data: messageHistory, refetch: refetchMessages } = useMessageHistoryQuery({});
+    const { data: messageHistory, refetch: refetchMessages } = useMessageHistoryByIdQuery(serviceId);
   const [mediaUri, setMediaUri] = useState(null); // For holding the selected media URI
   const [mediaType, setMediaType] = useState(null); // 'image', 'video', or 'document'
   const [text, setText] = useState(''); // Message input field
@@ -258,7 +258,7 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
     <View style={tw`flex-1 px-2 bg-black`}>
       <View style={tw`flex-row w-full justify-between mt-4`}>
         <TouchableOpacity
-          onPress={() => navigation?.goBack()}
+          onPress={() => navigation.goBack()}
           style={tw`bg-black rounded-full p-1`}>
           <SvgXml xml={IconBack} />
         </TouchableOpacity>
@@ -267,7 +267,6 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
             userName
           ) || "User Name"}
         </Text>
-        {/* Placeholder view for symmetry */}
         <View style={tw`w-8`} />
       </View>
       {/* Message List */}
@@ -281,36 +280,54 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
             return (
               (
                 <View style={tw`mb-4`}>
-                  <Text style={tw`font-semibold text-white text-lg`}>{item.user}</Text>
-                  <Text style={tw`text-sm text-white`}>Q. {item.question}</Text>
-                  <Text style={tw`text-sm text-white mt-2`}>Ans. {item?.answer}</Text>
-                  <Text style={tw`text-xs text-gray-400`}>{new Date(item.createdAt).toLocaleString()}</Text>
+                  {/* <Text style={tw`font-semibold text-white text-lg`}>{item.user}</Text> */}
+                  <View style={tw`bg-[#262329] p-3 rounded-3xl rounded-l-none rounded-b-2xl mt-2 w-[80%] flex-row items-end`}>
+                    <View style={tw`w-[85%]`}>
+                      <Text style={tw`text-sm text-white mt-2`}>{item?.answer}</Text>
+                    </View>
+                    <View style={tw`w-15%`}>
+                      <Text style={tw`text-xs text-[#C9C8C9]`}>{new Date(item.createdAt).toLocaleString().slice(12, 17)}</Text>
+                    </View>
+                  </View>
+                  <View style={tw`bg-[#FFFFFF] p-3 rounded-3xl rounded-r-none rounded-b-2xl mt-4 w-[80%] flex-row items-end ml-[20%] `}>
+                   <View style={tw`w-85%`}>
+                      <Text style={tw`text-sm text-[#141316]`}>{item.question}</Text>
+                    </View>
+                    <View style={tw`w-15%`}>
+                      <Text style={tw`text-xs text-[#616161]`}>{new Date(item.createdAt).toLocaleString().slice(12, 17)}</Text>
+                    </View>
+
+                  </View>
+
+
                 </View>
               )
             )
           }}
+          inverted
         />
       </View>
-
 
       {/* Input and Send Button */}
       <View style={tw``}>
         <View style={tw`flex-row items-center p-3  w-[95%]`}>
           <TouchableOpacity
-            onPress={() => selectMediaType()}
+            // onPress={() => selectMediaType()}
+            onPress={() => console.log("Attachment pressed")}
             style={tw`mr-2 absolute right-14 z-30`}>
 
             <Text style={tw`text-white`}>
-              {isLoading ? 'Sending...' : ""
+              {isLoading ? 'Sending...' :
 
-              }
+                (<SvgXml xml={AttachmentIcon} width={20} height={20} />
+                )}
             </Text>
 
           </TouchableOpacity>
           <View
             style={tw`flex-row w-[90%] gap-1 px-[2%] items-center relative`}>
             <TextInput
-              style={tw`w-full h-10 border text-white bg-[#262329] border-gray-400 rounded-2xl px-2`}
+              style={tw`w-full h-14 border text-white bg-[#262329]  rounded-2xl px-2`}
               placeholder="Message..."
               placeholderTextColor={'white'}
               cursorColor={'white'}
@@ -323,8 +340,8 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
               style={tw` border items-center justify-center p-2 rounded-2xl`}>
               {/* <Text style={tw`text-white text-sm font-MontserratBold`}>Send</Text> */}
               <View
-                style={tw`bg-white h-10 w-10 justify-center rounded-full items-center`}>
-                <SvgXml xml={Uparrow} width={20} />
+                style={tw`bg-white h-12 w-12 justify-center rounded-full items-center`}>
+                <SvgXml xml={Uparrow} width={30} />
               </View>
             </TouchableOpacity>
           </View>
@@ -342,7 +359,7 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
           <Button title="Remove" onPress={() => setMediaUri(null)} />
         </View>
       )}
-      {mediaUri && mediaType === 'video' && (
+      {/* {mediaUri && mediaType === 'video' && (
         <View style={tw`flex-row items-center p-3`}>
           <Video
             source={{ uri: mediaUri }}
@@ -353,7 +370,7 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
           <SvgXml xml={VideoCam} width={20} height={20} />
           <Button title="Remove" onPress={() => setMediaUri(null)} />
         </View>
-      )}
+      )} */}
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         {/* Button to open the modal */}
         {/* <Button title="Open Modal"  /> */}

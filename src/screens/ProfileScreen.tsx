@@ -16,7 +16,7 @@ import { getServiceData } from '../utils';
 import { usePostCreateTransactionMutation, usePostPaymentMethodsMutation } from '../redux/apiSlice/paymentSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import WebView from 'react-native-webview';
-import { useGettMyServicesQuery } from '../redux/apiSlice/serviceSlice';
+import { useGetServicesByIdQuery, useGettMyServicesQuery } from '../redux/apiSlice/serviceSlice';
 const { width, height } = Dimensions.get("screen")
 type Props = {};
 
@@ -30,11 +30,14 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   console.log(error, "error++")
   const { data, isLoading, isError, refetch } = useGetSingleUserQuery(userId);
   console.log(data?.data, '=======================data');
+    const { data: serviceData } = useGetServicesByIdQuery(data?.data?.services[0], {
+    skip: !data?.data?.services,
+  })
   const { data: loginUserData, refetch: fetchLoginUser, isFetching } = useGetUserQuery({});
   // console.log(loginUserData?.data, 'login user Data=======================data');
   const { data: myService } = useGettMyServicesQuery({});
   //  console.log(myService, "myService=======================data");
-  const [serviceData, setServiceData] = React.useState<any>(null);
+  // const [serviceData, setServiceData] = React.useState<any>(null);
   const [resSessionId, setResSessionId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
@@ -55,10 +58,10 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
 
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data?.data?.image}` : null;
   console.log(fullImageUrl, "fullImageUrl++++++");
-  useEffect(() => {
-    const service = getServiceData();
-    setServiceData(service);
-  }, []);
+  // useEffect(() => {
+  //   const service = getServiceData();
+  //   setServiceData(service);
+  // }, []);
   // console.log(id, "id++++++");
   const handleSubscribe = async () => {
     console.log("clicked");
@@ -135,7 +138,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         }, 300);
       }
 
-      if (url.includes('session_id=')) {
+      if (url?.includes('session_id=')) {
         console.log('Stripe Redirect Detected. Session ID present.');
 
         const match = url.match(/[?&]session_id=([^&]+)/);
@@ -143,6 +146,9 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         console.log('Extracted Session ID:', sessionId);
         setResSessionId(sessionId);
         setOnboardingUrl(null);
+        setTimeout(() => {
+          navigation.navigate('PaymentResult');
+        }, 300);
 
         try {
           const formData = new FormData();
@@ -155,9 +161,9 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
           const res = await postCreateTransaction(formData).unwrap();
           console.log(res?.success, 'Transaction Created Successfully');
 
-          setTimeout(() => {
-            navigation.navigate('PaymentResult');
-          }, 300);
+          // setTimeout(() => {
+          //   navigation.navigate('PaymentResult');
+          // }, 300);
         } catch (error) {
           console.error('Transaction creation failed:', error);
           // navigation.navigate('PaymentFailed');
@@ -183,6 +189,16 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         source={{ uri: onboardingUrl }}
         style={{ flex: 1, width: "100%", height: height * 0.7 }}
         onNavigationStateChange={handleWebViewNavigation}
+
+        // test added
+        originWhitelist={['*']}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        sharedCookiesEnabled={true}
+        thirdPartyCookiesEnabled={true}
+        cacheEnabled={false}
+        allowsInlineMediaPlayback={true}
+        setSupportMultipleWindows={false}
       />
     );
   }
@@ -261,10 +277,10 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
         <View
           style={tw`bg-[#262329] w-[90%] h-20 rounded-2xl justify-between flex-row items-center`}>
           <View
-            style={tw`border-r-2 w-[50%] h-12 border-[#091218] items-center justify-center`}>
+            style={tw`border-r-2 w-[50%] h-12 border-[#565358] items-center justify-center`}>
             <Text
               style={tw`text-white text-center font-AvenirLTProBlack text-xl`}>
-              {myService?.data[0].subscribers.length}
+              {myService?.data[0].subscribers.length || 0}
             </Text>
             <Text style={tw`text-white text-center font-AvenirLTProBlack`}>
               Subscribers
@@ -294,13 +310,14 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
           <Text style={tw`text-white font-AvenirLTProBlack`}>
             $150 Transaction/3 months
           </Text>
-          <FlatList
-            data={serviceData?.explainMembership}
+         <View style={tw`mt-2`}>  
+           <FlatList
+            data={serviceData?.data?.explainMembership}
             renderItem={({ item }) => (
               <View style={tw`flex-row gap-4 items-center my-1`}>
                 <SvgXml xml={IconDot} />
                 <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>
-                  {item}
+                   {item || 'No Data available'}
                 </Text>
               </View>
             )}
@@ -309,6 +326,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
             contentContainerStyle={tw`bg-[#262329]`}
             style={tw`h-40`}
           />
+         </View>
         </View>
       </View>
       <View style={tw`w-full items-center my-6`}>
@@ -316,9 +334,9 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
           <Text style={tw`text-red-600 text-xs my-2`}>{error}*</Text>
         )}
         <TButton
-          disabled={subscribed}
+          disabled={subscribed || data === undefined}
           onPress={handleSubscribe}
-          title={subscribed ? "Subscribed" : "Subscribe"}
+          title={subscribed ? "Subscribed" : data === undefined ? "Not Available" : "Subscribe"}
           titleStyle={tw`text-black`}
           containerStyle={tw`w-[90%] bg-white`}
         />

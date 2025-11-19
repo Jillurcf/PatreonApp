@@ -26,11 +26,11 @@ const MyServiceList: React.FC<MyServiceListProps> = ({ data, handleEditService, 
                     {item?.title}
                   </Text>
                 </View>
-                <View style={tw`flex-row justify-between mt-2`}>
+                {/* <View style={tw`flex-row justify-between mt-2`}>
                   <Text style={tw`text-[#C9C8C9] font-AvenirLTProLight`}>
                     {item?.subtitle}
                   </Text>
-                </View>
+                </View> */}
                 <View style={tw`flex-row justify-between mt-2`}>
                   <Text style={tw`text-[#C9C8C9] font-AvenirLTProLight`}>
                     {item?.category}

@@ -14,7 +14,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import Video from 'react-native-video'; // Ensure this is installed: npm install react-native-video
+// import Video from 'react-native-video'; // Ensure this is installed: npm install react-native-video
 
 // import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 // import DocumentPicker from 'react-native-document-picker'; // For document selection
@@ -226,26 +226,26 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
   // React.useEffect(() => {
 
   // }, [receiverInfo, data?.data]);
-  const selectMediaType = () => {
-    Alert.alert('Choose Media', 'Select the type of media you want to upload', [
-      {
-        text: 'Image',
-        onPress: () => pickMedia('photo'),
-      },
-      {
-        text: 'Video',
-        onPress: () => pickMedia('video'),
-      },
-      {
-        text: 'Document',
-        onPress: () => pickDocument(),
-      },
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-    ]);
-  };
+  // const selectMediaType = () => {
+  //   Alert.alert('Choose Media', 'Select the type of media you want to upload', [
+  //     {
+  //       text: 'Image',
+  //       onPress: () => pickMedia('photo'),
+  //     },
+  //     {
+  //       text: 'Video',
+  //       onPress: () => pickMedia('video'),
+  //     },
+  //     {
+  //       text: 'Document',
+  //       onPress: () => pickDocument(),
+  //     },
+  //     {
+  //       text: 'Cancel',
+  //       style: 'cancel',
+  //     },
+  //   ]);
+  // };
   {
     isLoading && (
       <View style={tw`absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-black bg-opacity-30`}>

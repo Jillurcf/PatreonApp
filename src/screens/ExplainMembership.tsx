@@ -221,18 +221,7 @@ const ExplainMembership = ({ navigation }) => {
           <Text style={tw`text-red-600 text-xs mt-2`}>
             Please enter a title.*</Text>
         )}
-        <Text style={tw`text-white font-bold text-xs mt-2`}>Subtitle</Text>
-        <TextInput
-          style={tw`mt-1 w-full h-10 text-white bg-[#262329] rounded-2xl px-3`}
-          placeholder="Write subtitle here"
-          placeholderTextColor="white"
-          value={value.subtitle}
-          onChangeText={text => setValue(prev => ({ ...prev, subtitle: text }))}
-        />
-        {!value.subtitle.trim() && (
-          <Text style={tw`text-red-600 text-xs mt-2`}>
-            Please enter a subtitle.*</Text>
-        )}
+       
         <Text style={tw`text-white font-bold text-xs mt-2`}>Price</Text>
         <View style={tw`relative mt-2`}>
           <TextInput

@@ -218,7 +218,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
 
             {/* Prompt Input */}
             <View style={tw`mt-8`}>
-                <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Prompt Input</Text>
+                <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Edit Instruction</Text>
                 <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
                     <TextInput
                         defaultValue={services?.about}
@@ -248,9 +248,10 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
             </View>
 
             {/* Title */}
-            <View style={tw`flex-row w-full items-center p-3`}>
+            <View style={tw``}>
+                 <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Title</Text>
                 <TextInput
-                    style={tw`w-full h-10 border text-white bg-[#262329] border-[#565358] rounded-2xl px-2`}
+                    style={tw`w-full h-12 border text-white bg-[#262329] border-[#565358] rounded-xl px-2`}
                     placeholder="Write title here"
                     placeholderTextColor={'white'}
                     defaultValue={services?.title}
@@ -259,33 +260,10 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
                 />
             </View>
 
-            {/* Subtitle */}
-            <View style={tw`flex-row w-full items-center p-3`}>
-                <TextInput
-                    style={tw`w-full h-10 border text-white bg-[#262329] border-[#565358] rounded-2xl px-2`}
-                    placeholder="Write subtitle"
-                    placeholderTextColor={'white'}
-                    defaultValue={services?.subtitle}
-                    onChangeText={text => setValue(prev => ({ ...prev, subtitle: text }))}
-                />
-            </View>
-
-            {/* Currency */}
-            <View style={tw`flex-row w-full items-center p-3`}>
-                <TouchableOpacity style={tw`absolute right-6 z-30`}>
-                    <SvgXml xml={IconDollar} width={20} height={20} />
-                </TouchableOpacity>
-                <TextInput
-                    style={tw`w-full h-10 border text-white bg-[#262329] border-[#565358]rounded-2xl px-2`}
-                    placeholder="Input currency"
-                    placeholderTextColor={'white'}
-                    defaultValue={services?.price?.toString()}
-                    onChangeText={text => setValue(prev => ({ ...prev, currency: text }))}
-                />
-            </View>
-
+            
             {/* Description */}
             <View style={tw`mt-8`}>
+                 <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Description</Text>
                 <View style={tw`h-auto p-2 bg-[#FFFFFF] border border-[#565358] w-full rounded-lg`}>
                     <TextArea
 
@@ -305,6 +283,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
 
             {/* Dropdown */}
             <View style={tw`mt-8`}>
+                 <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Category</Text>
                 <Dropdown
                     style={[styles.dropdown, isFocus && { borderColor: '#565358' }]}
                     placeholderStyle={styles.placeholderStyle}

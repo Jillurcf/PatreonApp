@@ -30,7 +30,6 @@ const ExplainMembership = ({ navigation }) => {
   const isDarkMode = useColorScheme() === 'dark';
   const [value, setValue] = useState({
     title: '',
-    subtitle: '',
     currency: '',
     price: '',
     description: '',
@@ -94,7 +93,6 @@ const ExplainMembership = ({ navigation }) => {
 
     const isEmpty =
       !value.title.trim() ||
-      !value.subtitle.trim() ||
       !value.currency.trim() ||
       !value.description.trim() ||
       !value.category.trim()

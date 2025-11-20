@@ -1,11 +1,13 @@
 import { ActivityIndicator, FlatList, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 
 import { SvgXml } from 'react-native-svg'
 import { useDeleteServicesMutation, useGettMyServicesQuery } from '../redux/apiSlice/serviceSlice'
 import tw from '../lib/tailwind'
 import { IconBack, IconEdit } from '../assets/icons/icons'
 import MyServiceList from '../components/MyServiceList'
+import NormalModal from '../components/NormalModal'
+import TButton from '../components/TButton'
 
 
 
@@ -17,6 +19,9 @@ const MyServices = ({ navigation }: { navigation: any }) => {
     const { data, refetch, isLoading, isError } = useGettMyServicesQuery({})
     // console.log(data?.data, "My serviced data =================14")
     const [deleteServices] = useDeleteServicesMutation();
+    const [deleteServiceConfirmationModalVisible, setDeleteServiceConfirmationModalVisible] =
+        useState(false);
+    const [seletedItem, setSeletedItem] = useState(null);
 
     const handleEditService = (item) => {
         // console.log(item?._id, "click+++++++++++++++++++++++++")
@@ -30,19 +35,27 @@ const MyServices = ({ navigation }: { navigation: any }) => {
     }
 
     const handleDelete = async (item) => {
+        setDeleteServiceConfirmationModalVisible(true);
+        setSeletedItem(item);
+
+    };
+
+    const handleDeleteConfirmation = async () => {
         try {
             // console.log(item._id, "id++++++++++++++++++ click");
-            const res = await deleteServices(item._id).unwrap();
+            const res = await deleteServices(seletedItem._id).unwrap();
             console.log('Deleted successfully', res)
             if (res?.success === true) {
                 await refetch(); // Refetch the data after deletion
                 navigation.navigate('Drawer'); // Navigate back to MyServices screen
             }
+            setDeleteServiceConfirmationModalVisible(false);
 
         } catch (error) {
             console.error('Delete failed', error);
         }
-    };
+
+    }
 
     {
         isLoading && (
@@ -55,7 +68,7 @@ const MyServices = ({ navigation }: { navigation: any }) => {
 
     return (
         <View
-           style={tw`flex-1 bg-black h-[95%] px-[4%]`}>
+            style={tw`flex-1 bg-black h-[95%] px-[4%]`}>
             <View style={tw``}>
                 <View style={tw`flex-row w-full justify-between mt-4`}>
                     <TouchableOpacity
@@ -133,6 +146,39 @@ const MyServices = ({ navigation }: { navigation: any }) => {
                     IconEdit={IconEdit}
                 />
             </View>
+            <NormalModal
+                layerContainerStyle={tw`flex-1 justify-center items-center `}
+                containerStyle={tw`rounded-xl bg-[#141316] w-[80%] `}
+                visible={deleteServiceConfirmationModalVisible}
+                setVisible={setDeleteServiceConfirmationModalVisible}
+            >
+                <View>
+                    <Text style={tw`text-white text-2xl text-center font-AvenirLTProBlack mb-2`}>
+                        Sure you want to {'\n'}delete service?
+                    </Text>
+
+                    <View style={tw`mt-2`}>
+                        <View style={tw`items-center mb-4`}>
+                            <TButton
+                                title="Yes"
+                                titleStyle={tw`text-[#262329] text-[16px] font-AvenirLTProBlack`}
+                                containerStyle={tw`w-[100%] bg-white `}
+                                onPress={handleDeleteConfirmation}
+                            />
+                        </View>
+                        <View style={tw`items-center w-full`}>
+                            <TButton
+                                title="Cancel"
+                                titleStyle={tw`text-white text-[16px] font-AvenirLTProBlack`}
+                                containerStyle={[tw`w-[100%]`, { backgroundColor: 'rgba(255,255,255,0.2)' }]}
+                                onPress={() => {
+                                    setDeleteServiceConfirmationModalVisible(false);
+                                }}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </NormalModal>
             <StatusBar translucent={false} />
         </View>
     )

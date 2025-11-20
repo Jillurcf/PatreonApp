@@ -66,7 +66,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
         description: '',
         category: '',
     });
-    // console.log(value, "value=====================")
+    console.log(value?.category, "value=====================")
     const renderItem = (item) => (
         <View
             style={[
@@ -170,8 +170,8 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
         try {
             const formData = new FormData()
             formData.append('title', value?.title)
-            formData.append('subtitle', value?.subtitle)
-            formData.append('price', value?.currency)
+            formData.append('subtitle', "xyz")
+            formData.append('price', "50")
             formData.append('description', value?.description)
             formData.append('category', value?.category)
             formData.append('about', promptInput)
@@ -266,7 +266,6 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
                  <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Description</Text>
                 <View style={tw`h-auto p-2 bg-[#FFFFFF] border border-[#565358] w-full rounded-lg`}>
                     <TextArea
-
                         style={tw`text-left h-40 text-black`}
                         placeholder={'Write description here'}
                         placeholderTextColor={'#c7c7c7'}
@@ -297,13 +296,14 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
                     valueField="value"
                     placeholder={!isFocus ? 'Select category' : '...'}
                     searchPlaceholder="Search..."
-                    value={value.category}
+                    value={value?.category}
                     onFocus={() => setIsFocus(true)}
                     onBlur={() => setIsFocus(false)}
                     onChange={item => {
+                        console.log(item?.label, "item================ in the category field=")
                         setValue(prev => ({
                             ...prev,
-                            category: item?.item, // ✅ Save only the selected value
+                            category: item?.label, // ✅ Save only the selected value
                         }));
                         setIsFocus(false);
                     }}

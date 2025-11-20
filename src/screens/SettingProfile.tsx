@@ -35,7 +35,7 @@ const SettingProfile = ({ navigation }: { navigation: any }) => {
   const { data, isError, refetch, isFetching } = useGetUserQuery({});
   const { data: myService } = useGettMyServicesQuery({});
   const [patchUpdateUserProfile] = usePatchUpdateUserProfileMutation();
-  console.log(data?.data, "data======================")
+  // console.log(data?.data, "data======================")
   const fullImageUrl = data?.data?.image ? `${imageUrl}/${data.data.image}` : null;
   // console.log(myService?.data[0].subscribers.length, "my service++++++++++++++")
 

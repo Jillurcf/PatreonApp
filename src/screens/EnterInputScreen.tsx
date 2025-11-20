@@ -13,7 +13,7 @@ import {
 import { loadMediaPromptData, saveMediaPromptData } from '../utils';
 import { SvgXml } from 'react-native-svg';
 import { NavigProps } from '../interface/NaviProps';
-import Textarea from 'react-native-textarea';
+
 
 import {
   BulbIcon,
@@ -78,10 +78,10 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
     }
   };
   const handleSave = () => {
-    if (!allData.selectedPdf || !allData.promptInput) {
-      console.log('Error', 'Please fill in all fields before uploading.');
-      return;
-    }
+    // if (!allData.selectedPdf || !allData.promptInput) {
+    //   console.log('Error', 'Please fill in all fields before uploading.');
+    //   return;
+    // }
     // console.log(selectedPdf, promptInput, 'data before sending ==========');
     saveMediaPromptData(selectedPdf, null, promptInput);
     const { selectedImages: savedImages, promptInput: savedPrompt } = loadMediaPromptData();

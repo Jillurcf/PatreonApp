@@ -18,6 +18,7 @@ import { IconBack, IconPlus } from '../assets/icons/icons';
 import TButton from '../components/TButton';
 import NormalModal from '../components/NormalModal';
 import Button from '../components/Button';
+import { useGetUserQuery } from '../redux/apiSlice/userSlice';
 
 const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
     const [serviceSuccess, setServiceSuccess] = useState(false);
@@ -36,6 +37,7 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
     const [serviceCreationConfirmationModalVisible, setServiceCreationConfirmationModalVisible] =
         useState(false);
     const [postBecmeAContibutor, { isLoading, isError }] = usePostBecmeAContibutorMutation();
+    const { data, error } = useGetUserQuery({});
     // console.log(fields, "fields data +++++++++++++++++++++++++")
 
     useEffect(() => {
@@ -66,7 +68,7 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
         try {
             const formData = new FormData()
             formData.append('title', value?.title)
-            formData.append('subtitle', value?.subtitle)
+            formData.append('subtitle', "xyz")
             formData.append('price', value?.currency)
             formData.append('description', value?.description)
             formData.append('category', value?.category)
@@ -78,17 +80,25 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
 
             console.log(formData, "formData in explain membership page==================before sending to api")
             const res = await postBecmeAContibutor(formData).unwrap();
+            console.log('Service created successfully', res?.success === true)
             if (res?.success === true) {
-                setServiceSuccess(res?.success === true);
-                // If the response is successful, navigate to the SettingProfile screen
-                navigation.navigate('PaymentMethodScreen');
-                setServiceCreationConfirmationModalVisible(true)
-                console.log(res, "res++++++++++++++++")
+                const wallet = data?.data?.wallet;
+                console.log(wallet, "wallet+++++++++++++")
+                if (wallet == null) {
+                    setServiceSuccess(res?.success === true);
+                    // If the response is successful, navigate to the SettingProfile screen
+                    navigation.navigate('PaymentMethodScreen');
+                    setServiceCreationConfirmationModalVisible(true)
+                    
+                }else{
+                    navigation.navigate('Drawer');
+                }
                 // Alert.alert("Service created succcessfully")
             } else {
                 // If the response is not successful, you can handle it accordingly
                 console.log("res not success", res)
-               console.log("Service not created succcessfully")
+                console.log("Service not created succcessfully")
+                navigation.navigate('Drawer');
             }
 
         } catch (err) {

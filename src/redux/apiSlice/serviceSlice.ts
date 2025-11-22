@@ -94,13 +94,13 @@ const serviceSlice = api.injectEndpoints({
       }),
       invalidatesTags: ['service'],
     }),
-    // getMessageList: builder.query({
-    //   query: (title) => ({
-    //     url: `/services/subscribed-services?title=${title}`,
-    //     method: 'GET',
-    //   }),
-    //   providesTags: ['service'],
-    // }),
+    unSubscribeServices: builder.mutation({
+      query: (id) => ({
+        url: `/services/unsubscribe/${id}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['service'],
+    }),
     getMessageList: builder.query({
       query: (title) => {
         const hasTitle = title?.trim(); // Check if title is not empty
@@ -127,5 +127,6 @@ export const { useGetAllServiceQuery,
   useDeleteServicesMutation,
   useGetServicesByIdQuery,
   useUpdateServicesByIdMutation,
-  useGetMessageListQuery
+  useGetMessageListQuery,
+  useUnSubscribeServicesMutation
 } = serviceSlice;

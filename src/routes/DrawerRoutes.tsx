@@ -23,6 +23,7 @@ import NormalModal from '../components/NormalModal';
 import Button from '../components/Button';
 import { lStorage } from '../utils';
 import CookieManager from '@react-native-cookies/cookies';
+import TButton from '../components/TButton';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import { apiSlice, usePostLogOutMutation } from '../redux/api/apiSlice/apiSlice';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -125,7 +126,7 @@ function DrawerContent({ navigation }: any) {
         </Text>
         <SvgXml xml={IconLogout} />
       </TouchableOpacity>
-      <NormalModal
+      {/* <NormalModal
         layerContainerStyle={tw`flex-1 justify-center items-center mx-5`}
         containerStyle={tw`rounded-xl bg-zinc-900 p-5`}
         visible={logoutConfirmationModalVisible}
@@ -156,7 +157,40 @@ function DrawerContent({ navigation }: any) {
             </View>
           </View>
         </View>
-      </NormalModal>
+      </NormalModal> */}
+        <NormalModal
+            layerContainerStyle={tw`flex-1 justify-center items-center `}
+            containerStyle={tw`rounded-xl bg-[#141316] w-[80%] `}
+            visible={logoutConfirmationModalVisible}
+            setVisible={setLogoutConfirmationModalVisible}
+          >
+            <View>
+              <Text style={tw`text-white text-2xl text-center font-AvenirLTProBlack mb-2`}>
+                Are you sure to {'\n'}Logout?
+              </Text>
+
+              <View style={tw`mt-2`}>
+                <View style={tw`items-center mb-4`}>
+                  <TButton
+                    title="Yes"
+                    titleStyle={tw`text-[#262329] text-[16px] font-AvenirLTProBlack`}
+                    containerStyle={tw`w-[100%] bg-white `}
+                    onPress={handleLogout}
+                  />
+                </View>
+                <View style={tw`items-center w-full`}>
+                  <TButton
+                    title="Cancel"
+                    titleStyle={tw`text-white text-[16px] font-AvenirLTProBlack`}
+                    containerStyle={[tw`w-[100%]`, { backgroundColor: 'rgba(255,255,255,0.2)' }]}
+                    onPress={() => {
+                      setLogoutConfirmationModalVisible(false);
+                    }}
+                  />
+                </View>
+              </View>
+            </View>
+          </NormalModal>
     </View>
   );
 }

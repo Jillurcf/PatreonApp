@@ -77,7 +77,7 @@ const ExplainMembership = ({ navigation }) => {
 
     if (isNaN(price)) {
       console.log('Error', 'Please enter a valid number');
-        setPriceError("Please enter a valid number")
+      setPriceError("Please enter a valid number")
       return;
     }
 
@@ -118,7 +118,7 @@ const ExplainMembership = ({ navigation }) => {
     //   }
     // )
     navigation.navigate('ExplainMembership1');
-    
+
   };
 
   const addNewCategory = () => {
@@ -206,7 +206,7 @@ const ExplainMembership = ({ navigation }) => {
           <Text style={tw`text-white font-bold text-2xl`}>Explain Membership</Text>
           <View style={tw`w-8`} />
         </View>
-
+        {/* 
         <Text style={tw`text-white font-bold text-xs mt-4`}>Title</Text>
         <TextInput
           style={tw`mt-1 w-full h-10 text-white bg-[#262329] rounded-2xl px-3`}
@@ -218,20 +218,22 @@ const ExplainMembership = ({ navigation }) => {
         {!value.title.trim() && (
           <Text style={tw`text-red-600 text-xs mt-2`}>
             Please enter a title.*</Text>
-        )}
-       
-        <Text style={tw`text-white font-bold text-xs mt-2`}>Price</Text>
-        <View style={tw`relative mt-2`}>
-          <TextInput
-            style={tw`w-full h-10 text-white bg-[#262329] rounded-2xl px-10`}
-            placeholder="Enter price (Minimum 3$)"
-            placeholderTextColor="white"
-            value={value.currency}
-            // onChangeText={text => setValue(prev => ({ ...prev, currency: text }))}
-            onChangeText={handleCurrencyChange}
-          />
-          <View style={tw`absolute left-3 top-2`}>
-            <SvgXml xml={IconDollar} width={20} height={20} />
+        )} */}
+
+        <View style={tw`mt-4`}>
+          <Text style={tw`text-white font-bold text-xs mt-2`}>Price</Text>
+          <View style={tw`relative mt-2`}>
+            <TextInput
+              style={tw`w-full h-10 text-white bg-[#262329] rounded-2xl px-10`}
+              placeholder="Enter price (Minimum 3$)"
+              placeholderTextColor="white"
+              value={value.currency}
+              // onChangeText={text => setValue(prev => ({ ...prev, currency: text }))}
+              onChangeText={handleCurrencyChange}
+            />
+            <View style={tw`absolute left-3 top-2`}>
+              <SvgXml xml={IconDollar} width={20} height={20} />
+            </View>
           </View>
         </View>
         {priceError ? (
@@ -276,7 +278,7 @@ const ExplainMembership = ({ navigation }) => {
               // if (item.value === 'add_new') {
               //   setShowModal(true);
               // } else {
-                setValue(prev => ({ ...prev, category: item.label }));
+              setValue(prev => ({ ...prev, category: item.label }));
               // }
               setIsFocus(false);
             }}

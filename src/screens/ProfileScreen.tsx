@@ -16,7 +16,8 @@ import { getServiceData } from '../utils';
 import { usePostCreateTransactionMutation, usePostPaymentMethodsMutation } from '../redux/apiSlice/paymentSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import WebView from 'react-native-webview';
-import { useGetServicesByIdQuery, useGettMyServicesQuery } from '../redux/apiSlice/serviceSlice';
+import { useGetServicesByIdQuery, useGettMyServicesQuery, useUnSubscribeServicesMutation } from '../redux/apiSlice/serviceSlice';
+import NormalModal from '../components/NormalModal';
 const { width, height } = Dimensions.get("screen")
 type Props = {};
 
@@ -25,12 +26,13 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   // console.log(userId, serviceId, title, price, "id++++++");
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
   const [postPaymentMethods,] = usePostPaymentMethodsMutation();
-  const [postCreateTransaction] = usePostCreateTransactionMutation()
+  const [postCreateTransaction] = usePostCreateTransactionMutation();
+    const [unSubscribeServices] = useUnSubscribeServicesMutation();
   const [error, setError] = useState()
   console.log(error, "error++")
   const { data, isLoading, isError, refetch } = useGetSingleUserQuery(userId);
   console.log(data?.data, '=======================data');
-    const { data: serviceData } = useGetServicesByIdQuery(data?.data?.services[0], {
+  const { data: serviceData, refetch: refetchServiceData } = useGetServicesByIdQuery(data?.data?.services[0], {
     skip: !data?.data?.services,
   })
   const { data: loginUserData, refetch: fetchLoginUser, isFetching } = useGetUserQuery({});
@@ -39,6 +41,7 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   //  console.log(myService, "myService=======================data");
   // const [serviceData, setServiceData] = React.useState<any>(null);
   const [resSessionId, setResSessionId] = useState<string | null>(null);
+    const [unsubscribeModalVisible, setUnsubscribeModalVisible] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   // console.log(serviceData, "serviceData++++++");
@@ -86,46 +89,6 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
 
   };
 
-  //  const handleWebViewNavigation = async (event: any) => {
-  //     console.log('WebView Navigation State:+++++++++++++++++++++', event);
-  //     console.log(event.url.includes('success'), "success");
-  //     // if (event.url.includes('your-app-success-url')) {
-  //     if (event.url.includes('success')) {
-  //       console.log('Onboarding Successful! Fetching account status...');
-  //       setConnected(event.url.includes('success'))
-  //       // const urlParams = new URLSearchParams(new URL(event.url).search);
-  //       // const email = urlParams.get('email') as string; // Type assertion
-
-  //       // console.log('Extracted Email:', email);
-  //       // Fetch Stripe Account Status
-  //       // try {
-  //       //   const accountStatus = await checkConnet();
-  //       //   console.log('Account Status:', accountStatus);
-
-  //       //   // Replace with actual screen
-  //       // } catch (error) {
-  //       //   console.error('Error checking account status:', error);
-  //       // }
-
-  //       // Close the WebView
-  //       setOnboardingUrl(null);
-  //     }
-  //     // useEffect(()=> {
-  //     //   setTimeout(()=> {
-  //     //     refetch()
-  //     //   })
-  //     // }, [1000])
-
-  //     useFocusEffect(() => {
-  //       console.log('refetch call');
-  //       refetch();
-  //     });
-
-  //     if (event.url.includes('your-app-failure-url')) {
-  //       console.warn('Onboarding Failed');
-  //       setOnboardingUrl(null);
-  //     }
-  //   };
 
   const handleWebViewNavigation = useCallback(
     async (event: any) => {
@@ -213,6 +176,29 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
   //   />
   // )}}
 
+   const confirmUnsubscribe = async () => {
+    try {
+      // Call unsubscribe mutation
+
+      const res = await unSubscribeServices(serviceId).unwrap();
+      console.log('✅ Unsubscribed successfully:', res);
+      if (res?.success === true) {
+        setUnsubscribeModalVisible(false);
+        fetchLoginUser();
+        await refetchServiceData();
+        setSubscribed(false);
+      }
+      // router.replace('/screens/DiscoverResult');
+
+    } catch (error) {
+      console.error('❌ Unsubscribe failed:', error);
+    }
+  }
+
+ const handleUnSubscribe = async () => {
+    setUnsubscribeModalVisible(true);
+
+  }
 
 
   return (
@@ -310,38 +296,89 @@ const ProfileScreen = ({ navigation, route }: { navigation: any }) => {
           <Text style={tw`text-white font-AvenirLTProBlack`}>
             $150 Transaction/3 months
           </Text>
-         <View style={tw`mt-2`}>  
-           <FlatList
-            data={serviceData?.data?.explainMembership}
-            renderItem={({ item }) => (
-              <View style={tw`flex-row gap-4 items-center my-1`}>
-                <SvgXml xml={IconDot} />
-                <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>
-                   {item || 'No Data available'}
-                </Text>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={tw`bg-[#262329]`}
-            style={tw`h-40`}
-          />
-         </View>
+          <View style={tw`mt-2`}>
+            <FlatList
+              data={serviceData?.data?.explainMembership}
+              renderItem={({ item }) => (
+                <View style={tw`flex-row gap-4 items-center my-1`}>
+                  <SvgXml xml={IconDot} />
+                  <Text style={tw`text-white text-xl font-AvenirLTProBlack`}>
+                    {item || 'No Data available'}
+                  </Text>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={tw`bg-[#262329]`}
+              style={tw`h-40`}
+            />
+          </View>
         </View>
       </View>
       <View style={tw`w-full items-center my-6`}>
         {error && (
           <Text style={tw`text-red-600 text-xs my-2`}>{error}*</Text>
         )}
-        <TButton
-          disabled={subscribed || data === undefined}
+        {/*   <TButton
+          disabled={subscribed || data?.data?.services[0] === undefined}
           onPress={handleSubscribe}
-          title={subscribed ? "Subscribed" : data === undefined ? "Not Available" : "Subscribe"}
+          title={subscribed ? "Subscribed" : data?.data?.services[0] === undefined ? "Not Available" : "Subscribe"}
           titleStyle={tw`text-black`}
           containerStyle={tw`w-[90%] bg-white`}
-        />
+        /> */}
+
+        {subscribed ? (
+          <TButton
+            // disabled={subscribed || data === undefined}
+            onPress={handleUnSubscribe}
+            title={subscribed ? "Unsubscribe" : data?.data?.services[0] === undefined ? "Not Available" : "Subscribe"}
+            titleStyle={tw`text-black`}
+            containerStyle={tw`w-[90%] bg-white`}
+          />
+        ) : (
+          <TButton
+            disabled={subscribed || data?.data?.services[0] === undefined}
+            onPress={handleSubscribe}
+            title={subscribed ? "Unsubscribe" : data?.data?.services[0] === undefined ? "Not Available" : "Subscribe"}
+            titleStyle={tw`text-black`}
+            containerStyle={tw`w-[90%] bg-white`}
+          />
+        )}
 
       </View>
+      <NormalModal
+        layerContainerStyle={tw`flex-1 justify-center items-center `}
+        containerStyle={tw`rounded-xl bg-[#141316] w-[80%] `}
+        visible={unsubscribeModalVisible}
+        setVisible={setUnsubscribeModalVisible}
+      >
+        <View>
+          <Text style={tw`text-white text-lg text-center font-AvenirLTProBlack mb-2`}>
+            Are you sure to {"\n"}Unsubscribe?
+          </Text>
+
+          <View style={tw`mt-2`}>
+            <View style={tw`items-center mb-4`}>
+              <TButton
+                title="Yes"
+                titleStyle={tw`text-[#262329] text-[16px] font-AvenirLTProBlack`}
+                containerStyle={tw`w-[100%] bg-white `}
+                onPress={confirmUnsubscribe}
+              />
+            </View>
+            <View style={tw`items-center w-full`}>
+              <TButton
+                title="Cancel"
+                titleStyle={tw`text-white text-[16px] font-AvenirLTProBlack`}
+                containerStyle={[tw`w-[100%]`, { backgroundColor: 'rgba(255,255,255,0.2)' }]}
+                onPress={() => {
+                  setUnsubscribeModalVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </NormalModal>
       <StatusBar backgroundColor="black" translucent />
     </View>
   );

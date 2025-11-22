@@ -89,39 +89,7 @@ export const setExplainMemberValue = (value: {
   }
 };
 
-// Load form value object
-// export const getExplainMemberValue = (): {
-//   title: string;
-//   subtitle: string;
-//   currency: string;
-//   price: string;
-//   description: string;
-//   category: string;
-// } => {
-//   try {
-//     const storedValue = lStorage.getString('explainMemberValue');
-//     return storedValue
-//       ? JSON.parse(storedValue)
-//       : {
-//           title: '',
-//           subtitle: '',
-//           currency: '',
-//           price: '',
-//           description: '',
-//           category: '',
-//         };
-//   } catch (error) {
-//     console.error('Failed to load form value:', error);
-//     return {
-//       title: '',
-//       subtitle: '',
-//       currency: '',
-//       price: '',
-//       description: '',
-//       category: '',
-//     };
-//   }
-// };
+
 
 type ExplainMemberValue = {
   title: string;
@@ -186,12 +154,14 @@ export const clearFormValue = () => {
 export const saveMediaPromptData = (
   selectedPdf: File,
   capturedVideo: string | null,
-  promptInput: string | null
+  promptInput: string | null,
+  value: string | null,
 ) => {
   try {
     lStorage.setString('selectedImages', JSON.stringify(selectedPdf));
     lStorage.setString('capturedVideo', capturedVideo || '');
     lStorage.setString('promptInput', promptInput || '');
+    lStorage.setString('title', JSON.stringify(value)); 
   } catch (e) {
     console.error('Storage Save Error:', e);
   }
@@ -202,11 +172,13 @@ export const loadMediaPromptData = () => {
     const images = lStorage.getString('selectedImages');
     const video = lStorage.getString('capturedVideo');
     const prompt = lStorage.getString('promptInput');
+   const titleString = lStorage.getString('title');
 
     return {
       selectedImages: images ? JSON.parse(images) : [],
       capturedVideo: video || null,
       promptInput: prompt || '',
+     title: titleString ? JSON.parse(titleString) : '',
     };
   } catch (e) {
     console.error('Storage Load Error:', e);
@@ -219,6 +191,7 @@ export const clearMediaPromptData = () => {
     lStorage.removeItem('selectedImages');
     lStorage.removeItem('capturedVideo');
     lStorage.removeItem('promptInput');
+    lStorage.removeItem('title');
   } catch (e) {
     console.error('Storage Clear Error:', e);
   }

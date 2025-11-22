@@ -34,11 +34,12 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
     });
     const [promptInput, setPromptInput] = useState<string>("");
     const [selectedImages, setSelectedImages] = useState();
+    const [titleValue, setTitleValue] = useState("");
     const [serviceCreationConfirmationModalVisible, setServiceCreationConfirmationModalVisible] =
         useState(false);
     const [postBecmeAContibutor, { isLoading, isError }] = usePostBecmeAContibutorMutation();
     const { data, error } = useGetUserQuery({});
-    // console.log(fields, "fields data +++++++++++++++++++++++++")
+console.log(titleValue?.title, "titleValue+++++++++++++")
 
     useEffect(() => {
         const savedValue = getExplainMemberValue();
@@ -46,9 +47,11 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
         setValue(savedValue);
         const promptInput = loadMediaPromptData();
         const mediaData = loadMediaPromptData(); // returns an object
+        const title = mediaData.title;
+        setTitleValue(title);
         setPromptInput(mediaData.promptInput);   // assigns only the string part
         setSelectedImages(mediaData?.selectedImages)
-        // console.log(promptInput, selectedImages, "promptInput+++++++++++++")
+        console.log(promptInput, selectedImages, title?.title, "promptInput+++++++++++++")
     }, []);
 
 
@@ -67,7 +70,7 @@ const ExplainMembershipScreen = ({ navigation }: { navigation: any }) => {
         // console.log(fields, "Fields ++++++++++++++++++++++")
         try {
             const formData = new FormData()
-            formData.append('title', value?.title)
+            formData.append('title', titleValue?.title)
             formData.append('subtitle', "xyz")
             formData.append('price', value?.currency)
             formData.append('description', value?.description)

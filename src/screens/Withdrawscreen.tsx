@@ -96,8 +96,8 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
 
       // Alert.alert('Success', 'Payout initiated successfully');
     } catch (error) {
-      console.error('Payout error:', error);
-      setPayoutErrror(error?.data?.message);
+      console.error('Payout error:', error?.data?.error);
+      setPayoutErrror(error?.data?.error?.error?.message);
     }
   };
   return (
@@ -173,11 +173,19 @@ const WithdrawScreen = ({ navigation }: NavigProps<null>) => {
             {errror}*
           </Text>
         )} */}
-        {payoutErrror && (
+        {payoutErrror && payoutErrror === "Outbound payment cannot be created because Confirmation of Payee is not accepted." && (
+          <View style={tw`mb-4`}>
+            <Text style={tw`text-red-600 tex-xs`}>{payoutErrror}* </Text>
+            <TouchableOpacity onPress={() => navigation?.navigate('HelpAndSupport',{ sub: 'Confirmation of Payee Issue', body: 'I am facing an issue with Confirmation of Payee while trying to make a payout. Please assist me in resolving this issue.'})}>
+              <Text style={tw`text-blue-400 tex-xs underline`}>Please Contact Support</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {/* {payoutErrror && (
           <Text style={tw`text-red-500 text-start text-xs my-2`}>
             {payoutErrror}*
           </Text>
-        )}
+        )} */}
         <TButton
           onPress={handlePayout}
           disabled={!allField}

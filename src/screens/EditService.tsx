@@ -215,9 +215,20 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
                     <View style={tw`w-8`} />
                 </View>
             </View>
-
-            {/* Prompt Input */}
+            {/* Title */}
             <View style={tw`mt-8`}>
+                <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Title</Text>
+                <TextInput
+                    style={tw`w-full h-12 border text-white bg-[#262329] border-[#565358] rounded-xl px-2`}
+                    placeholder="Write title here"
+                    placeholderTextColor={'white'}
+                    defaultValue={services?.title}
+                    // value={services.title}
+                    onChangeText={text => setValue(prev => ({ ...prev, title: text }))}
+                />
+            </View>
+            {/* Prompt Input */}
+            <View style={tw`mt-4`}>
                 <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Edit Instruction</Text>
                 <View style={tw`h-44 p-2 bg-[#262329] border border-[#565358] w-full rounded-lg`}>
                     <TextInput
@@ -247,23 +258,12 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
                 </View>
             </View>
 
-            {/* Title */}
-            <View style={tw``}>
-                 <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Title</Text>
-                <TextInput
-                    style={tw`w-full h-12 border text-white bg-[#262329] border-[#565358] rounded-xl px-2`}
-                    placeholder="Write title here"
-                    placeholderTextColor={'white'}
-                    defaultValue={services?.title}
-                    // value={services.title}
-                    onChangeText={text => setValue(prev => ({ ...prev, title: text }))}
-                />
-            </View>
 
-            
+
+
             {/* Description */}
             <View style={tw`mt-8`}>
-                 <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Description</Text>
+                <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Description</Text>
                 <View style={tw`h-auto p-2 bg-[#FFFFFF] border border-[#565358] w-full rounded-lg`}>
                     <TextArea
                         style={tw`text-left h-40 text-black`}
@@ -282,7 +282,7 @@ const EditService = ({ navigation, route }: { navigation: any }) => {
 
             {/* Dropdown */}
             <View style={tw`mt-8`}>
-                 <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Category</Text>
+                <Text style={tw`text-white font-AvenirLTProBlack mb-2`}>Edit Category</Text>
                 <Dropdown
                     style={[styles.dropdown, isFocus && { borderColor: '#565358' }]}
                     placeholderStyle={styles.placeholderStyle}

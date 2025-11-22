@@ -9,15 +9,17 @@ import Button from '../components/Button';
 import NormalModal from '../components/NormalModal';
 
 
-const HelpSupport = ({ navigation }: any) => {
-    const [subject, setSubject] = useState('');
-    const [desc, setDesc] = useState('');
+const HelpSupport = ({ navigation, route }: any) => {
+    const { sub, body } = route.params;
+    const [subject, setSubject] = useState(sub ?? '');
+    const [desc, setDesc] = useState(body ?? '');
     const [helpAndSupport, { isLoading, isError }] = useHelpAndSupportMutation();
     const [errorMessage, setEroorMessage] = useState('');
     const [messageConfirmationModalVisible, setMessageConfirmationModallVisible] =
         useState(false);
     console.log(errorMessage, 'error message');
 
+    console.log(sub, body, "route params in help and support screen")
     const [alertVisible, setAlertVisible] = useState(false);
 
     const showCustomAlert = () => {
@@ -93,20 +95,20 @@ const HelpSupport = ({ navigation }: any) => {
                     />
 
                     <InputText
-                        placeholder={"Enter the description"}
+                        placeholder="Enter the description"
                         value={desc}
-                        placeholderColor={'#949494'}
-                        label={"Description"}
-                        // {'Descrivi il tuo prodotto'}
-                        onChangeText={(text: any) => setDesc(text)}
+                        placeholderColor="#949494"
+                        label="Description"
+                        onChangeText={(text) => setDesc(text)}
                         style={tw`h-48 text-white`}
-                        placeholderAlignment={'top'}
                         labelStyle={tw`text-white font-AvenirLTProBlack`}
-                        containerStyle={tw`border bg-black border-[#565358] `
-                        }
+                        containerStyle={tw`border bg-black border-[#565358]`}
+                        placeholderAlignment="top"
                         numberOfLines={20}
                         maxLength={3000}
                         cursorColor="white"
+                        multiline={true}
+                        textAlignVertical="top"
                     />
 
                 </View>

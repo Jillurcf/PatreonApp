@@ -36,15 +36,15 @@ import Button from '../components/Button';
 
 const EnterInput = ({ navigation }: NavigProps<null>) => {
   const [selectedPdf, setSelectedPdf] = useState(null);
-  const [promptInput, setPromptInput] = useState("")
+  const [promptInput, setPromptInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const [inputConfirmationModalVisible, setInputConfirmationModalVisible] =
     useState(false);
+  const [value, setValue] = useState<{ title: string }>({ title: '' });
+
 
   console.log(promptInput, "input========================")
   const allData = { selectedPdf, promptInput }
-
-
-
 
   const handleUploadPdf = async () => {
 
@@ -77,20 +77,60 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
       }
     }
   };
-  const handleSave = () => {
-    // if (!allData.selectedPdf || !allData.promptInput) {
-    //   console.log('Error', 'Please fill in all fields before uploading.');
-    //   return;
-    // }
-    // console.log(selectedPdf, promptInput, 'data before sending ==========');
-    saveMediaPromptData(selectedPdf, null, promptInput);
-    const { selectedImages: savedImages, promptInput: savedPrompt } = loadMediaPromptData();
+  // const handleSave = async () => {
+  //   if (!selectedPdf || !promptInput || !value?.title) {
+  //     console.log(
+  //       'Error',
+  //       'Please upload a PDF, enter a title, and provide prompt input before saving.'
+  //     );
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     await saveMediaPromptData(selectedPdf, null, promptInput, value);
+  //     const { selectedImages: savedImages, promptInput: savedPrompt, title } = loadMediaPromptData();
 
-    console.log(savedImages, savedPrompt, 'Retrieved data from storage ++++++++');
-    // Alert.alert('Saved', 'Your data has been saved successfully!');
-    setInputConfirmationModalVisible(true);
-    navigation?.navigate('ExplainMembership');
+  //     console.log(savedImages, savedPrompt, title, 'Retrieved data from storage ++++++++');
+  //     setInputConfirmationModalVisible(true);
+  //     navigation?.navigate('ExplainMembership');
+  //   } catch (error) {
+  //     console.error('Error saving data:', error);
+  //   }
+
+  // };
+
+  const handleSave = async () => {
+    if (!selectedPdf || !promptInput || !value?.title) {
+      console.log(
+        'Error',
+        'Please upload a PDF, enter a title, and provide prompt input before saving.'
+      );
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await saveMediaPromptData(selectedPdf, null, promptInput, value);
+
+      const data = loadMediaPromptData();
+      console.log(
+        data.selectedImages,
+        data.promptInput,
+        data.title,
+        'Retrieved data from storage ++++++++'
+      );
+
+      setInputConfirmationModalVisible(true);
+      navigation.navigate('ExplainMembership');
+    } catch (error) {
+      console.error('Error saving data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -110,9 +150,22 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
             </Text>
             <View style={tw`w-8`} />
           </View>
-
+          <View style={tw`mt-6`}>
+            <Text style={tw`text-white font-bold text-xs mt-4`}>Title</Text>
+            <TextInput
+              style={tw`mt-1 w-full h-12 text-white bg-[#262329] rounded-xl px-3`}
+              placeholder="Write title here"
+              placeholderTextColor="white"
+              value={value.title}
+              onChangeText={text => setValue({ ...value, title: text })}
+            />
+          </View>
+          {!value?.title?.trim() && (
+            <Text style={tw`text-red-600 text-xs mt-2`}>
+              Please enter a title.*</Text>
+          )}
           {/* Input Area */}
-          <View style={tw`mt-8`}>
+          <View style={tw``}>
             <Text style={tw`text-white py-2 font-AvenirLTProBlack`}>Add Instruction</Text>
             <View style={tw`h-44 p-2 bg-[#262329] w-full rounded-lg`}>
               <TextInput
@@ -136,8 +189,8 @@ const EnterInput = ({ navigation }: NavigProps<null>) => {
           {/* Media Upload */}
           <View style={tw`my-6`}>
             <Text style={tw`text-white font-AvenirLTProBlack`}>Upload Knowledge</Text>
-            <TouchableOpacity 
-            onPress={handleUploadPdf}
+            <TouchableOpacity
+              onPress={handleUploadPdf}
             >
               <View style={tw`flex items-center bg-[#262329] mt-2 rounded-2xl py-8 justify-center`}>
                 <View style={tw`flex-row gap-6`}>

@@ -34,7 +34,7 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
   const [openModal, setOpenModal] = useState(false);
   const [conversation_id, setConversation_id] = useState();
   const [postSendMessage, { isLoading, isError }] = usePostSendMessageMutation()
-    const { data: messageHistory, refetch: refetchMessages } = useMessageHistoryByIdQuery(serviceId);
+  const { data: messageHistory, refetch: refetchMessages } = useMessageHistoryByIdQuery(serviceId);
   const [mediaUri, setMediaUri] = useState(null); // For holding the selected media URI
   const [mediaType, setMediaType] = useState(null); // 'image', 'video', or 'document'
   const [text, setText] = useState(''); // Message input field
@@ -44,16 +44,42 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
   const { data: user } = useGetUserQuery({})
   console.log(user?.data?.name, "user+++++++++++++++++++++++++++")
 
+  // useEffect(() => {
+  //   if (messageHistory) {
+  //     const fetchedMessages = messageHistory.data.map((item: any) => ({
+  //       id: item?._id,
+  //       user: item?.user?.name,
+  //       question: item?.question,
+  //       answer: item?.answer,
+  //       createdAt: item?.createdAt,
+  //     }));
+  //     setMessages(fetchedMessages)
+  //   }
+  // }, [messageHistory]);
+
+
+  // test code
   useEffect(() => {
-    if (messageHistory) {
-      const fetchedMessages = messageHistory.data.map((item: any) => ({
-        id: item?._id,
-        user: item?.user?.name,
-        question: item?.question,
-        answer: item?.answer,
-        createdAt: item?.createdAt,
+    if (messageHistory?.data?.length > 0) {
+      const fetchedMessages = messageHistory.data.map((item) => ({
+        id: item._id,
+        user: item.user?.name || "User",
+        question: item.question,
+        answer: item.answer,
+        createdAt: item.createdAt,
       }));
-      setMessages(fetchedMessages)
+      setMessages(fetchedMessages);
+    } else {
+      // DEFAULT MESSAGE
+      setMessages([
+        {
+          id: "default-1",
+          answer: "Hello, welcome to my page.\nIs there anything we can do to help you? 😁😁 ",
+          user: "AI",
+          createdAt: new Date(),
+          is_sender: false,
+        }
+      ]);
     }
   }, [messageHistory]);
 
@@ -281,22 +307,33 @@ const MessageScreen = ({ navigation, route }: { navigation: any }) => {
               (
                 <View style={tw`mb-4`}>
                   {/* <Text style={tw`font-semibold text-white text-lg`}>{item.user}</Text> */}
-                  <View style={tw`bg-[#262329] p-3 rounded-3xl rounded-l-none rounded-b-2xl mt-2 w-[80%] flex-row items-end`}>
+                  {/* <View style={tw`bg-[#262329] p-3 rounded-3xl rounded-l-none rounded-b-2xl mt-2 w-[80%] flex-row items-end`}>
                     <View style={tw`w-[85%]`}>
                       <Text style={tw`text-sm text-white mt-2`}>{item?.answer}</Text>
                     </View>
                     <View style={tw`w-15%`}>
                       <Text style={tw`text-xs text-[#C9C8C9]`}>{new Date(item.createdAt).toLocaleString().slice(12, 17)}</Text>
                     </View>
-                  </View>
-                  <View style={tw`bg-[#FFFFFF] p-3 rounded-3xl rounded-r-none rounded-b-2xl mt-4 w-[80%] flex-row items-end ml-[20%] `}>
-                   <View style={tw`w-85%`}>
-                      <Text style={tw`text-sm text-[#141316]`}>{item.question}</Text>
+                  </View> */}
+
+                  {messageHistory?.data?.length > 0 ? (
+                    <View style={tw`bg-[#FFFFFF] p-3 rounded-3xl rounded-r-none rounded-b-2xl mt-4 w-[80%] flex-row items-end ml-[20%] `}>
+                      <View style={tw`w-85%`}>
+                        <Text style={tw`text-sm text-[#141316]`}>{item?.question}</Text>
+                      </View>
+                      <View style={tw`w-15%`}>
+                        <Text style={tw`text-xs text-[#616161]`}>{new Date(item?.createdAt).toLocaleString().slice(12, 17)}</Text>
+                      </View>
+
+                    </View>
+                  ) : null}
+                  <View style={tw`bg-[#262329] p-3 rounded-3xl rounded-l-none rounded-b-2xl mt-2 w-[80%] flex-row items-end`}>
+                    <View style={tw`w-[85%]`}>
+                      <Text style={tw`text-sm text-white mt-2`}>{item?.answer}</Text>
                     </View>
                     <View style={tw`w-15%`}>
-                      <Text style={tw`text-xs text-[#616161]`}>{new Date(item.createdAt).toLocaleString().slice(12, 17)}</Text>
+                      <Text style={tw`text-xs text-[#C9C8C9]`}>{new Date(item?.createdAt).toLocaleString().slice(12, 17)}</Text>
                     </View>
-
                   </View>
 
 
